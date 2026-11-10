@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "campusselection-zscore-agent"
-version = "0.2.0"
-description = "Deterministic historical analysis for Sri Lankan UGC Z-score data"
+name = "campusyamu-agents"
+version = "0.3.0"
+description = "Modular Z-score and career-trend agents for CampusYamu"
 requires-python = ">=3.11"
 dependencies = []
 
@@ -13,7 +13,7 @@ dependencies = []
 campus-zscore-agent = "zscore_agent.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["zscore_agent*"]
+include = ["zscore_agent*", "career_trends_agent*"]
 
 [tool.setuptools.data-files]
 "share/campusselection" = ["data/z_scores.db"]

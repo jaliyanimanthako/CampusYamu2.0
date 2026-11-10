@@ -7,6 +7,6 @@ resolution-markers = [
 ]
 
 [[package]]
-name = "campusselection-zscore-agent"
-version = "0.2.0"
+name = "campusyamu-agents"
+version = "0.3.0"
 source = { editable = "." }
