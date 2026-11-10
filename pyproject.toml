@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "campusselection-zscore-agent"
+version = "0.2.0"
+description = "Deterministic historical analysis for Sri Lankan UGC Z-score data"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+campus-zscore-agent = "zscore_agent.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["zscore_agent*"]
+
+[tool.setuptools.data-files]
+"share/campusselection" = ["data/z_scores.db"]
