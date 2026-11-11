@@ -11,6 +11,9 @@ dependencies = []
 
 [project.scripts]
 campus-zscore-agent = "zscore_agent.cli:main"
+campus-career-trends = "career_trends_agent.cli:main"
+campus-career-analysis = "career_trends_agent.analysis_cli:main"
+campus-career-swot = "career_trends_agent.pipeline_cli:main"
 
 [tool.setuptools.packages.find]
 include = ["zscore_agent*", "career_trends_agent*"]

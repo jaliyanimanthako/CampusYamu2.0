@@ -1,0 +1,73 @@
+Career outlook: success
+
+Quantity Surveying: 18 sources (6 trusted), 0 failed searches
+  Career paths searched: quantity surveyor, junior quantity surveyor, senior quantity surveyor, commercial manager, assistant cost manager, cost manager, survey engineering, project management unit officer
+
+Future career analysis: success
+Horizon: 5 years
+Model: gpt-5.4-mini
+
+Quantity Surveying (success)
+  Overall: positive (medium confidence)
+  From what I found, Quantity Surveying is still a solid choice for Sri Lanka in 2031. You have live local vacancies, a clear degree-to-IQSSL/RICS path, and real overseas options in Abu Dhabi, the Middle East, Australia, and Southeast Asia. The main watch-out is that junior pay is modest and senior roles take time, experience, and sometimes a master’s degree. If you choose this, start building BOQ, measurement methods, tendering, and internship experience early.
+  Where the opportunities are: overseas stronger. Local QS jobs exist, but the research shows stronger pay and broader demand in the Middle East, Australia, and Southeast Asia. The better opportunities look overseas, though RICS/IQSSL progression and experience are needed.
+  Further study: helpful. A degree is the start, not the finish. RICS membership, IQSSL corporate membership, and possibly a master’s degree help you reach senior posts and work abroad, but they are not the only way into the field.
+  Strengths:
+    - Quantity Surveying has a clear professional ladder in Sri Lanka: a U.G.C.-recognized degree gets you in, and IQSSL-linked progression plus strong BOQ (bills of quantities) and measurement skills help you move up. [E007, E005]
+    - There is still active local hiring for QS-related roles in Sri Lanka, so the 2031 intake should not be entering a dead market. [E001, E008]
+    - Your degree can travel: Sri Lankan QSs are already working in Abu Dhabi and other overseas markets, and RICS membership improves that portability. [E005, E006]
+  Weaknesses:
+    - The early-money stage is not amazing: junior QS pay starts around LKR 60k-90k or LKR 70,000-120,000, while the better money usually comes only after several years. [E003, E006, E010]
+    - Reaching top posts can be slow and demanding, because CIDA-level senior roles want a master’s or corporate membership and very long experience after graduation. [E007, E016]
+    - The work itself is exposed to industry shocks: IQSSL research flags automation, robotics, and material shortages as real issues in Sri Lankan construction. [E011]
+  Opportunities:
+    - Further study and membership can open better jobs and overseas mobility, especially if you aim for chartered status rather than stopping at the basic degree. [E006, E007]
+    - Specialising in value engineering, life cycle costing, or cost-overrun control could make you more useful as projects get more complex and tech-heavy. [E011]
+    - If you build strong estimating and drafting skills, the field also gives you a route into overseas or freelance work, not just one local employer. [E005, E006]
+  Threats:
+    - Construction volatility can hit QS work hard, because shortage problems and rapid economic swings can slow projects and squeeze fees. [E011]
+    - Routine cost and measurement work may face more automation pressure over time, so you will need stronger judgement and contract skills than just software use. [E011, E013]
+    - Students who wait until graduation may fall behind, because the student discussion suggests practical exposure matters early in this field. [E009]
+
+Quantity Surveying limitations:
+  - The research does not show a QS-specific Sri Lanka employment rate or graduate unemployment rate.
+  - Most salary figures come from non-official career sites, so exact pay is uncertain.
+  - Community posts reflect a small group’s experience, so they mainly show student and practitioner concerns, not the whole market.
+
+Quantity Surveying sources:
+  [E001] (other) Quantity Surveyor Jobs in Sri Lanka [12+ Job Vacancies]
+         https://ikman.lk/en/ads/i/sri-lanka/building-construction-jobs/quantity-surveyor
+  [E002] (trusted) Sri Lanka Labour Force Survey Annual Report - 2025
+         https://www.statistics.gov.lk/Resource/en/LabourForce/Annual_Reports/LFS2025.pdf
+  [E003] (other) Quantity Surveyor Sri Lanka 2026 (Salary & Career)
+         https://www.coccampus.lk/quantity-surveyor-career-in-sri-lanka
+  [E004] (trusted) Press Release: Employment Outlook For The Surveying Profession 2026-2029 | Dr. R
+         https://www.linkedin.com/posts/dr-r%C3%B3is%C3%ADn-murphy_press-release-employment-outlook-for-the-activity-7471098912599314432-qmOG
+  [E005] (trusted) Ishara Rukshan‏ - ‏Quantity Surveyor | Cost Manager
+         https://ae.linkedin.com/in/ishararukshan092
+  [E006] (other) What Is Quantity Surveying and Is It a Good Career in Sri Lanka? - Career Campus
+         https://careercampus.lk/quantity-surveying-career-sri-lanka-2026
+  [E007] (trusted) VACANCIES
+         https://www.cida.gov.lk/content/files/vacancy/CIDA%20vacancy%20sep%2022%20paper%20ad%20eng.pdf
+  [E008] (trusted) topjobs | Vacancy Browse
+         https://www.topjobs.lk/applicant/vacancybyfunctionalarea.jsp?FA=CCE
+  [E009] (community_discussion) Sri Lankan QS student: How do I learn industry reality and find high-earning nic
+         https://www.reddit.com/r/quantitysurveying/comments/1utno7m/sri_lankan_qs_student_how_do_i_learn_industry/
+  [E010] (other) Quantity Surveyor (QS) Jobs in Sri Lanka — Salary, Skills & ...
+         https://www.paths.lk/career-paths/quantity-surveyor-qs
+  [E011] (other) Technical Papers
+         https://iqssl.lk/docs/publications/publication-iqssl-2020-08-27-uid661.pdf
+  [E012] (other) Quantity Surveyor (Infrastructure) Salary & Jobs in ...
+         https://www.paths.lk/career-paths/quantity-surveyor-infrastructure
+  [E013] (other) Quantity Surveyor Salary & Job Outlook (2026) | NueCareer
+         https://nuecareer.com/careers/quantity-surveyor
+  [E014] (other) Pubudu - Professional Quantity Surveyor | Profile
+         https://www.fiverr.com/pubuduweerasing
+  [E015] (other) Quantity Surveying Degree in Sri Lanka: Course and ...
+         https://uplift.lk/articles/quantity-surveying-degree-sri-lanka
+  [E016] (trusted) C I D A
+         https://www.cida.gov.lk/content/files/vacancy/FINAL%20SOR%20-%20DG%20&%20D(HR%20&%20A).pdf
+  [E017] (other) Are there opportunities in quantity surveying in Sri Lanka? ...
+         https://www.quora.com/Are-there-opportunities-in-quantity-surveying-in-Sri-Lanka-Is-it-a-good-career-to-go-on
+  [E018] (community_discussion) How to become a Quant as a Sri Lankan?
+         https://www.reddit.com/r/srilanka/comments/1r1pmss/how_to_become_a_quant_as_a_sri_lankan/

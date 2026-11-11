@@ -1,0 +1,73 @@
+Career outlook: success
+
+Financial Mathematics: 18 sources (5 trusted), 0 failed searches
+  Career paths searched: financial mathematics intern, stockbroker
+
+Future career analysis: success
+Horizon: 5 years
+Model: gpt-5.4-mini
+
+Financial Mathematics (success)
+  Overall: mixed (medium confidence)
+  From what I found, Financial Mathematics can lead to good careers, but in Sri Lanka the local market is small and the best opportunities are stronger overseas. The upside is real if you build strong technical skills and aim at quant, risk or analytics roles. The main thing to watch out for is that entry-level work is limited and automation will keep squeezing routine tasks. My practical takeaway: choose this only if you are ready to pair the degree with serious coding, analytics and possibly postgraduate study.
+  Where the opportunities are: overseas stronger. Local openings exist, but the strongest demand and pay for financial mathematics are overseas or remote. In Sri Lanka, the market is thinner and more specialised.
+  Further study: helpful. Further study is not strictly required for every local entry role, but it becomes very helpful for quant, risk and overseas paths. A master’s can unlock stronger jobs, but it costs time and money.
+  Strengths:
+    - You have a real fit for roles that combine maths, data and finance, and employers in Sri Lanka already ask for exactly those skills. [E001, E011, E014, E015]
+    - There are some concrete local entry routes through internships and junior analyst-style work, especially in insurance, banking and KPO settings. [E001, E003, E011]
+    - The degree also travels well into overseas and remote quant or finance paths if you build the right technical profile. [E011, E014, E015]
+  Weaknesses:
+    - The local market for high-end financial mathematics jobs is small, so you may face a narrow set of employers at home. [E011, E018]
+    - Entry-level roles are likely to be competitive and skills-heavy, with no guarantee of quick progression from internship to permanent work. [E001, E016]
+    - For the stronger quant track, further study is close to required rather than optional. [E011, E016]
+  Opportunities:
+    - A master's in financial mathematics or a related quantitative field can open better local and overseas doors, especially in quant, risk and model validation. [E014, E015, E016]
+    - Building Python, R, C++, machine learning and strong Excel/Power BI skills matches the direction employers are already signalling. [E001, E011, E014]
+    - Overseas markets and remote roles look more rewarding than the local market for advanced quant talent. [E011, E014, E016]
+  Threats:
+    - Automation and AI will keep reducing the value of routine finance work, so weak technical depth could leave you behind. [E001, E004, E014]
+    - Sri Lanka’s broader labour market fragility means hiring can be affected by slow growth and crisis shocks, not just your own qualifications. [E010, E018]
+    - If you aim abroad, the hurdle is not just skill but also target-master's admission, experience, and in some cases licensing or sponsor routes. [E015, E016]
+
+Financial Mathematics limitations:
+  - The research does not give a full count of Sri Lankan job openings, so the size of the market could be bigger or smaller than these signals suggest.
+  - Most community evidence reflects a small group's experience, so it helps show sentiment but not the whole market.
+  - I could not verify salaries from official Sri Lankan labour statistics for these exact roles, so pay comparisons are approximate.
+
+Financial Mathematics sources:
+  [E001] (trusted) Financial Mathematics Intern at Prestige Insurance Brokers Ltd — Galle, Southern
+         https://lk.linkedin.com/jobs/view/financial-mathematics-intern-at-prestige-insurance-brokers-ltd-4359030922
+  [E002] (trusted) World Bank Document
+         https://documents1.worldbank.org/curated/en/876061468103453816/pdf/544340PUB0EPI010BOX0349415B1PUBLIC1.pdf
+  [E003] (trusted) Corporate Management/Analysts
+         http://www.topjobs.lk/applicant/vacancybyfunctionalarea.jsp?FA=COM
+  [E004] (other) The Impact of Automation on Global Financial Employment
+         https://evolutionpath.org/p/the-impact-of-automation-on-global-financial-employment
+  [E005] (other) Intern jobs in Sri Lanka
+         https://www.efinancialcareers-norway.com/jobs/intern/in-sri-lanka
+  [E006] (other) M.Sc. in Financial Mathematics - Sri Lankan Degree
+         https://srilankandegree.com/listing/m-sc-in-financial-mathematics
+  [E007] (community_discussion) Anyone doing or graduated from SLIIT Applied Statistics & ...
+         https://www.reddit.com/r/srilanka/comments/1wefqnv/anyone_doing_or_graduated_from_sliit_applied
+  [E008] (community_discussion) Is there a degree in financial mathematics in Mora?
+         https://www.reddit.com/r/ask_srilanka/comments/1wt5821/is_there_a_degree_in_financial_mathematics_in_mora/
+  [E009] (other) Nethul Liyanage - IT Intern - Commercial Bank of Ceylon
+         https://himalayas.app/@nethulliyanage
+  [E010] (trusted) Print ready final - macro paper Sril Lanka
+         https://www.ilo.org/media/345691/download
+  [E011] (other) Quantitative Analyst Salary & Jobs in Sri Lanka (2026)
+         https://www.paths.lk/career-paths/quantitative-analyst
+  [E012] (other) Internship Outcomes - 2026 - Financial Mathematics
+         https://finmath.uchicago.edu/careers/internship-statistics
+  [E013] (other) Intern jobs in Sri Lanka
+         https://www.efinancialcareers.cn/jobs/intern/in-sri-lanka
+  [E014] (other) Financial Mathematics MSc - Queen Mary University of London
+         https://www.qmul.ac.uk/postgraduate/taught/coursefinder/courses/financial-mathematics-msc
+  [E015] (other) What can you do with a financial mathematics degree? – UQ
+         https://study.uq.edu.au/stories/what-can-you-do-financial-mathematics-degree
+  [E016] (community_discussion) Breaking into quant from Sri Lanka
+         https://www.reddit.com/r/quantfinance/comments/1whwaes/breaking_into_quant_from_sri_lanka/
+  [E017] (other) Internship Sri Lanka Jobs (NOW HIRING)
+         https://www.ziprecruiter.com/Jobs/Internship-Sri-Lanka
+  [E018] (trusted) The Labour Market Implications of Sri Lanka's Multiple Crises
+         https://www.ilo.org/sites/default/files/wcmsp5/groups/public/@asia/@ro-bangkok/@ilo-colombo/documents/publication/wcms_856157.pdf

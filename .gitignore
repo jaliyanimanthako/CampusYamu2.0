@@ -4,3 +4,8 @@ __pycache__/
 .env
 .venv/
 *.egg-info/
+
+# Generated research output (saved evidence from runs) and caches
+*_evidence*.json
+*_web_data.json
+data/career_paths_cache.json

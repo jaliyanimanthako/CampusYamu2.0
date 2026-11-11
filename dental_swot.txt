@@ -1,0 +1,74 @@
+Career outlook: success
+
+Dental Surgery: 18 sources (5 trusted), 0 failed searches
+
+Future career analysis: success
+Horizon: 5 years
+Model: gpt-5.4-mini
+
+Dental Surgery (success)
+  Overall: positive (medium confidence)
+  From what I found, Dental Surgery looks like a solid choice for Sri Lanka in 2031. Local demand is steady, and there are visible entry points, so you should be able to start. The main watch-out is that the best pay usually comes later through specialisation, private practice, or work abroad. My practical advice: choose this only if you are ready for long training, then build digital and specialist skills early.
+  Where the opportunities are: overseas stronger. Local demand is steady, but the strongest upside in pay and scale appears overseas, especially where licensing pathways exist. Those gains come with exam, experience and registration hurdles.
+  Further study: helpful. Postgraduate study is helpful rather than essential: you can start after BDS, but specialisation improves pay, status and access to better roles locally and abroad.
+  Strengths:
+    - You are entering a field with real local demand, not a niche one; Sri Lanka already has a large dental service base and continues to treat millions of patients. [E005, E007]
+    - A first job looks reachable because entry-level posts and vacancies are visible in both public and private channels. [E001, E007, E014, E016]
+    - The career can become financially stronger over time, especially if you build private practice or specialise. [E002, E009, E016]
+  Weaknesses:
+    - You will likely need further study or specialisation to reach the better-paid and more secure end of the field. [E009, E014, E016]
+    - Entry pay is decent but not spectacular, and some feedback from people in the field suggests the early years can feel financially tight. [E002, E008, E015]
+    - The work is physically and mentally demanding, with long hours, repetitive procedures, patient anxiety and burnout risk. [E008, E016]
+  Opportunities:
+    - Specialist training in areas like orthodontics, oral surgery, implants and cosmetic dentistry can open higher-value work and a stronger private market. [E009, E013, E016]
+    - Overseas work is a real option if you are willing to clear licensing and experience hurdles, with pathways mentioned for the UK, Australia and Gulf markets. [E012, E016, E003]
+    - Digital dentistry and new tools can give you an edge if you learn them early, especially in private practice. [E016, E017]
+  Threats:
+    - Competition may rise for the most attractive jobs and income streams, especially in private practice and specialist tracks where reputation matters. [E015, E016]
+    - If you ignore digital skills, you could fall behind as clinics adopt CAD/CAM, scanners and AI-assisted workflows. [E016, E017]
+    - Going abroad is not automatic; licensing, exams and clinical experience are clear barriers that can slow or derail migration plans. [E012, E016, E003]
+
+Dental Surgery limitations:
+  - The research does not show how hard it will be to secure the best entry posts in 2031.
+  - Most salary figures come from non-official pages, so pay estimates are approximate.
+  - Community posts reflect a small group's experience, not the whole market.
+
+Dental Surgery sources:
+  [E001] (trusted) Dental Surgeon at Align Dental Care Pvt Ltd
+         https://lk.linkedin.com/jobs/view/dental-surgeon-at-align-dental-care-pvt-ltd-4256398005
+  [E002] (other) Dentist Salary in Sri Lanka 2026
+         https://www.coccampus.lk/dentist-salary-in-sri-lanka
+  [E003] (other) Doctors: your skills aren't the problem. Your visibility is. 🩺🌍
+
+We handle licen
+         https://www.facebook.com/360medicareuae/posts/doctors-your-skills-arent-the-problem-your-visibility-is-we-handle-licensing-pla/1460074709476771
+  [E004] (other) Careers and Employment Outlook - Del Mar College
+         https://delmar.edu/degrees/dental-hygiene/careers-and-employment-outlook.html
+  [E005] (trusted) ORAL HEALTH REPORT 2020/2021
+         http://www.previousmoh.health.gov.lk/moh_final/english/public/elfinder/files/publications/publicNotices/GeneralNotice/2023/OHR.pdf
+  [E006] (other) Medicine & Dentistry Schulich Scholarships | Sri Lanka
+         https://gostudyin.com/sri-lanka/study-in-uk/scholarships/select-cambridge-elc/medicine-dentistry-schulich-scholarships
+  [E007] (trusted) Ministry Of Health Sri Lanka | Appointment – Dental Surgeon – General Dental Sur
+         https://www.health.gov.lk/moh-pages/general-dental-surgeon
+  [E008] (community_discussion) Is being dentist good than mbbs in srilanka
+         https://www.reddit.com/r/ask_srilanka/comments/1w91mn8/is_being_dentist_good_than_mbbs_in_srilanka/
+  [E009] (other) Dentist Career Guide Sri Lanka | Salaries & Education | StudyWay
+         https://edu.studyway.lk/careers/dentist
+  [E010] (other) Sri Lanka's Doctor Paradox and What We Can Learn From ...
+         https://www.facebook.com/groups/6527320493970388/posts/28206727055603086
+  [E011] (other) Understanding the Dental Job Outlook: Opportunities and Trends Ahead
+         https://www.joinkwikly.com/blog/exploring-the-dental-job-outlook-trends-and-opportunities-in-2025
+  [E012] (trusted) Prioritized destinations for Sri Lankan migrant workers
+         https://www.ilo.org/media/556041/download
+  [E013] (other) Instagram
+         https://www.instagram.com/reel/DVSnSDuDrq9
+  [E014] (trusted) Internal Vacancy - Specialist Dental Surgeon
+         https://www.health.gov.lk/moh-pages/vacancies-specialist-dental-surgeon
+  [E015] (community_discussion) Life and salary of dentists in Sri lanka
+         https://www.reddit.com/r/srilanka/comments/1q1opcc/life_and_salary_of_dentists_in_sri_lanka/
+  [E016] (other) Dental Surgeon (General) Jobs in Sri Lanka — Salary, Skills & Career Path | path
+         https://www.paths.lk/career-paths/dental-surgeon-general
+  [E017] (other) Bridging Skill Gaps for the Future: New Jobs Creation in the AI Age (SDN/2026/00
+         https://www.imf.org/-/media/files/publications/sdn/2026/english/sdnea2026001.pdf
+  [E018] (other) Dental Assistant
+         https://www.triton.edu/admissions-aid/get-started/continuing-education/center-for-health-care-professionals/dental-assistant.html
