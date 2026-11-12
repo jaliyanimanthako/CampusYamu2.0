@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admissions Graph Browser</title>
+<script src="__FORCE_GRAPH__"></script>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f5f7; --panel: #ffffff; --line: #e1e4e8; --text: #1f2328; --muted: #656d76; --accent: #018bff;
+  --accent-soft: #e6f3ff; --chip: #eef0f3; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { font: 13px/1.45 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--text); background: var(--bg);
+  display: grid; grid-template-columns: 272px 1fr; overflow: hidden; }
+
+/* Sidebar */
+aside { background: var(--panel); border-right: 1px solid var(--line); overflow: auto; padding: 16px 14px; }
+.brand { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.logo { width: 28px; height: 28px; border-radius: 7px; background: linear-gradient(135deg, #018bff, #4c8eda); display: grid; place-items: center; color: #fff; font-weight: 700; }
+.brand b { font-size: 14px; } .meta { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
+aside h4 { margin: 18px 0 8px; font-size: 11px; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); }
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { border: 0; border-radius: 999px; padding: 4px 10px; font: 600 12px/1.4 inherit; cursor: pointer; transition: filter .15s, transform .15s; }
+.pill:hover { filter: brightness(.94); transform: translateY(-1px); }
+.pill .n { font-weight: 500; opacity: .75; margin-left: 4px; }
+.rel { background: var(--chip); color: var(--text); border-radius: 4px; font-family: var(--mono); font-weight: 500; font-size: 11px; }
+.kv { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; font-size: 12px; } .kv span:nth-child(odd) { color: var(--muted); }
+
+/* Main */
+main { display: grid; grid-template-rows: auto 1fr; min-width: 0; padding: 12px 14px 14px; gap: 12px; }
+.bar { display: flex; gap: 8px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; position: relative; }
+.bar .prompt { font-family: var(--mono); color: var(--accent); padding: 0 4px 0 6px; }
+.bar input { flex: 1; border: 0; outline: none; font: 13px var(--mono); background: transparent; color: var(--text); padding: 6px 0; }
+.btn { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; padding: 5px 10px; font: 500 12px inherit; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.btn:hover { background: #f6f8fa; } .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; } .btn.primary:hover { filter: brightness(.95); }
+.btn.on { background: var(--accent-soft); border-color: #9ccfff; color: #0062b3; }
+#hits { position: absolute; top: 44px; left: 0; right: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px rgba(31,35,40,.12); z-index: 20; display: none; max-height: 340px; overflow: auto; }
+#hits div { padding: 8px 12px; display: flex; gap: 10px; align-items: center; cursor: pointer; } #hits div:hover, #hits div.sel { background: var(--accent-soft); }
+#hits .t { margin-left: auto; color: var(--muted); font-size: 11px; }
+
+.frame { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; display: grid; grid-template-rows: auto 1fr auto; min-height: 0; overflow: hidden; }
+.frame-head { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+.frame-head .q { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.frame-head .tools { margin-left: auto; display: flex; gap: 6px; }
+.stage { position: relative; min-height: 0; }
+#graph { position: absolute; inset: 0; }
+.empty { position: absolute; inset: 0; display: none; place-items: center; color: var(--muted); }
+.status { border-top: 1px solid var(--line); padding: 6px 12px; color: var(--muted); font-size: 12px; display: flex; gap: 16px; }
+.status kbd { font-family: var(--mono); font-size: 11px; background: var(--chip); border-radius: 3px; padding: 0 4px; }
+
+/* Inspector */
+#inspector { position: absolute; top: 10px; right: 10px; bottom: 10px; width: 340px; max-width: calc(100% - 20px); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 28px rgba(31,35,40,.14); display: flex; flex-direction: column;
+  transform: translateX(calc(100% + 20px)); transition: transform .28s cubic-bezier(.2,.8,.2,1); z-index: 10; }
+#inspector.open { transform: none; }
+.ins-head { padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.ins-head .cap { font-size: 15px; font-weight: 600; margin-top: 6px; word-break: break-word; }
+.ins-head .x { float: right; border: 0; background: none; font-size: 18px; color: var(--muted); cursor: pointer; line-height: 1; }
+.ins-body { overflow: auto; padding: 4px 14px 14px; }
+table.props { width: 100%; border-collapse: collapse; margin-top: 6px; }
+table.props td { border-bottom: 1px solid var(--line); padding: 7px 4px; vertical-align: top; }
+table.props td:first-child { color: var(--muted); width: 32%; font-family: var(--mono); font-size: 11px; }
+table.props ul { margin: 0; padding-left: 16px; }
+.quote { background: #f6f8fa; border-left: 3px solid var(--accent); padding: 8px 10px; border-radius: 0 6px 6px 0; white-space: pre-wrap; }
+.ins-actions { display: flex; gap: 6px; padding: 10px 14px; border-top: 1px solid var(--line); }
+.rels { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.ins-body h5 { margin: 16px 0 4px; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; color: var(--muted); }
+#fail { display: none; padding: 40px; text-align: center; color: var(--muted); }
+/* Chat */
+body.chat-open { grid-template-columns: 272px 1fr 380px; }
+#chat { display: none; background: var(--panel); border-left: 1px solid var(--line); min-height: 0; flex-direction: column; }
+body.chat-open #chat { display: flex; }
+.chat-head { padding: 12px 14px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px; }
+.chat-head b { font-size: 14px; } .chat-head .model { font: 11px var(--mono); color: var(--muted); background: var(--chip); border-radius: 4px; padding: 1px 6px; }
+.chat-head .x { margin-left: auto; border: 0; background: none; font-size: 18px; color: var(--muted); cursor: pointer; }
+#msgs { flex: 1; overflow: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.msg { max-width: 92%; padding: 9px 12px; border-radius: 10px; line-height: 1.5; word-wrap: break-word; animation: rise .22s ease-out; }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.msg.user { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 3px; }
+.msg.bot { align-self: flex-start; background: #f6f8fa; border: 1px solid var(--line); border-bottom-left-radius: 3px; }
+.msg.bot ul { margin: 4px 0; padding-left: 18px; } .msg.bot .h { font-weight: 600; margin: 8px 0 2px; } .msg.bot code { font: 12px var(--mono); background: var(--chip); padding: 0 3px; border-radius: 3px; }
+.msg.err { align-self: stretch; background: #fff5f5; border: 1px solid #ffd2d2; color: #a40e26; }
+.msg .meta { display: block; margin-top: 6px; font-size: 11px; color: var(--muted); }
+.typing span { display: inline-block; width: 6px; height: 6px; margin-right: 3px; border-radius: 50%; background: var(--muted); animation: blink 1.2s infinite; }
+.typing span:nth-child(2) { animation-delay: .2s; } .typing span:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+.suggest { display: flex; flex-direction: column; gap: 6px; }
+.suggest button { text-align: left; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 8px 10px; cursor: pointer; font: 12px inherit; color: var(--text); }
+.suggest button:hover { border-color: #9ccfff; background: var(--accent-soft); }
+.chat-form { border-top: 1px solid var(--line); padding: 10px; display: flex; gap: 8px; align-items: flex-end; }
+.chat-form textarea { flex: 1; resize: none; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font: 13px inherit; max-height: 120px; outline: none; }
+.chat-form textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.offline { color: var(--muted); font-size: 12px; } .offline code { display: block; margin-top: 6px; font: 11px var(--mono); background: var(--chip); padding: 8px; border-radius: 6px; white-space: pre-wrap; }
+@media (max-width: 820px) { body, body.chat-open { grid-template-columns: 1fr; } body.chat-open main { display: none; } aside { display: none; } #inspector { width: auto; left: 10px; top: auto; height: 55%; } }
+</style>
+</head>
+<body>
+<aside>
+  <div class="brand"><div class="logo">G</div><b>Admissions Graph</b></div>
+  <div class="meta" id="meta"></div>
+  <h4>Node labels</h4><div class="pills" id="labels"></div>
+  <h4>Relationship types</h4><div class="pills" id="rels"></div>
+  <h4>Views</h4>
+  <div class="pills" id="views"></div>
+  <h4>Overview</h4><div class="kv" id="overview"></div>
+</aside>
+<main>
+  <div class="bar">
+    <span class="prompt">›</span>
+    <input id="q" placeholder="Search a course, university, subject, programme or UGC code…" autocomplete="off" spellcheck="false">
+    <button class="btn" id="clearSearch" title="Clear search">✕</button>
+    <button class="btn primary" id="askBtn" title="Ask the assistant">💬 Ask</button>
+    <div id="hits"></div>
+  </div>
+  <section class="frame">
+    <div class="frame-head">
+      <span class="q" id="title"></span>
+      <div class="tools">
+        <button class="btn" id="zoomIn" title="Zoom in">＋</button>
+        <button class="btn" id="zoomOut" title="Zoom out">－</button>
+        <button class="btn" id="fit" title="Fit to screen">⤢ Fit</button>
+        <button class="btn on" id="physics" title="Pause or resume the layout">● Physics</button>
+        <button class="btn" id="clear" title="Clear the canvas">Clear</button>
+      </div>
+    </div>
+    <div class="stage">
+      <div id="graph"></div>
+      <div class="empty" id="empty">Canvas is empty — pick a label, relationship type or view on the left, or search above.</div>
+      <div id="fail">The graph library could not load (it is fetched from cdn.jsdelivr.net). Check the internet connection and reload.</div>
+      <div id="inspector"></div>
+    </div>
+    <div class="status"><span id="count"></span><span><kbd>click</kbd> inspect · <kbd>double-click</kbd> expand · <kbd>right-click</kbd> hide · <kbd>drag</kbd> move</span></div>
+  </section>
+</main>
+<section id="chat">
+  <div class="chat-head"><b>Assistant</b><span class="model" id="modelName">graph tools</span><button class="x" id="chatClose" title="Close">×</button></div>
+  <div id="msgs"></div>
+  <form class="chat-form" id="chatForm"><textarea id="chatInput" rows="2" placeholder="Ask about courses, requirements, universities…"></textarea>
+    <button class="btn primary" id="chatSend" type="submit">Send</button></form>
+</section>
+<script>
+const DATA = __DATA__;
+// Neo4j Browser palette, one colour per label.
+const COLOR = { Course: "#4C8EDA", Stream: "#F79767", CourseGroup: "#FFC454", Institution: "#57C7E3", Offering: "#D9C8AE",
+  DegreeProgramme: "#C990C0", Requirement: "#F16667", Subject: "#8DCC93", ArtsBasket: "#ECB5C9", AptitudeTest: "#569480",
+  HandbookSection: "#A5ABB6", HandbookText: "#DA7194" };
+const RADIUS = { Stream: 13, CourseGroup: 13, Course: 11, Institution: 11, Subject: 9.5, ArtsBasket: 9.5, DegreeProgramme: 8.5,
+  Requirement: 8.5, Offering: 7.5, AptitudeTest: 7.5, HandbookSection: 7, HandbookText: 8.5 };
+const LABEL_NAME = { DegreeProgramme: "Programme", HandbookSection: "Section", HandbookText: "UnresolvedText", CourseGroup: "CourseGroup" };
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const textOn = hex => { const v = parseInt(hex.slice(1), 16), r = v >> 16, g = (v >> 8) & 255, b = v & 255;
+  return (0.299 * r + 0.587 * g + 0.114 * b) > 170 ? "#2a2c34" : "#ffffff"; };
+const colorOf = n => COLOR[n.type] || "#A5ABB6", radiusOf = n => RADIUS[n.type] || 8;
+
+const byId = new Map(DATA.nodes.map(n => [n.id, n]));
+const adj = new Map(DATA.nodes.map(n => [n.id, []]));
+for (const e of DATA.edges) { adj.get(e.source).push(e); adj.get(e.target).push(e); }
+const linkObj = new Map(); // stable link objects, so the layout keeps them between views
+const linkFor = e => linkObj.get(e.id) || (linkObj.set(e.id, { id: e.id, source: e.source, target: e.target, type: e.type }), linkObj.get(e.id));
+
+let visible = new Set(), selected = null, hovered = null, lastClick = { id: null, t: 0 }, physicsOn = true;
+
+if (typeof ForceGraph === "undefined") { document.getElementById("fail").style.display = "block"; throw new Error("force-graph not loaded"); }
+
+const stage = document.querySelector(".stage");
+const Graph = ForceGraph()(document.getElementById("graph"))
+  .backgroundColor("#ffffff")
+  .nodeId("id").nodeRelSize(1).nodeVal(n => radiusOf(n) ** 2)
+  .nodeLabel(n => `${esc(LABEL_NAME[n.type] || n.type)}: ${esc(n.label)}`)
+  .nodeCanvasObject(drawNode)
+  .linkColor(l => isHot(l) ? "#5b6472" : "#c4c9d0")
+  .linkWidth(l => isHot(l) ? 1.6 : 0.8)
+  .linkDirectionalArrowLength(3.2).linkDirectionalArrowRelPos(1)
+  .linkCanvasObjectMode(() => "after").linkCanvasObject(drawLinkLabel)
+  .onNodeClick(onClick).onNodeRightClick(n => hide(n.id)).onNodeHover(n => { hovered = n ? n.id : null; stage.style.cursor = n ? "pointer" : "default"; })
+  .onNodeDragEnd(n => { if (!physicsOn) { n.fx = n.x; n.fy = n.y; } })
+  .onBackgroundClick(() => select(null))
+  .cooldownTicks(180).d3VelocityDecay(0.32);
+Graph.d3Force("charge").strength(-140);
+Graph.d3Force("link").distance(l => 34 + radiusOf(l.source) + radiusOf(l.target));
+new ResizeObserver(() => Graph.width(stage.clientWidth).height(stage.clientHeight)).observe(stage);
+
+function isHot(l) {
+  const s = l.source.id ?? l.source, t = l.target.id ?? l.target, f = hovered || selected;
+  return f && (s === f || t === f);
+}
+function drawNode(n, ctx, scale) {
+  const r = radiusOf(n), c = colorOf(n);
+  if (n.id === selected || n.id === hovered) {
+    ctx.beginPath(); ctx.arc(n.x, n.y, r + 3.2, 0, 2 * Math.PI);
+    ctx.fillStyle = n.id === selected ? "rgba(1,139,255,.28)" : "rgba(91,100,114,.18)"; ctx.fill();
+  }
+  ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, 2 * Math.PI); ctx.fillStyle = c; ctx.fill();
+  ctx.lineWidth = 1.2; ctx.strokeStyle = "rgba(0,0,0,.18)"; ctx.stroke();
+  if (scale < 0.55) return;
+  const size = Math.max(2.4, r * 0.34);
+  ctx.font = `500 ${size}px Inter, system-ui, sans-serif`; ctx.fillStyle = textOn(c); ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  const lines = wrap(ctx, n.label, r * 1.6, 2);
+  lines.forEach((line, i) => ctx.fillText(line, n.x, n.y + (i - (lines.length - 1) / 2) * size * 1.15));
+}
+function wrap(ctx, text, width, max) {
+  const words = String(text).split(/\s+/), lines = []; let line = "";
+  for (const w of words) {
+    const next = line ? line + " " + w : w;
+    if (ctx.measureText(next).width <= width) line = next;
+    else { if (line) lines.push(line); line = w; if (lines.length === max) break; }
+  }
+  if (lines.length < max && line) lines.push(line);
+  if (lines.length === max && words.join(" ") !== lines.join(" ")) {
+    let last = lines[max - 1]; while (last && ctx.measureText(last + "…").width > width) last = last.slice(0, -1);
+    lines[max - 1] = last + "…";
+  }
+  return lines.map(l => { while (ctx.measureText(l).width > width && l.length > 1) l = l.slice(0, -2) + "…"; return l; });
+}
+function drawLinkLabel(l, ctx, scale) {
+  const hot = isHot(l);
+  if (!hot && (scale < 1.4 || visible.size > 160)) return;
+  const s = l.source, t = l.target; if (typeof s !== "object") return;
+  const dx = t.x - s.x, dy = t.y - s.y, len = Math.hypot(dx, dy);
+  if (len < radiusOf(s) + radiusOf(t) + 12) return;
+  const size = 2.6; ctx.save(); ctx.translate(s.x + dx / 2, s.y + dy / 2);
+  let a = Math.atan2(dy, dx); if (a > Math.PI / 2 || a < -Math.PI / 2) a += Math.PI; ctx.rotate(a);
+  ctx.font = `${size}px ui-monospace, Menlo, monospace`; const w = ctx.measureText(l.type).width;
+  ctx.fillStyle = "rgba(255,255,255,.92)"; ctx.fillRect(-w / 2 - 1, -size / 2 - .6, w + 2, size + 1.2);
+  ctx.fillStyle = hot ? "#1f2328" : "#6e7781"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(l.type, 0, 0);
+  ctx.restore();
+}
+
+// --- Canvas state ------------------------------------------------------------
+function render(title) {
+  const nodes = [...visible].map(id => byId.get(id));
+  const links = DATA.edges.filter(e => visible.has(e.source) && visible.has(e.target)).map(linkFor);
+  Graph.graphData({ nodes, links });
+  if (title) document.getElementById("title").textContent = title;
+  document.getElementById("count").textContent = `Displaying ${nodes.length} nodes, ${links.length} relationships.`;
+  document.getElementById("empty").style.display = nodes.length ? "none" : "grid";
+  if (selected && !visible.has(selected)) select(null);
+}
+function show(ids, title) {
+  visible = new Set(ids); selected = null; select(null); render(title);
+  Graph.d3ReheatSimulation(); fitSoon();
+}
+function fitSoon() { setTimeout(() => Graph.zoomToFit(600, 40), 900); }
+function expand(id, onlyType) {
+  const parent = byId.get(id); let added = 0;
+  visible.add(id);
+  for (const e of adj.get(id)) {
+    if (onlyType && e.type !== onlyType) continue;
+    const other = e.source === id ? e.target : e.source;
+    if (visible.has(other)) continue;
+    if (!onlyType && byId.get(other).type === "HandbookSection") continue;
+    if (added >= 60) break;
+    const o = byId.get(other);
+    if (o.x === undefined && parent.x !== undefined) { o.x = parent.x + (Math.random() - .5) * 20; o.y = parent.y + (Math.random() - .5) * 20; }
+    visible.add(other); added++;
+  }
+  render(); Graph.d3ReheatSimulation();
+  return added;
+}
+function hide(id) { visible.delete(id); render(); }
+function onClick(n) {
+  const now = Date.now();
+  if (lastClick.id === n.id && now - lastClick.t < 350) { expand(n.id); lastClick = { id: null, t: 0 }; return; }
+  lastClick = { id: n.id, t: now }; select(n.id);
+}
+
+// --- Inspector -----------------------------------------------------------------
+function select(id) {
+  selected = id; const ins = document.getElementById("inspector");
+  if (!id) { ins.classList.remove("open"); return; }
+  const n = byId.get(id), c = colorOf(n);
+  const counts = {}; for (const e of adj.get(id)) counts[e.type] = (counts[e.type] || 0) + 1;
+  let rows = `<tr><td>&lt;id&gt;</td><td style="font-family:var(--mono);font-size:11px">${esc(id)}</td></tr>`;
+  for (const [k, v] of Object.entries(n.details || {})) {
+    if (k === "handbook text") continue;
+    rows += `<tr><td>${esc(k)}</td><td>${Array.isArray(v) ? "<ul>" + v.map(x => `<li>${esc(x)}</li>`).join("") + "</ul>" : esc(v)}</td></tr>`;
+  }
+  const cites = adj.get(id).filter(e => e.type === "CITED_FROM" && e.source === id).map(e => {
+    const a = e.attrs || {}; return esc(byId.get(e.target).label + (a.pdf_page ? `, p. ${a.pdf_page}` : "") + (a.markdown_line_start ? `, line ${a.markdown_line_start}` : "")); });
+  if (cites.length) rows += `<tr><td>citation</td><td>${cites.join("<br>")}</td></tr>`;
+  const quote = n.details && n.details["handbook text"] ? `<h5>Handbook text</h5><div class="quote">${esc(n.details["handbook text"])}</div>` : "";
+  const relPills = Object.entries(counts).sort((a, b) => b[1] - a[1])
+    .map(([t, k]) => `<button class="pill rel" data-rel="${esc(t)}" title="Expand ${esc(t)}">${esc(t)}<span class="n">${k}</span></button>`).join("");
+  ins.innerHTML = `
+    <div class="ins-head"><button class="x" title="Close">×</button>
+      <span class="pill" style="background:${c};color:${textOn(c)};cursor:default">${esc(LABEL_NAME[n.type] || n.type)}</span>
+      <div class="cap">${esc(n.label)}</div></div>
+    <div class="ins-body"><table class="props">${rows}</table>${quote}
+      <h5>Relationships — click to expand</h5><div class="rels">${relPills}</div></div>
+    <div class="ins-actions"><button class="btn primary" data-act="expand">Expand all</button>
+      <button class="btn" data-act="center">Center</button><button class="btn" data-act="hide">Hide</button></div>`;
+  ins.classList.add("open");
+  ins.querySelector(".x").onclick = () => select(null);
+  ins.querySelectorAll("[data-rel]").forEach(b => b.onclick = () => expand(id, b.dataset.rel));
+  ins.querySelector('[data-act="expand"]').onclick = () => expand(id);
+  ins.querySelector('[data-act="hide"]').onclick = () => { hide(id); select(null); };
+  ins.querySelector('[data-act="center"]').onclick = () => { if (n.x !== undefined) { Graph.centerAt(n.x, n.y, 500); Graph.zoom(2.2, 500); } };
+}
+
+// --- Sidebar ---------------------------------------------------------------------
+const typeCounts = {}; for (const n of DATA.nodes) typeCounts[n.type] = (typeCounts[n.type] || 0) + 1;
+const relCounts = {}; for (const e of DATA.edges) relCounts[e.type] = (relCounts[e.type] || 0) + 1;
+document.getElementById("meta").textContent = `UGC handbook ${DATA.meta.academic_year || ""} · ${DATA.nodes.length} nodes · ${DATA.edges.length} relationships`;
+document.getElementById("labels").innerHTML = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]).map(([t, k]) =>
+  `<button class="pill" data-type="${t}" style="background:${COLOR[t]};color:${textOn(COLOR[t])}">${esc(LABEL_NAME[t] || t)}<span class="n">${k}</span></button>`).join("");
+document.getElementById("rels").innerHTML = Object.entries(relCounts).sort((a, b) => b[1] - a[1]).map(([t, k]) =>
+  `<button class="pill rel" data-rel="${t}">${t}<span class="n">${k}</span></button>`).join("");
+document.querySelectorAll("#labels [data-type]").forEach(b => b.onclick = () => {
+  const t = b.dataset.type; show(DATA.nodes.filter(n => n.type === t).slice(0, 300).map(n => n.id), `All ${LABEL_NAME[t] || t} nodes`); });
+document.querySelectorAll("#rels [data-rel]").forEach(b => b.onclick = () => {
+  const t = b.dataset.rel, ids = new Set();
+  for (const e of DATA.edges) if (e.type === t && ids.size < 300) { ids.add(e.source); ids.add(e.target); }
+  show(ids, `Relationships of type ${t}`); });
+
+const VIEWS = {
+  "Streams → courses": () => DATA.nodes.filter(n => ["Stream", "CourseGroup", "Course"].includes(n.type)).map(n => n.id),
+  "Arts baskets": () => DATA.nodes.filter(n => n.type === "ArtsBasket" || adj.get(n.id).some(e => e.type === "IN_ARTS_BASKET")).map(n => n.id),
+  "Universities": () => DATA.nodes.filter(n => n.type === "Institution").map(n => n.id),
+  "Unresolved text": () => DATA.nodes.filter(n => n.type === "HandbookText").map(n => n.id),
+};
+document.getElementById("views").innerHTML = Object.keys(VIEWS).map(v => `<button class="pill rel" data-view="${esc(v)}">${esc(v)}</button>`).join("");
+document.querySelectorAll("#views [data-view]").forEach(b => b.onclick = () => show(VIEWS[b.dataset.view](), b.dataset.view));
+const courses = DATA.nodes.filter(n => n.type === "Course");
+const complete = courses.filter(n => (n.details || {}).al_requirements_status === "complete").length;
+document.getElementById("overview").innerHTML = [
+  ["Courses", courses.length], ["A/L rules complete", `${complete} / ${courses.length}`], ["Universities", typeCounts.Institution || 0],
+  ["Offerings", typeCounts.Offering || 0], ["Programmes", typeCounts.DegreeProgramme || 0], ["Requirements", typeCounts.Requirement || 0],
+].map(([k, v]) => `<span>${k}</span><b>${v}</b>`).join("");
+
+// --- Search ----------------------------------------------------------------------
+const searchable = DATA.nodes.filter(n => ["Course", "Institution", "Subject", "DegreeProgramme", "Stream", "Offering", "CourseGroup"].includes(n.type));
+const q = document.getElementById("q"), hits = document.getElementById("hits"); let hitIds = [], hitSel = 0;
+function openNode(id) { hits.style.display = "none"; q.value = byId.get(id).label;
+  show([id], `${LABEL_NAME[byId.get(id).type] || byId.get(id).type}: ${byId.get(id).label}`); setTimeout(() => { expand(id); select(id); fitSoon(); }, 60); }
+q.oninput = () => {
+  const s = q.value.trim().toLowerCase(); if (s.length < 2) { hits.style.display = "none"; return; }
+  hitIds = searchable.filter(n => n.label.toLowerCase().includes(s)).slice(0, 12).map(n => n.id); hitSel = 0;
+  hits.innerHTML = hitIds.map((id, i) => { const n = byId.get(id);
+    return `<div data-id="${esc(id)}" class="${i === 0 ? "sel" : ""}"><span class="pill" style="background:${colorOf(n)};color:${textOn(colorOf(n))};padding:1px 8px;font-size:11px">${esc(LABEL_NAME[n.type] || n.type)}</span>${esc(n.label)}</div>`; }).join("")
+    || `<div style="color:var(--muted)">No matches</div>`;
+  hits.style.display = "block"; hits.querySelectorAll("[data-id]").forEach(h => h.onclick = () => openNode(h.dataset.id));
+};
+q.onkeydown = ev => {
+  if (!hitIds.length) return;
+  if (ev.key === "ArrowDown" || ev.key === "ArrowUp") { ev.preventDefault(); hitSel = (hitSel + (ev.key === "ArrowDown" ? 1 : hitIds.length - 1)) % hitIds.length;
+    hits.querySelectorAll("[data-id]").forEach((h, i) => h.classList.toggle("sel", i === hitSel)); }
+  if (ev.key === "Enter") openNode(hitIds[hitSel]);
+  if (ev.key === "Escape") hits.style.display = "none";
+};
+document.getElementById("clearSearch").onclick = () => { q.value = ""; hits.style.display = "none"; };
+
+// --- Toolbar ---------------------------------------------------------------------
+document.getElementById("zoomIn").onclick = () => Graph.zoom(Graph.zoom() * 1.3, 250);
+document.getElementById("zoomOut").onclick = () => Graph.zoom(Graph.zoom() / 1.3, 250);
+document.getElementById("fit").onclick = () => Graph.zoomToFit(500, 40);
+document.getElementById("clear").onclick = () => show([], "Empty canvas");
+document.getElementById("physics").onclick = ev => {
+  physicsOn = !physicsOn; ev.currentTarget.classList.toggle("on", physicsOn);
+  for (const n of Graph.graphData().nodes) { if (physicsOn) { n.fx = undefined; n.fy = undefined; } else { n.fx = n.x; n.fy = n.y; } }
+  if (physicsOn) Graph.d3ReheatSimulation();
+};
+
+show(VIEWS["Streams → courses"](), "Streams → courses");
+
+// --- Chat (served by chat_server.py; the API key stays on the server) -------------
+const CHAT_SERVED = __CHAT_SERVED__;
+const msgs = document.getElementById("msgs"), chatInput = document.getElementById("chatInput");
+let history = [], chatReady = false, busy = false;
+const SUGGESTIONS = [
+  "Which courses can I apply for with Combined Maths A, Physics B and Chemistry C in the Physical Science stream?",
+  "What are the A/L requirements for Medicine?",
+  "Which universities offer Computer Science, and how many students do they take?",
+  "Do I need Accounting for finance degrees?",
+];
+function md(text) { // escape first, then a small safe subset of Markdown
+  const lines = esc(text).split("\n"); let html = "", list = false;
+  for (const raw of lines) {
+    const line = raw.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>");
+    const heading = line.match(/^\s*#{1,6}\s+(.*)$/);
+    if (heading) { if (list) { html += "</ul>"; list = false; } html += `<div class="h">${heading[1]}</div>`; continue; }
+    const item = line.match(/^\s*(?:[-*•]|\d+\.)\s+(.*)$/);
+    if (item) { if (!list) { html += "<ul>"; list = true; } html += `<li>${item[1]}</li>`; continue; }
+    if (list) { html += "</ul>"; list = false; }
+    html += line.trim() ? line + "<br>" : "<br>";
+  }
+  return (list ? html + "</ul>" : html).replace(/(<br>)+$/, "");
+}
+function bubble(kind, html) { const d = document.createElement("div"); d.className = "msg " + kind; d.innerHTML = html; msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight; return d; }
+function intro() {
+  msgs.innerHTML = "";
+  if (!chatReady) {
+    bubble("bot", `<div class="offline">${CHAT_SERVED ? "The server is running but has no OpenAI key (set OPENAI_API_KEY in .env and restart)." :
+      "The assistant needs the local chat server (it keeps your OpenAI key off this page). Start it and open the address it prints:"}
+      <code>PYTHONPATH=. uv run python -m RAG_Agent.graph_pipeline.chat_server</code></div>`);
+    return;
+  }
+  bubble("bot", "Hi! Ask me about courses, A/L requirements, universities or what you can apply for. I answer from the handbook graph and show what I used on the canvas.");
+  const box = bubble("bot", `<div class="suggest">${SUGGESTIONS.map(s => `<button type="button">${esc(s)}</button>`).join("")}</div>`);
+  box.querySelectorAll("button").forEach(b => b.onclick = () => send(b.textContent));
+}
+async function send(text) {
+  text = (text || "").trim(); if (!text || busy || !chatReady) return;
+  busy = true; document.getElementById("chatSend").disabled = true; chatInput.value = "";
+  bubble("user", esc(text)); history.push({ role: "user", content: text });
+  const typing = bubble("bot", `<span class="typing"><span></span><span></span><span></span></span>`);
+  try {
+    const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history.slice(-12) }) });
+    const data = await res.json(); typing.remove();
+    if (!res.ok) throw new Error(data.error || res.statusText);
+    history.push({ role: "assistant", content: data.reply });
+    const used = (data.tools || []).length ? `<span class="meta">used: ${[...new Set(data.tools)].map(esc).join(", ")}</span>` : "";
+    bubble("bot", md(data.reply) + used);
+    const ids = (data.highlight || []).filter(id => byId.has(id));
+    if (ids.length) {
+      show(ids, `Assistant: ${text.length > 70 ? text.slice(0, 70) + "…" : text}`);
+      if (ids.length <= 6) setTimeout(() => { ids.forEach(id => expand(id)); select(ids[0]); fitSoon(); }, 80);
+    }
+  } catch (err) { typing.remove(); bubble("err", "Could not get an answer: " + esc(err.message)); history.pop(); }
+  busy = false; document.getElementById("chatSend").disabled = false; chatInput.focus();
+}
+document.getElementById("askBtn").onclick = () => { document.body.classList.toggle("chat-open"); setTimeout(() => chatInput.focus(), 50); };
+document.getElementById("chatClose").onclick = () => document.body.classList.remove("chat-open");
+document.getElementById("chatForm").onsubmit = ev => { ev.preventDefault(); send(chatInput.value); };
+chatInput.onkeydown = ev => { if (ev.key === "Enter" && !ev.shiftKey) { ev.preventDefault(); send(chatInput.value); } };
+(async () => {
+  if (CHAT_SERVED) {
+    try { const h = await (await fetch("/api/health")).json(); chatReady = !!h.llm; document.getElementById("modelName").textContent = h.model; }
+    catch { chatReady = false; }
+  }
+  intro();
+})();
+</script>
+</body>
+</html>

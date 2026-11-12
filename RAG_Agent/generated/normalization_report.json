@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "dataset_id": "ugc-handbook-2024-2025",
+  "status": "passed",
+  "input": {
+    "generation_stage": "deterministic_table_parsing",
+    "checksum": "d60ea9279b29200710d44d8f41b7f38e4b0fbe658219eeb35d0493212454fe88"
+  },
+  "mapping": {
+    "schema_version": 1,
+    "checksum": "10bc8a593a9d1eb40c47fcbc771c63598b5008962ebce2489a24cc2da1f13c31"
+  },
+  "counts": {
+    "courses": 126,
+    "course_aliases": 15,
+    "course_lookup_keys": 141,
+    "institutions": 20,
+    "institution_aliases": 3,
+    "institution_lookup_keys": 23,
+    "course_offering_lookup_keys": 600
+  },
+  "course_alias_applications": [
+    {
+      "alias": "Applied Sciences (Bio. Sc.)",
+      "canonical_name": "Applied Sciences (Biological Science)",
+      "entity_id": "course:007"
+    },
+    {
+      "alias": "Applied Sciences (Biological Sc.)",
+      "canonical_name": "Applied Sciences (Biological Science)",
+      "entity_id": "course:007"
+    },
+    {
+      "alias": "Applied Sciences (Phy. Sc.)",
+      "canonical_name": "Applied Sciences (Physical Science)",
+      "entity_id": "course:015"
+    },
+    {
+      "alias": "Applied Sciences (Physical Sc.)",
+      "canonical_name": "Applied Sciences (Physical Science)",
+      "entity_id": "course:015"
+    },
+    {
+      "alias": "Arts (including Additional Intake)",
+      "canonical_name": "Arts",
+      "entity_id": "course:019"
+    },
+    {
+      "alias": "Mass Media",
+      "canonical_name": "Arts (SP) - Mass Media",
+      "entity_id": "course:020"
+    },
+    {
+      "alias": "Performing Arts",
+      "canonical_name": "Arts (SP) - Performing Arts",
+      "entity_id": "course:041"
+    },
+    {
+      "alias": "Biosystems Technology (BST) (New)",
+      "canonical_name": "Biosystems Technology (BST)",
+      "entity_id": "course:103"
+    },
+    {
+      "alias": "Information Communication Tech.",
+      "canonical_name": "Information Communication Technology",
+      "entity_id": "course:104"
+    },
+    {
+      "alias": "Information Communication Tech. (New)",
+      "canonical_name": "Information Communication Technology",
+      "entity_id": "course:104"
+    },
+    {
+      "alias": "Teaching English as a Second Language (TESL) (New)",
+      "canonical_name": "Teaching English as a Second Language (TESL)",
+      "entity_id": "course:105"
+    },
+    {
+      "alias": "Marine and Freshwater Sciences",
+      "canonical_name": "Marine and Fresh Water Sciences",
+      "entity_id": "course:106"
+    },
+    {
+      "alias": "Urban Bio Resources",
+      "canonical_name": "Urban Bioresources",
+      "entity_id": "course:130"
+    },
+    {
+      "alias": "Polymer Science and Industrial Mgt.",
+      "canonical_name": "Polymer Science and Industrial Management",
+      "entity_id": "course:139"
+    },
+    {
+      "alias": "Service Management (New)",
+      "canonical_name": "Service Management",
+      "entity_id": "course:140"
+    }
+  ],
+  "institution_alias_applications": [
+    {
+      "alias": "Sripalee Campus, University of Colombo",
+      "canonical_name": "Sripalee Campus",
+      "entity_id": "institution:sripalee-campus"
+    },
+    {
+      "alias": "Trincomalee Campus, Eastern University, Sri Lanka",
+      "canonical_name": "Trincomalee Campus",
+      "entity_id": "institution:trincomalee-campus"
+    },
+    {
+      "alias": "University of Colombo School of Computing",
+      "canonical_name": "University of Colombo School of Computing",
+      "entity_id": "institution:university-of-colombo-school-of-computing"
+    },
+    {
+      "alias": "Swamy Vipulananda Institute of Aesthetic Studies, Eastern University, Sri Lanka",
+      "canonical_name": "Swamy Vipulananda Institute of Aesthetic Studies",
+      "entity_id": "institution:swamy-vipulananda-institute-of-aesthetic-studies"
+    }
+  ],
+  "protected_course_distinctions": [
+    {
+      "course_ids": [
+        "course:038",
+        "course:104"
+      ],
+      "normalized_names": [
+        "information and communication technology ict",
+        "information communication technology"
+      ],
+      "reason": "Information and Communication Technology (ICT) and Information Communication Technology are distinct UGC courses.",
+      "status": "distinct"
+    }
+  ],
+  "collisions": [],
+  "unresolved_aliases": [],
+  "stable_id_validation": "passed"
+}

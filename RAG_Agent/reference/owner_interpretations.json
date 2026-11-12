@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "description": "Owner decisions for handbook wording the models could not settle. Each entry is a set of example results with the expected decision; the pipeline accepts only a model rule set that reproduces every case (review_basis owner_interpretation). Case subjects may carry a grade ('Physics:C', default S) and a case may give the student's stream.",
+  "interpretations": [
+    {
+      "request_id": "al-extraction:2.2.8.6",
+      "reading": "'(i) At least one of the following subjects ... and (ii) The other subject/ subjects from the following list': one or two subjects come from list (i) and the remaining subject(s) from list (ii); all three subjects from list (i) is not eligible.",
+      "decided_by": "project owner",
+      "date": "2026-11-11",
+      "basis": "Owner reading of ambiguous wording; not stated verbatim in the handbook.",
+      "cases": [
+        {
+          "subjects": [
+            "Art",
+            "Accounting",
+            "Economics"
+          ],
+          "eligible": true
+        },
+        {
+          "subjects": [
+            "Chemistry",
+            "Physics",
+            "Accounting"
+          ],
+          "eligible": true
+        },
+        {
+          "subjects": [
+            "Art",
+            "Biology",
+            "Chemistry"
+          ],
+          "eligible": false
+        },
+        {
+          "subjects": [
+            "Accounting",
+            "Economics",
+            "History"
+          ],
+          "eligible": false
+        },
+        {
+          "subjects": [
+            "Art",
+            "Accounting",
+            "Music"
+          ],
+          "eligible": false
+        }
+      ]
+    },
+    {
+      "request_id": "al-extraction:2.2.8.8",
+      "reading": "'(i) At least one of the following subjects ... and (ii) The other subject/ subjects from the following list': one or two subjects come from list (i) and the remaining subject(s) from list (ii); all three subjects from list (i) is not eligible.",
+      "decided_by": "project owner",
+      "date": "2026-11-11",
+      "basis": "Owner reading of ambiguous wording; not stated verbatim in the handbook.",
+      "cases": [
+        {
+          "subjects": [
+            "Art",
+            "Accounting",
+            "Economics"
+          ],
+          "eligible": true
+        },
+        {
+          "subjects": [
+            "Chemistry",
+            "Physics",
+            "Christian Civilization"
+          ],
+          "eligible": true
+        },
+        {
+          "subjects": [
+            "Art",
+            "Biology",
+            "Agricultural Science"
+          ],
+          "eligible": false
+        },
+        {
+          "subjects": [
+            "Accounting",
+            "Economics",
+            "History"
+          ],
+          "eligible": false
+        },
+        {
+          "subjects": [
+            "Geography",
+            "Information & Communication Technology",
+            "Music"
+          ],
+          "eligible": false
+        }
+      ]
+    },
+    {
+      "request_id": "al-extraction:2.2.8.2",
+      "reading": "Four ways: (1) Biological Science stream, (2) Physical Science stream, (3) two Biological Science subjects + Information & Communication Technology, (4) two Physical Science subjects + Information & Communication Technology. The two subjects in (3)/(4) come from the same stream (stream_subjects); the 'C' grade clause applies to every way.",
+      "decided_by": "project owner",
+      "date": "2026-11-11",
+      "basis": "Owner stream-subject lists (stream_subjects); not stated in the handbook.",
+      "cases": [
+        {
+          "subjects": [
+            "Combined Mathematics:C",
+            "Physics",
+            "Information & Communication Technology"
+          ],
+          "eligible": true
+        },
+        {
+          "subjects": [
+            "Biology",
+            "Physics:C",
+            "Information & Communication Technology"
+          ],
+          "eligible": true
+        },
+        {
+          "subjects": [
+            "Combined Mathematics:C",
+            "Physics",
+            "Chemistry"
+          ],
+          "eligible": true,
+          "stream": "Physical Science"
+        },
+        {
+          "subjects": [
+            "Accounting",
+            "Physics:C",
+            "Information & Communication Technology"
+          ],
+          "eligible": false
+        },
+        {
+          "subjects": [
+            "Higher Mathematics:C",
+            "Chemistry",
+            "Information & Communication Technology"
+          ],
+          "eligible": false
+        },
+        {
+          "subjects": [
+            "Mathematics:C",
+            "Chemistry",
+            "Information & Communication Technology"
+          ],
+          "eligible": false
+        },
+        {
+          "subjects": [
+            "Biology",
+            "Chemistry",
+            "Information & Communication Technology"
+          ],
+          "eligible": false
+        },
+        {
+          "subjects": [
+            "Biology",
+            "Combined Mathematics:C",
+            "Information & Communication Technology"
+          ],
+          "eligible": false
+        }
+      ]
+    }
+  ],
+  "programme_rules": [
+    {
+      "id": "accounting-subject-for-accounting-finance-programmes",
+      "section_number": "2.2.2.4",
+      "source_line": 1926,
+      "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+      "decided_by": "project owner",
+      "date": "2026-11-11",
+      "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+      "requirement": {
+        "requirement_type": "al_subject_combination",
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ]
+      },
+      "applies_to_sections": [
+        "2.2.2.4",
+        "2.2.2.5"
+      ]
+    }
+  ],
+  "stream_subjects": {
+    "decided_by": "project owner",
+    "date": "2026-11-11",
+    "basis": "Common G.C.E. (A/L) stream practice stated by the project owner; the UGC handbook does not list the subjects of each stream. Mathematics (07) and Higher Mathematics are not counted as science-stream subjects.",
+    "streams": {
+      "Biological Science": [
+        "Biology",
+        "Chemistry",
+        "Physics",
+        "Agricultural Science"
+      ],
+      "Physical Science": [
+        "Combined Mathematics",
+        "Physics",
+        "Chemistry"
+      ]
+    }
+  }
+}

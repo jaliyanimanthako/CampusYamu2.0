@@ -7,13 +7,23 @@ name = "campusyamu-agents"
 version = "0.3.0"
 description = "Modular Z-score and career-trend agents for CampusYamu"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "neo4j>=5.26",
+    "networkx>=3.3",
+    "pymupdf>=2.1",
+    "pymupdf4llm>=2.1",
+]
 
 [project.scripts]
 campus-zscore-agent = "zscore_agent.cli:main"
 campus-career-trends = "career_trends_agent.cli:main"
 campus-career-analysis = "career_trends_agent.analysis_cli:main"
 campus-career-swot = "career_trends_agent.pipeline_cli:main"
+
+[project.optional-dependencies]
+rerank = [
+    "sentence-transformers>=3.0",
+]
 
 [tool.setuptools.packages.find]
 include = ["zscore_agent*", "career_trends_agent*"]

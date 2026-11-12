@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "status": "passed",
+  "requests_attempted": 128,
+  "model_calls": 0,
+  "requests_validated": 128,
+  "validated_rules": 180,
+  "semantically_complete_requests": 128,
+  "requests_needing_review": 0,
+  "review_counts": {
+    "auto_accepted": 128,
+    "unverified": 0,
+    "unresolved": 0
+  },
+  "dropped_stale_results": [],
+  "failures": [],
+  "database_write_attempted": false
+}

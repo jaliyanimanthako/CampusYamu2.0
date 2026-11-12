@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "node_types": {
+    "AptitudeTest": 24,
+    "ArtsBasket": 4,
+    "Course": 126,
+    "CourseGroup": 1,
+    "DegreeProgramme": 84,
+    "HandbookSection": 110,
+    "Institution": 20,
+    "Offering": 261,
+    "Requirement": 279,
+    "Stream": 7,
+    "Subject": 59
+  },
+  "edge_types": {
+    "ADMINISTERED_BY": 24,
+    "ALLOWS_STREAM": 60,
+    "AT_INSTITUTION": 345,
+    "CITED_FROM": 278,
+    "COUNTS_FOR_STREAM": 7,
+    "HAS_REQUIREMENT": 398,
+    "HAS_REQUIREMENT_DETAIL": 6,
+    "IN_ARTS_BASKET": 46,
+    "LISTED_IN_GROUP": 47,
+    "LISTED_UNDER_STREAM": 79,
+    "NAMES_SUBJECT": 708,
+    "OFFERS_COURSE": 261,
+    "ON_SUBJECT": 85,
+    "PART_OF": 4,
+    "REQUIRES_APTITUDE_TEST": 24,
+    "UNDER_COURSE": 318,
+    "USES_BASKET": 4
+  },
+  "courses_by_al_status": {
+    "complete": 126
+  },
+  "incomplete_courses": [],
+  "problems": [],
+  "status": "passed"
+}

@@ -1,0 +1,2751 @@
+{
+  "schema_version": 1,
+  "generation_stage": "programme_requirements",
+  "notes": [
+    "Programme-level requirements apply in addition to the course's A/L rules.",
+    "course_ids lists every course of the unit; the handbook does not map each programme to one course."
+  ],
+  "programme_count": 84,
+  "requirement_count": 27,
+  "programmes": [
+    {
+      "id": "programme:2.2.2.4:university-of-colombo:bachelor-of-business-administration-honours",
+      "name": "Bachelor of Business Administration Honours",
+      "university": "University of Colombo",
+      "institution_id": "institution:university-of-colombo",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1934,
+      "pdf_page": 51
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-colombo:bachelor-of-business-administration-honours-in-finance",
+      "name": "Bachelor of Business Administration Honours in Finance",
+      "university": "University of Colombo",
+      "institution_id": "institution:university-of-colombo",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1936,
+      "pdf_page": 51
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-colombo:bachelor-of-business-administration-honours-in-human-resource-management",
+      "name": "Bachelor of Business Administration Honours in Human Resource Management",
+      "university": "University of Colombo",
+      "institution_id": "institution:university-of-colombo",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1938,
+      "pdf_page": 51
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-colombo:bachelor-of-business-administration-honours-in-marketing",
+      "name": "Bachelor of Business Administration Honours in Marketing",
+      "university": "University of Colombo",
+      "institution_id": "institution:university-of-colombo",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1940,
+      "pdf_page": 51
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-colombo:bachelor-of-business-administration-honours-in-accounting",
+      "name": "Bachelor of Business Administration Honours in Accounting",
+      "university": "University of Colombo",
+      "institution_id": "institution:university-of-colombo",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1944,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-colombo:bachelor-of-business-administration-honours-in-business-economics",
+      "name": "Bachelor of Business Administration Honours in Business Economics",
+      "university": "University of Colombo",
+      "institution_id": "institution:university-of-colombo",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1946,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-colombo:bachelor-of-business-administration-honours-in-international-business",
+      "name": "Bachelor of Business Administration Honours in International Business",
+      "university": "University of Colombo",
+      "institution_id": "institution:university-of-colombo",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1948,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-colombo:bachelor-of-business-administration-honours-in-hospitality-and-leisure-management",
+      "name": "Bachelor of Business Administration Honours in Hospitality and Leisure Management",
+      "university": "University of Colombo",
+      "institution_id": "institution:university-of-colombo",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1950,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-business-administration",
+      "name": "Bachelor of Science Honours in Business Administration",
+      "university": "University of Sri Jayewardenepura",
+      "institution_id": "institution:university-of-sri-jayewardenepura",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1954,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-management-and-public-policy",
+      "name": "Bachelor of Science Honours in Management and Public Policy",
+      "university": "University of Sri Jayewardenepura",
+      "institution_id": "institution:university-of-sri-jayewardenepura",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1956,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-commerce-honours",
+      "name": "Bachelor of Commerce Honours",
+      "university": "University of Sri Jayewardenepura",
+      "institution_id": "institution:university-of-sri-jayewardenepura",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1958,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-real-estate-management-and-valuation",
+      "name": "Bachelor of Science Honours in Real Estate Management and Valuation",
+      "university": "University of Sri Jayewardenepura",
+      "institution_id": "institution:university-of-sri-jayewardenepura",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1960,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-accounting",
+      "name": "Bachelor of Science Honours in Accounting",
+      "university": "University of Sri Jayewardenepura",
+      "institution_id": "institution:university-of-sri-jayewardenepura",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1962,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-marketing-management",
+      "name": "Bachelor of Science Honours in Marketing Management",
+      "university": "University of Sri Jayewardenepura",
+      "institution_id": "institution:university-of-sri-jayewardenepura",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1964,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-human-resource-management",
+      "name": "Bachelor of Science Honours in Human Resource Management",
+      "university": "University of Sri Jayewardenepura",
+      "institution_id": "institution:university-of-sri-jayewardenepura",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1966,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-business-administration-in-business-economics",
+      "name": "Bachelor of Science Honours in Business Administration in Business Economics",
+      "university": "University of Sri Jayewardenepura",
+      "institution_id": "institution:university-of-sri-jayewardenepura",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1968,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-finance",
+      "name": "Bachelor of Science Honours in Finance",
+      "university": "University of Sri Jayewardenepura",
+      "institution_id": "institution:university-of-sri-jayewardenepura",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1970,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-business-information-systems",
+      "name": "Bachelor of Science Honours in Business Information Systems",
+      "university": "University of Sri Jayewardenepura",
+      "institution_id": "institution:university-of-sri-jayewardenepura",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1972,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-operations-and-technology-management",
+      "name": "Bachelor of Science Honours in Operations and Technology Management",
+      "university": "University of Sri Jayewardenepura",
+      "institution_id": "institution:university-of-sri-jayewardenepura",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1974,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-entrepreneurship",
+      "name": "Bachelor of Science Honours in Entrepreneurship",
+      "university": "University of Sri Jayewardenepura",
+      "institution_id": "institution:university-of-sri-jayewardenepura",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1976,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-human-resource",
+      "name": "Bachelor of Business Management Honours in Human Resource",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1980,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-accountancy",
+      "name": "Bachelor of Business Management Honours in Accountancy",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1982,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-marketing",
+      "name": "Bachelor of Business Management Honours in Marketing",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1984,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-finance",
+      "name": "Bachelor of Business Management Honours in Finance",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1986,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-commerce-honours",
+      "name": "Bachelor of Commerce Honours",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1988,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-commerce-honours-in-business-technology",
+      "name": "Bachelor of Commerce Honours in Business Technology",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1990,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-commerce-honours-in-entrepreneurship",
+      "name": "Bachelor of Commerce Honours in Entrepreneurship",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1992,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-commerce-honours-in-financial-management",
+      "name": "Bachelor of Commerce Honours in Financial Management",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1994,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-insurance",
+      "name": "Bachelor of Business Management Honours in Insurance",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1996,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-banking",
+      "name": "Bachelor of Business Management Honours in Banking",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 1998,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-auditing-and-forensic-accounting",
+      "name": "Bachelor of Business Management Honours in Auditing and Forensic Accounting",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2000,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-financial-engineering",
+      "name": "Bachelor of Business Management Honours in Financial Engineering",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2002,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-accounting-information-systems",
+      "name": "Bachelor of Business Management Honours in Accounting Information Systems",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2004,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-digital-marketing",
+      "name": "Bachelor of Business Management Honours in Digital Marketing",
+      "university": "University of Kelaniya",
+      "institution_id": "institution:university-of-kelaniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2006,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-business-administration-honours-in-tourism-and-hospitality-management",
+      "name": "Bachelor of Business Administration Honours in Tourism and Hospitality Management",
+      "university": "University of Jaffna",
+      "institution_id": "institution:university-of-jaffna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2010,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-business-administration-honours-in-accounting",
+      "name": "Bachelor of Business Administration Honours in Accounting",
+      "university": "University of Jaffna",
+      "institution_id": "institution:university-of-jaffna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2012,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-business-administration-honours-in-financial-management",
+      "name": "Bachelor of Business Administration Honours in Financial Management",
+      "university": "University of Jaffna",
+      "institution_id": "institution:university-of-jaffna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2014,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-business-administration-honours-in-human-resource-management",
+      "name": "Bachelor of Business Administration Honours in Human Resource Management",
+      "university": "University of Jaffna",
+      "institution_id": "institution:university-of-jaffna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2016,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-business-administration-honours-in-marketing",
+      "name": "Bachelor of Business Administration Honours in Marketing",
+      "university": "University of Jaffna",
+      "institution_id": "institution:university-of-jaffna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2018,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-commerce-honours-in-accounting-and-finance",
+      "name": "Bachelor of Commerce Honours in Accounting and Finance",
+      "university": "University of Jaffna",
+      "institution_id": "institution:university-of-jaffna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2020,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-commerce-honours-in-business-technology-management",
+      "name": "Bachelor of Commerce Honours in Business Technology Management",
+      "university": "University of Jaffna",
+      "institution_id": "institution:university-of-jaffna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2022,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-commerce-honours",
+      "name": "Bachelor of Commerce Honours",
+      "university": "University of Jaffna",
+      "institution_id": "institution:university-of-jaffna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2024,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-ruhuna:bachelor-of-business-administration-honours-in-accounting",
+      "name": "Bachelor of Business Administration Honours in Accounting",
+      "university": "University of Ruhuna",
+      "institution_id": "institution:university-of-ruhuna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2028,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-ruhuna:bachelor-of-business-administration-honours-in-business-management",
+      "name": "Bachelor of Business Administration Honours in Business Management",
+      "university": "University of Ruhuna",
+      "institution_id": "institution:university-of-ruhuna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2030,
+      "pdf_page": 52
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-ruhuna:bachelor-of-business-administration-honours-in-entrepreneurship",
+      "name": "Bachelor of Business Administration Honours in Entrepreneurship",
+      "university": "University of Ruhuna",
+      "institution_id": "institution:university-of-ruhuna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2034,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-ruhuna:bachelor-of-business-administration-honours-in-finance",
+      "name": "Bachelor of Business Administration Honours in Finance",
+      "university": "University of Ruhuna",
+      "institution_id": "institution:university-of-ruhuna",
+      "footnote_marker": "*",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2036,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-ruhuna:bachelor-of-business-administration-honours-in-human-resources-management",
+      "name": "Bachelor of Business Administration Honours in Human Resources Management",
+      "university": "University of Ruhuna",
+      "institution_id": "institution:university-of-ruhuna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2038,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-ruhuna:bachelor-of-business-administration-honours-in-marketing",
+      "name": "Bachelor of Business Administration Honours in Marketing",
+      "university": "University of Ruhuna",
+      "institution_id": "institution:university-of-ruhuna",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2040,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:eastern-university-sri-lanka:bachelor-of-business-administration-honours",
+      "name": "Bachelor of Business Administration Honours",
+      "university": "Eastern University, Sri Lanka",
+      "institution_id": "institution:eastern-university-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2046,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:eastern-university-sri-lanka:bachelor-of-business-administration-honours-in-marketing-management",
+      "name": "Bachelor of Business Administration Honours in Marketing Management",
+      "university": "Eastern University, Sri Lanka",
+      "institution_id": "institution:eastern-university-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2048,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:eastern-university-sri-lanka:bachelor-of-business-administration-honours-in-human-resource-management",
+      "name": "Bachelor of Business Administration Honours in Human Resource Management",
+      "university": "Eastern University, Sri Lanka",
+      "institution_id": "institution:eastern-university-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2050,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:eastern-university-sri-lanka:bachelor-of-commerce-honours",
+      "name": "Bachelor of Commerce Honours",
+      "university": "Eastern University, Sri Lanka",
+      "institution_id": "institution:eastern-university-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2052,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:eastern-university-sri-lanka:bachelor-of-commerce-honours-in-accounting-and-finance",
+      "name": "Bachelor of Commerce Honours in Accounting and Finance",
+      "university": "Eastern University, Sri Lanka",
+      "institution_id": "institution:eastern-university-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2054,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:eastern-university-sri-lanka:bachelor-of-commerce-honours-in-enterprise-development",
+      "name": "Bachelor of Commerce Honours in Enterprise Development",
+      "university": "Eastern University, Sri Lanka",
+      "institution_id": "institution:eastern-university-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2056,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:eastern-university-sri-lanka:bachelor-of-commerce-honours-in-business-economics",
+      "name": "Bachelor of Commerce Honours in Business Economics",
+      "university": "Eastern University, Sri Lanka",
+      "institution_id": "institution:eastern-university-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2058,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:south-eastern-university-of-sri-lanka:bachelor-of-business-administration-honours",
+      "name": "Bachelor of Business Administration Honours",
+      "university": "South Eastern University of Sri Lanka",
+      "institution_id": "institution:south-eastern-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2062,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:south-eastern-university-of-sri-lanka:bachelor-of-commerce-honours",
+      "name": "Bachelor of Commerce Honours",
+      "university": "South Eastern University of Sri Lanka",
+      "institution_id": "institution:south-eastern-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2064,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:rajarata-university-of-sri-lanka:bachelor-of-science-honours-in-accountancy-and-finance",
+      "name": "Bachelor of Science Honours in Accountancy & Finance",
+      "university": "Rajarata University of Sri Lanka",
+      "institution_id": "institution:rajarata-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2068,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:rajarata-university-of-sri-lanka:bachelor-of-science-honours-in-business-management",
+      "name": "Bachelor of Science Honours in Business Management",
+      "university": "Rajarata University of Sri Lanka",
+      "institution_id": "institution:rajarata-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2070,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:rajarata-university-of-sri-lanka:bachelor-of-science-honours-in-tourism-and-hospitality-management",
+      "name": "Bachelor of Science Honours in Tourism and Hospitality Management",
+      "university": "Rajarata University of Sri Lanka",
+      "institution_id": "institution:rajarata-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2072,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:rajarata-university-of-sri-lanka:bachelor-of-science-honours-in-marketing-management",
+      "name": "Bachelor of Science Honours in Marketing Management",
+      "university": "Rajarata University of Sri Lanka",
+      "institution_id": "institution:rajarata-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2074,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:rajarata-university-of-sri-lanka:bachelor-of-science-honours-in-human-resource-management",
+      "name": "Bachelor of Science Honours in Human Resource Management",
+      "university": "Rajarata University of Sri Lanka",
+      "institution_id": "institution:rajarata-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2076,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:rajarata-university-of-sri-lanka:bachelor-of-science-honours-in-information-systems",
+      "name": "Bachelor of Science Honours in Information Systems",
+      "university": "Rajarata University of Sri Lanka",
+      "institution_id": "institution:rajarata-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2078,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:wayamba-university-of-sri-lanka:bachelor-of-science-honours-in-accountancy-and-business-finance",
+      "name": "Bachelor of Science Honours in Accountancy & Business Finance",
+      "university": "Wayamba University of Sri Lanka",
+      "institution_id": "institution:wayamba-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2082,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:wayamba-university-of-sri-lanka:bachelor-of-science-honours-in-banking-and-finance",
+      "name": "Bachelor of Science Honours in Banking and Finance",
+      "university": "Wayamba University of Sri Lanka",
+      "institution_id": "institution:wayamba-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2084,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:wayamba-university-of-sri-lanka:bachelor-of-science-honours-in-business-management",
+      "name": "Bachelor of Science Honours in Business Management",
+      "university": "Wayamba University of Sri Lanka",
+      "institution_id": "institution:wayamba-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2086,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:wayamba-university-of-sri-lanka:bachelor-of-science-honours-in-insurance-and-finance",
+      "name": "Bachelor of Science Honours in Insurance & Finance",
+      "university": "Wayamba University of Sri Lanka",
+      "institution_id": "institution:wayamba-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2088,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:sabaragamuwa-university-of-sri-lanka:bachelor-of-science-honours-in-business-management",
+      "name": "Bachelor of Science Honours in Business Management",
+      "university": "Sabaragamuwa University of Sri Lanka",
+      "institution_id": "institution:sabaragamuwa-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2092,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:sabaragamuwa-university-of-sri-lanka:bachelor-of-science-honours-in-financial-management",
+      "name": "Bachelor of Science Honours in Financial Management",
+      "university": "Sabaragamuwa University of Sri Lanka",
+      "institution_id": "institution:sabaragamuwa-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2094,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:sabaragamuwa-university-of-sri-lanka:bachelor-of-science-honours-in-marketing-management",
+      "name": "Bachelor of Science Honours in Marketing Management",
+      "university": "Sabaragamuwa University of Sri Lanka",
+      "institution_id": "institution:sabaragamuwa-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2096,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:sabaragamuwa-university-of-sri-lanka:bachelor-of-science-honours-in-tourism-management",
+      "name": "Bachelor of Science Honours in Tourism Management",
+      "university": "Sabaragamuwa University of Sri Lanka",
+      "institution_id": "institution:sabaragamuwa-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2098,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:sabaragamuwa-university-of-sri-lanka:bachelor-of-science-honours-in-eco-business-management",
+      "name": "Bachelor of Science Honours in Eco Business Management",
+      "university": "Sabaragamuwa University of Sri Lanka",
+      "institution_id": "institution:sabaragamuwa-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2100,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:sabaragamuwa-university-of-sri-lanka:bachelor-of-science-honours-in-banking-and-insurance",
+      "name": "Bachelor of Science Honours in Banking & Insurance",
+      "university": "Sabaragamuwa University of Sri Lanka",
+      "institution_id": "institution:sabaragamuwa-university-of-sri-lanka",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2102,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-peradeniya:bachelor-of-business-administration-honours-in-human-resource-management",
+      "name": "Bachelor of Business Administration Honours in Human Resource Management",
+      "university": "University of Peradeniya",
+      "institution_id": "institution:university-of-peradeniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2106,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-peradeniya:bachelor-of-business-administration-honours-in-marketing-management",
+      "name": "Bachelor of Business Administration Honours in Marketing Management",
+      "university": "University of Peradeniya",
+      "institution_id": "institution:university-of-peradeniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2108,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-peradeniya:bachelor-of-business-administration-honours-in-operations-management",
+      "name": "Bachelor of Business Administration Honours in Operations Management",
+      "university": "University of Peradeniya",
+      "institution_id": "institution:university-of-peradeniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2110,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-peradeniya:bachelor-of-business-administration-honours-in-accounting-and-finance",
+      "name": "Bachelor of Business Administration Honours in Accounting and Finance",
+      "university": "University of Peradeniya",
+      "institution_id": "institution:university-of-peradeniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2112,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-peradeniya:bachelor-of-business-administration-honours-in-organizational-management",
+      "name": "Bachelor of Business Administration Honours in Organizational Management",
+      "university": "University of Peradeniya",
+      "institution_id": "institution:university-of-peradeniya",
+      "footnote_marker": "",
+      "section_number": "2.2.2.4",
+      "course_ids": [
+        "course:016",
+        "course:017",
+        "course:018",
+        "course:028"
+      ],
+      "markdown_line": 2114,
+      "pdf_page": 53
+    },
+    {
+      "id": "programme:2.2.2.5:trincomalee-campus-of-the-eastern-university-sri-lanka:bachelor-of-science-honours-in-management",
+      "name": "Bachelor of Science Honours in Management",
+      "university": "Trincomalee Campus of the Eastern University, Sri Lanka",
+      "institution_id": "institution:trincomalee-campus",
+      "footnote_marker": "",
+      "section_number": "2.2.2.5",
+      "course_ids": [
+        "course:022"
+      ],
+      "markdown_line": 2152,
+      "pdf_page": 54
+    },
+    {
+      "id": "programme:2.2.2.5:trincomalee-campus-of-the-eastern-university-sri-lanka:bachelor-of-science-honours-in-marketing-management",
+      "name": "Bachelor of Science Honours in Marketing Management",
+      "university": "Trincomalee Campus of the Eastern University, Sri Lanka",
+      "institution_id": "institution:trincomalee-campus",
+      "footnote_marker": "",
+      "section_number": "2.2.2.5",
+      "course_ids": [
+        "course:022"
+      ],
+      "markdown_line": 2154,
+      "pdf_page": 54
+    },
+    {
+      "id": "programme:2.2.2.5:trincomalee-campus-of-the-eastern-university-sri-lanka:bachelor-of-science-honours-in-human-resource-management",
+      "name": "Bachelor of Science Honours in Human Resource Management",
+      "university": "Trincomalee Campus of the Eastern University, Sri Lanka",
+      "institution_id": "institution:trincomalee-campus",
+      "footnote_marker": "",
+      "section_number": "2.2.2.5",
+      "course_ids": [
+        "course:022"
+      ],
+      "markdown_line": 2156,
+      "pdf_page": 54
+    },
+    {
+      "id": "programme:2.2.2.5:trincomalee-campus-of-the-eastern-university-sri-lanka:bachelor-of-science-honours-in-information-systems",
+      "name": "Bachelor of Science Honours in Information Systems",
+      "university": "Trincomalee Campus of the Eastern University, Sri Lanka",
+      "institution_id": "institution:trincomalee-campus",
+      "footnote_marker": "",
+      "section_number": "2.2.2.5",
+      "course_ids": [
+        "course:022"
+      ],
+      "markdown_line": 2158,
+      "pdf_page": 54
+    },
+    {
+      "id": "programme:2.2.2.5:trincomalee-campus-of-the-eastern-university-sri-lanka:bachelor-of-science-honours-in-accounting-and-finance",
+      "name": "Bachelor of Science Honours in Accounting and Finance",
+      "university": "Trincomalee Campus of the Eastern University, Sri Lanka",
+      "institution_id": "institution:trincomalee-campus",
+      "footnote_marker": "",
+      "section_number": "2.2.2.5",
+      "course_ids": [
+        "course:022"
+      ],
+      "markdown_line": 2160,
+      "pdf_page": 54
+    },
+    {
+      "id": "programme:2.2.2.5:trincomalee-campus-of-the-eastern-university-sri-lanka:bachelor-of-science-in-management",
+      "name": "Bachelor of Science in Management",
+      "university": "Trincomalee Campus of the Eastern University, Sri Lanka",
+      "institution_id": "institution:trincomalee-campus",
+      "footnote_marker": "",
+      "section_number": "2.2.2.5",
+      "course_ids": [
+        "course:022"
+      ],
+      "markdown_line": 2162,
+      "pdf_page": 54
+    }
+  ],
+  "requirements": [
+    {
+      "id": "programme:2.2.2.4:university-of-colombo:bachelor-of-business-administration-honours-in-finance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-colombo:bachelor-of-business-administration-honours-in-finance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-colombo:bachelor-of-business-administration-honours-in-accounting:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-colombo:bachelor-of-business-administration-honours-in-accounting",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-accounting:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-accounting",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-finance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-sri-jayewardenepura:bachelor-of-science-honours-in-finance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-accountancy:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-accountancy",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-finance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-finance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-commerce-honours-in-financial-management:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-commerce-honours-in-financial-management",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-insurance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-insurance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-banking:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-banking",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-auditing-and-forensic-accounting:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-auditing-and-forensic-accounting",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-financial-engineering:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-financial-engineering",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-accounting-information-systems:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-kelaniya:bachelor-of-business-management-honours-in-accounting-information-systems",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-business-administration-honours-in-accounting:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-business-administration-honours-in-accounting",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-business-administration-honours-in-financial-management:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-business-administration-honours-in-financial-management",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-commerce-honours-in-accounting-and-finance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-jaffna:bachelor-of-commerce-honours-in-accounting-and-finance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-ruhuna:bachelor-of-business-administration-honours-in-accounting:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-ruhuna:bachelor-of-business-administration-honours-in-accounting",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-ruhuna:bachelor-of-business-administration-honours-in-finance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-ruhuna:bachelor-of-business-administration-honours-in-finance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:eastern-university-sri-lanka:bachelor-of-commerce-honours-in-accounting-and-finance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:eastern-university-sri-lanka:bachelor-of-commerce-honours-in-accounting-and-finance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:rajarata-university-of-sri-lanka:bachelor-of-science-honours-in-accountancy-and-finance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:rajarata-university-of-sri-lanka:bachelor-of-science-honours-in-accountancy-and-finance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:wayamba-university-of-sri-lanka:bachelor-of-science-honours-in-accountancy-and-business-finance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:wayamba-university-of-sri-lanka:bachelor-of-science-honours-in-accountancy-and-business-finance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:wayamba-university-of-sri-lanka:bachelor-of-science-honours-in-banking-and-finance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:wayamba-university-of-sri-lanka:bachelor-of-science-honours-in-banking-and-finance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:wayamba-university-of-sri-lanka:bachelor-of-science-honours-in-insurance-and-finance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:wayamba-university-of-sri-lanka:bachelor-of-science-honours-in-insurance-and-finance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:sabaragamuwa-university-of-sri-lanka:bachelor-of-science-honours-in-financial-management:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:sabaragamuwa-university-of-sri-lanka:bachelor-of-science-honours-in-financial-management",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:sabaragamuwa-university-of-sri-lanka:bachelor-of-science-honours-in-banking-and-insurance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:sabaragamuwa-university-of-sri-lanka:bachelor-of-science-honours-in-banking-and-insurance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-peradeniya:bachelor-of-business-administration-honours-in-accounting-and-finance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.4:university-of-peradeniya:bachelor-of-business-administration-honours-in-accounting-and-finance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.5:trincomalee-campus-of-the-eastern-university-sri-lanka:bachelor-of-science-honours-in-accounting-and-finance:accounting-subject-for-accounting-finance-programmes",
+      "programme_id": "programme:2.2.2.5:trincomalee-campus-of-the-eastern-university-sri-lanka:bachelor-of-science-honours-in-accounting-and-finance",
+      "rule": {
+        "eligible_streams": [],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_subject_combination"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "owner_interpretation",
+      "interpretation": {
+        "id": "accounting-subject-for-accounting-finance-programmes",
+        "reading": "'To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination' (stated in 2.2.2.4): every listed degree programme named for Accountancy/Accounting, Auditing, Finance/Financial, Banking or Insurance requires Accounting as an A/L subject; the owner extends it to the programmes listed in 2.2.2.5 (Trincomalee Campus).",
+        "decided_by": "project owner",
+        "date": "2026-11-11",
+        "programme_name_pattern": "Accountancy|Accounting|Auditing|Financ|Banking|Insurance",
+        "applies_to_sections": [
+          "2.2.2.4",
+          "2.2.2.5"
+        ]
+      },
+      "evidence_text": "To enter into some degree programmes such as Accountancy, Auditing & Forensic Accounting and Finance in a university, students should have offered Accounting as a subject at the G.C.E. (Advanced Level) Examination.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 1926
+      }
+    },
+    {
+      "id": "programme:2.2.2.4:university-of-ruhuna:bachelor-of-business-administration-honours-in-finance:footnote-2042",
+      "programme_id": "programme:2.2.2.4:university-of-ruhuna:bachelor-of-business-administration-honours-in-finance",
+      "rule": {
+        "eligible_streams": [
+          "Commerce"
+        ],
+        "subjects": [],
+        "subject_groups": [],
+        "minimum_grades": {
+          "required_a_grades": 0,
+          "required_b_grades": 0,
+          "required_c_grades": 0,
+          "required_s_grades": 0,
+          "grade_condition_text": ""
+        },
+        "subject_grade_requirements": [
+          {
+            "subject": "Accounting",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          },
+          {
+            "subject": "Economics",
+            "minimum_grade": "S",
+            "alternatives": [],
+            "condition": ""
+          },
+          {
+            "subject": "Business Studies",
+            "minimum_grade": "S",
+            "alternatives": [
+              "Business Statistics"
+            ],
+            "condition": ""
+          }
+        ],
+        "common_general_paper": {
+          "required": false,
+          "minimum_percentage": 0,
+          "condition": ""
+        },
+        "selection_constraints": [],
+        "exception_to": "",
+        "alternative_group": "",
+        "alternative_option": 0,
+        "requirement_type": "al_stream_eligibility"
+      },
+      "review_status": "auto_accepted",
+      "review_basis": "handbook_footnote",
+      "evidence_text": "Student must have passed G.C.E. (Advanced Level) in Commerce Stream covering Accounting and Economics together with Business Studies or Business Statistics.",
+      "source": {
+        "section": "2.2.2.4",
+        "markdown_line": 2042,
+        "pdf_page": 53
+      }
+    }
+  ],
+  "unmatched_footnotes": []
+}

@@ -1,0 +1,566 @@
+{
+  "schema_version": 2,
+  "generation_stage": "schema_constrained_rule_proposals",
+  "model": "deterministic-only",
+  "verifier_model": null,
+  "direct_database_writes": false,
+  "review_status": "automated",
+  "results": [
+    {
+      "request_id": "al-extraction:2.2.1.1:special-1",
+      "section_id": "course-section:2.2.1.1:special-1",
+      "section_number": "2.2.1.1",
+      "extraction_status": "rules_found",
+      "rules": [
+        {
+          "target_type": "Course",
+          "target_id": "course:020",
+          "requirement_type": "al_subject_combination",
+          "eligible_streams": [
+            "Arts"
+          ],
+          "subjects": [],
+          "subject_groups": [],
+          "minimum_grades": {
+            "required_a_grades": 0,
+            "required_b_grades": 0,
+            "required_c_grades": 0,
+            "required_s_grades": 0,
+            "grade_condition_text": ""
+          },
+          "subject_grade_requirements": [],
+          "common_general_paper": {
+            "required": false,
+            "minimum_percentage": 0,
+            "condition": ""
+          },
+          "selection_constraints": [
+            {
+              "constraint_type": "minimum_count",
+              "group_name": "Arts Stream subjects",
+              "subjects": [],
+              "count": 3,
+              "condition": "Three subjects should have offered at the G.C.E. (Advanced Level) Examination from Arts Stream, subject to the following conditions."
+            }
+          ],
+          "exception_to": "",
+          "conditions": [
+            "Three subjects should have offered at the G.C.E. (Advanced Level) Examination from Arts Stream, subject to the following conditions."
+          ],
+          "evidence_text": "Three subjects should have offered at the G.C.E. (Advanced Level) Examination from Arts Stream, subject to the following conditions.",
+          "source": {
+            "section": "2.2.1.1",
+            "pdf_page": 43,
+            "markdown_line_start": 1526,
+            "markdown_line_end": 1526
+          },
+          "confidence": "high",
+          "review_status": "proposed",
+          "id": "proposal:2.2.1.1:020:1",
+          "validation_status": "passed"
+        },
+        {
+          "target_type": "Course",
+          "target_id": "course:020",
+          "requirement_type": "al_basket_rule",
+          "eligible_streams": [
+            "Arts"
+          ],
+          "subjects": [],
+          "subject_groups": [],
+          "minimum_grades": {
+            "required_a_grades": 0,
+            "required_b_grades": 0,
+            "required_c_grades": 0,
+            "required_s_grades": 0,
+            "grade_condition_text": ""
+          },
+          "subject_grade_requirements": [],
+          "common_general_paper": {
+            "required": false,
+            "minimum_percentage": 0,
+            "condition": ""
+          },
+          "selection_constraints": [
+            {
+              "constraint_type": "maximum_count",
+              "group_name": "Languages",
+              "subjects": [],
+              "count": 2,
+              "condition": "1. Not more than two Languages"
+            }
+          ],
+          "exception_to": "",
+          "conditions": [
+            "1. Not more than two Languages"
+          ],
+          "evidence_text": "1. Not more than two Languages",
+          "source": {
+            "section": "2.2.1.1",
+            "pdf_page": 43,
+            "markdown_line_start": 1528,
+            "markdown_line_end": 1528
+          },
+          "confidence": "high",
+          "review_status": "proposed",
+          "id": "proposal:2.2.1.1:020:2",
+          "validation_status": "passed"
+        },
+        {
+          "target_type": "Course",
+          "target_id": "course:020",
+          "requirement_type": "al_basket_rule",
+          "eligible_streams": [
+            "Arts"
+          ],
+          "subjects": [],
+          "subject_groups": [],
+          "minimum_grades": {
+            "required_a_grades": 0,
+            "required_b_grades": 0,
+            "required_c_grades": 0,
+            "required_s_grades": 0,
+            "grade_condition_text": ""
+          },
+          "subject_grade_requirements": [],
+          "common_general_paper": {
+            "required": false,
+            "minimum_percentage": 0,
+            "condition": ""
+          },
+          "selection_constraints": [
+            {
+              "constraint_type": "maximum_count",
+              "group_name": "Religions and Civilizations basket",
+              "subjects": [],
+              "count": 1,
+              "condition": "2. Not more than one subject from Religions and Civilizations basket"
+            }
+          ],
+          "exception_to": "",
+          "conditions": [
+            "2. Not more than one subject from Religions and Civilizations basket"
+          ],
+          "evidence_text": "2. Not more than one subject from Religions and Civilizations basket",
+          "source": {
+            "section": "2.2.1.1",
+            "pdf_page": 43,
+            "markdown_line_start": 1530,
+            "markdown_line_end": 1530
+          },
+          "confidence": "high",
+          "review_status": "proposed",
+          "id": "proposal:2.2.1.1:020:3",
+          "validation_status": "passed"
+        },
+        {
+          "target_type": "Course",
+          "target_id": "course:020",
+          "requirement_type": "al_basket_rule",
+          "eligible_streams": [
+            "Arts"
+          ],
+          "subjects": [],
+          "subject_groups": [],
+          "minimum_grades": {
+            "required_a_grades": 0,
+            "required_b_grades": 0,
+            "required_c_grades": 0,
+            "required_s_grades": 0,
+            "grade_condition_text": ""
+          },
+          "subject_grade_requirements": [],
+          "common_general_paper": {
+            "required": false,
+            "minimum_percentage": 0,
+            "condition": ""
+          },
+          "selection_constraints": [
+            {
+              "constraint_type": "maximum_count",
+              "group_name": "Technological subject",
+              "subjects": [],
+              "count": 1,
+              "condition": "3. Not more than one Technological subject"
+            }
+          ],
+          "exception_to": "",
+          "conditions": [
+            "3. Not more than one Technological subject"
+          ],
+          "evidence_text": "3. Not more than one Technological subject",
+          "source": {
+            "section": "2.2.1.1",
+            "pdf_page": 43,
+            "markdown_line_start": 1532,
+            "markdown_line_end": 1532
+          },
+          "confidence": "high",
+          "review_status": "proposed",
+          "id": "proposal:2.2.1.1:020:4",
+          "validation_status": "passed"
+        },
+        {
+          "target_type": "Course",
+          "target_id": "course:020",
+          "requirement_type": "al_basket_rule",
+          "eligible_streams": [
+            "Arts"
+          ],
+          "subjects": [],
+          "subject_groups": [],
+          "minimum_grades": {
+            "required_a_grades": 0,
+            "required_b_grades": 0,
+            "required_c_grades": 0,
+            "required_s_grades": 0,
+            "grade_condition_text": ""
+          },
+          "subject_grade_requirements": [],
+          "common_general_paper": {
+            "required": false,
+            "minimum_percentage": 0,
+            "condition": ""
+          },
+          "selection_constraints": [
+            {
+              "constraint_type": "maximum_count",
+              "group_name": "Listed subjects",
+              "subjects": [
+                "Accounting",
+                "Business Statistics",
+                "Economics"
+              ],
+              "count": 1,
+              "condition": "4. Not more than one of the following subjects"
+            }
+          ],
+          "exception_to": "",
+          "conditions": [
+            "4. Not more than one of the following subjects"
+          ],
+          "evidence_text": "4. Not more than one of the following subjects\n- Accounting\n- Business Statistics\n- Economics",
+          "source": {
+            "section": "2.2.1.1",
+            "pdf_page": 43,
+            "markdown_line_start": 1534,
+            "markdown_line_end": 1540
+          },
+          "confidence": "high",
+          "review_status": "proposed",
+          "id": "proposal:2.2.1.1:020:5",
+          "validation_status": "passed"
+        },
+        {
+          "target_type": "Course",
+          "target_id": "course:041",
+          "requirement_type": "al_subject_combination",
+          "eligible_streams": [
+            "Arts"
+          ],
+          "subjects": [],
+          "subject_groups": [],
+          "minimum_grades": {
+            "required_a_grades": 0,
+            "required_b_grades": 0,
+            "required_c_grades": 0,
+            "required_s_grades": 0,
+            "grade_condition_text": ""
+          },
+          "subject_grade_requirements": [],
+          "common_general_paper": {
+            "required": false,
+            "minimum_percentage": 0,
+            "condition": ""
+          },
+          "selection_constraints": [
+            {
+              "constraint_type": "minimum_count",
+              "group_name": "Arts Stream subjects",
+              "subjects": [],
+              "count": 3,
+              "condition": "Three subjects should have offered at the G.C.E. (Advanced Level) Examination from Arts Stream, subject to the following conditions."
+            }
+          ],
+          "exception_to": "",
+          "conditions": [
+            "Three subjects should have offered at the G.C.E. (Advanced Level) Examination from Arts Stream, subject to the following conditions."
+          ],
+          "evidence_text": "Three subjects should have offered at the G.C.E. (Advanced Level) Examination from Arts Stream, subject to the following conditions.",
+          "source": {
+            "section": "2.2.1.1",
+            "pdf_page": 43,
+            "markdown_line_start": 1526,
+            "markdown_line_end": 1526
+          },
+          "confidence": "high",
+          "review_status": "proposed",
+          "id": "proposal:2.2.1.1:041:6",
+          "validation_status": "passed"
+        },
+        {
+          "target_type": "Course",
+          "target_id": "course:041",
+          "requirement_type": "al_basket_rule",
+          "eligible_streams": [
+            "Arts"
+          ],
+          "subjects": [],
+          "subject_groups": [],
+          "minimum_grades": {
+            "required_a_grades": 0,
+            "required_b_grades": 0,
+            "required_c_grades": 0,
+            "required_s_grades": 0,
+            "grade_condition_text": ""
+          },
+          "subject_grade_requirements": [],
+          "common_general_paper": {
+            "required": false,
+            "minimum_percentage": 0,
+            "condition": ""
+          },
+          "selection_constraints": [
+            {
+              "constraint_type": "maximum_count",
+              "group_name": "Languages",
+              "subjects": [],
+              "count": 2,
+              "condition": "1. Not more than two Languages"
+            }
+          ],
+          "exception_to": "",
+          "conditions": [
+            "1. Not more than two Languages"
+          ],
+          "evidence_text": "1. Not more than two Languages",
+          "source": {
+            "section": "2.2.1.1",
+            "pdf_page": 43,
+            "markdown_line_start": 1528,
+            "markdown_line_end": 1528
+          },
+          "confidence": "high",
+          "review_status": "proposed",
+          "id": "proposal:2.2.1.1:041:7",
+          "validation_status": "passed"
+        },
+        {
+          "target_type": "Course",
+          "target_id": "course:041",
+          "requirement_type": "al_basket_rule",
+          "eligible_streams": [
+            "Arts"
+          ],
+          "subjects": [],
+          "subject_groups": [],
+          "minimum_grades": {
+            "required_a_grades": 0,
+            "required_b_grades": 0,
+            "required_c_grades": 0,
+            "required_s_grades": 0,
+            "grade_condition_text": ""
+          },
+          "subject_grade_requirements": [],
+          "common_general_paper": {
+            "required": false,
+            "minimum_percentage": 0,
+            "condition": ""
+          },
+          "selection_constraints": [
+            {
+              "constraint_type": "maximum_count",
+              "group_name": "Religions and Civilizations basket",
+              "subjects": [],
+              "count": 1,
+              "condition": "2. Not more than one subject from Religions and Civilizations basket"
+            }
+          ],
+          "exception_to": "",
+          "conditions": [
+            "2. Not more than one subject from Religions and Civilizations basket"
+          ],
+          "evidence_text": "2. Not more than one subject from Religions and Civilizations basket",
+          "source": {
+            "section": "2.2.1.1",
+            "pdf_page": 43,
+            "markdown_line_start": 1530,
+            "markdown_line_end": 1530
+          },
+          "confidence": "high",
+          "review_status": "proposed",
+          "id": "proposal:2.2.1.1:041:8",
+          "validation_status": "passed"
+        },
+        {
+          "target_type": "Course",
+          "target_id": "course:041",
+          "requirement_type": "al_basket_rule",
+          "eligible_streams": [
+            "Arts"
+          ],
+          "subjects": [],
+          "subject_groups": [],
+          "minimum_grades": {
+            "required_a_grades": 0,
+            "required_b_grades": 0,
+            "required_c_grades": 0,
+            "required_s_grades": 0,
+            "grade_condition_text": ""
+          },
+          "subject_grade_requirements": [],
+          "common_general_paper": {
+            "required": false,
+            "minimum_percentage": 0,
+            "condition": ""
+          },
+          "selection_constraints": [
+            {
+              "constraint_type": "maximum_count",
+              "group_name": "Technological subject",
+              "subjects": [],
+              "count": 1,
+              "condition": "3. Not more than one Technological subject"
+            }
+          ],
+          "exception_to": "",
+          "conditions": [
+            "3. Not more than one Technological subject"
+          ],
+          "evidence_text": "3. Not more than one Technological subject",
+          "source": {
+            "section": "2.2.1.1",
+            "pdf_page": 43,
+            "markdown_line_start": 1532,
+            "markdown_line_end": 1532
+          },
+          "confidence": "high",
+          "review_status": "proposed",
+          "id": "proposal:2.2.1.1:041:9",
+          "validation_status": "passed"
+        },
+        {
+          "target_type": "Course",
+          "target_id": "course:041",
+          "requirement_type": "al_basket_rule",
+          "eligible_streams": [
+            "Arts"
+          ],
+          "subjects": [],
+          "subject_groups": [],
+          "minimum_grades": {
+            "required_a_grades": 0,
+            "required_b_grades": 0,
+            "required_c_grades": 0,
+            "required_s_grades": 0,
+            "grade_condition_text": ""
+          },
+          "subject_grade_requirements": [],
+          "common_general_paper": {
+            "required": false,
+            "minimum_percentage": 0,
+            "condition": ""
+          },
+          "selection_constraints": [
+            {
+              "constraint_type": "maximum_count",
+              "group_name": "Listed subjects",
+              "subjects": [
+                "Accounting",
+                "Business Statistics",
+                "Economics"
+              ],
+              "count": 1,
+              "condition": "4. Not more than one of the following subjects"
+            }
+          ],
+          "exception_to": "",
+          "conditions": [
+            "4. Not more than one of the following subjects"
+          ],
+          "evidence_text": "4. Not more than one of the following subjects\n- Accounting\n- Business Statistics\n- Economics",
+          "source": {
+            "section": "2.2.1.1",
+            "pdf_page": 43,
+            "markdown_line_start": 1534,
+            "markdown_line_end": 1540
+          },
+          "confidence": "high",
+          "review_status": "proposed",
+          "id": "proposal:2.2.1.1:041:10",
+          "validation_status": "passed"
+        }
+      ],
+      "clause_accounting": [
+        {
+          "clause_id": "course-section:2.2.1.1:special-1:clause:1",
+          "disposition": "extracted",
+          "rule_numbers": [
+            1,
+            6
+          ],
+          "reason": "not_ignored"
+        },
+        {
+          "clause_id": "course-section:2.2.1.1:special-1:clause:2",
+          "disposition": "extracted",
+          "rule_numbers": [
+            2,
+            7
+          ],
+          "reason": "not_ignored"
+        },
+        {
+          "clause_id": "course-section:2.2.1.1:special-1:clause:3",
+          "disposition": "extracted",
+          "rule_numbers": [
+            3,
+            8
+          ],
+          "reason": "not_ignored"
+        },
+        {
+          "clause_id": "course-section:2.2.1.1:special-1:clause:4",
+          "disposition": "extracted",
+          "rule_numbers": [
+            4,
+            9
+          ],
+          "reason": "not_ignored"
+        },
+        {
+          "clause_id": "course-section:2.2.1.1:special-1:clause:5",
+          "disposition": "extracted",
+          "rule_numbers": [
+            5,
+            10
+          ],
+          "reason": "not_ignored"
+        },
+        {
+          "clause_id": "course-section:2.2.1.1:special-1:clause:6",
+          "disposition": "intentionally_ignored",
+          "rule_numbers": [],
+          "reason": "ordinary_level_requirement"
+        },
+        {
+          "clause_id": "course-section:2.2.1.1:special-1:clause:7",
+          "disposition": "intentionally_ignored",
+          "rule_numbers": [],
+          "reason": "aptitude_test_requirement"
+        }
+      ],
+      "unresolved_text": [],
+      "semantic_status": "complete",
+      "review_status": "auto_accepted",
+      "review_basis": "deterministic_parser",
+      "retry_status": "not_applicable",
+      "extraction_method": "deterministic",
+      "harness": {
+        "max_attempts": 4,
+        "attempt_count": 0,
+        "attempts": []
+      }
+    }
+  ]
+}

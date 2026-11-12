@@ -1,0 +1,480 @@
+{
+  "schema_version": 1,
+  "sources": {
+    "subjects": "Department of Examinations, G.C.E. (A/L) subject list (provided by the project owner, 2026-11-11).",
+    "rule_subject_and_arts_basket": "UGC Student Handbook 2024/2025, Section 2.2.1.1 (Arts baskets 01-04)."
+  },
+  "notes": [
+    "rule_subject is the name handbook eligibility rules use; several official subjects share one (History, Dance, Music, Drama & Theatre are subject areas).",
+    "Handbook basket 03 forbids two subjects from the same area (e.g. Oriental Music + Western Music).",
+    "Stream membership per subject is not stated by either source and is deliberately not recorded."
+  ],
+  "subjects": [
+    {
+      "code": "01",
+      "name": "Physics",
+      "rule_subject": "Physics",
+      "admission_subject": true,
+      "arts_basket": null
+    },
+    {
+      "code": "02",
+      "name": "Chemistry",
+      "rule_subject": "Chemistry",
+      "admission_subject": true,
+      "arts_basket": null
+    },
+    {
+      "code": "07",
+      "name": "Mathematics",
+      "rule_subject": "Mathematics",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "08",
+      "name": "Agricultural Science",
+      "rule_subject": "Agricultural Science",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "09",
+      "name": "Biology",
+      "rule_subject": "Biology",
+      "admission_subject": true,
+      "arts_basket": null
+    },
+    {
+      "code": "10",
+      "name": "Combined Mathematics",
+      "rule_subject": "Combined Mathematics",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "11",
+      "name": "Higher Mathematics",
+      "rule_subject": "Higher Mathematics",
+      "admission_subject": true,
+      "arts_basket": null
+    },
+    {
+      "code": "12",
+      "name": "Common General Test",
+      "rule_subject": null,
+      "admission_subject": false,
+      "arts_basket": null,
+      "note": "Not a subject for stream eligibility; it is the Common General Paper/Test threshold (common_general_paper)."
+    },
+    {
+      "code": "13",
+      "name": "General English",
+      "rule_subject": null,
+      "admission_subject": false,
+      "arts_basket": null,
+      "note": "Distinct from 73 English; handbook rules that say 'English' mean 73."
+    },
+    {
+      "code": "14",
+      "name": "Civil Technology",
+      "rule_subject": "Civil Technology",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "15",
+      "name": "Mechanical Technology",
+      "rule_subject": "Mechanical Technology",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "16",
+      "name": "Electrical, Electronic and Information Technology",
+      "rule_subject": "Electrical, Electronic & Information Technology",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "17",
+      "name": "Food Technology",
+      "rule_subject": "Food Technology",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "18",
+      "name": "Agro Technology",
+      "rule_subject": "Agro Technology",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "19",
+      "name": "Bio Resource Technology",
+      "rule_subject": "Bio-Resource Technology",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "20",
+      "name": "Information & Communication Technology",
+      "rule_subject": "Information & Communication Technology",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "21",
+      "name": "Economics",
+      "rule_subject": "Economics",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "22",
+      "name": "Geography",
+      "rule_subject": "Geography",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "23",
+      "name": "Political Science",
+      "rule_subject": "Political Science",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "24",
+      "name": "Logic and Scientific Method",
+      "rule_subject": "Logic & Scientific Method",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "25A",
+      "name": "History of Sri Lanka & India",
+      "rule_subject": "History",
+      "admission_subject": true,
+      "arts_basket": 1,
+      "note": "New syllabus; the old syllabus (History of India / Europe / Modern World) uses the same code."
+    },
+    {
+      "code": "25B",
+      "name": "History of Sri Lanka & Europe",
+      "rule_subject": "History",
+      "admission_subject": true,
+      "arts_basket": 1,
+      "note": "New syllabus; the old syllabus (History of India / Europe / Modern World) uses the same code."
+    },
+    {
+      "code": "25C",
+      "name": "History of Sri Lanka & Modern World",
+      "rule_subject": "History",
+      "admission_subject": true,
+      "arts_basket": 1,
+      "note": "New syllabus; the old syllabus (History of India / Europe / Modern World) uses the same code."
+    },
+    {
+      "code": "28",
+      "name": "Home Economics",
+      "rule_subject": "Home Economics",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "29",
+      "name": "Communication & Media Studies",
+      "rule_subject": "Communication & Media Studies",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "31",
+      "name": "Business Statistics",
+      "rule_subject": "Business Statistics",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "32",
+      "name": "Business Studies",
+      "rule_subject": "Business Studies",
+      "admission_subject": true,
+      "arts_basket": null
+    },
+    {
+      "code": "33",
+      "name": "Accounting",
+      "rule_subject": "Accounting",
+      "admission_subject": true,
+      "arts_basket": 1
+    },
+    {
+      "code": "41",
+      "name": "Buddhism",
+      "rule_subject": "Buddhism",
+      "admission_subject": true,
+      "arts_basket": 2
+    },
+    {
+      "code": "42",
+      "name": "Hinduism",
+      "rule_subject": "Hinduism",
+      "admission_subject": true,
+      "arts_basket": 2
+    },
+    {
+      "code": "43",
+      "name": "Christianity",
+      "rule_subject": "Christianity",
+      "admission_subject": true,
+      "arts_basket": 2
+    },
+    {
+      "code": "44",
+      "name": "Islam",
+      "rule_subject": "Islam",
+      "admission_subject": true,
+      "arts_basket": 2
+    },
+    {
+      "code": "45",
+      "name": "Buddhist Civilization",
+      "rule_subject": "Buddhist Civilization",
+      "admission_subject": true,
+      "arts_basket": 2
+    },
+    {
+      "code": "46",
+      "name": "Hindu Civilization",
+      "rule_subject": "Hindu Civilization",
+      "admission_subject": true,
+      "arts_basket": 2
+    },
+    {
+      "code": "47",
+      "name": "Islam Civilization",
+      "rule_subject": "Islamic Civilization",
+      "admission_subject": true,
+      "arts_basket": 2
+    },
+    {
+      "code": "48",
+      "name": "Greek and Roman Civilization",
+      "rule_subject": "Greek & Roman Civilization",
+      "admission_subject": true,
+      "arts_basket": 2
+    },
+    {
+      "code": "49",
+      "name": "Christian Civilization",
+      "rule_subject": "Christian Civilization",
+      "admission_subject": true,
+      "arts_basket": 2
+    },
+    {
+      "code": "51",
+      "name": "Art",
+      "rule_subject": "Art",
+      "admission_subject": true,
+      "arts_basket": 3
+    },
+    {
+      "code": "52",
+      "name": "Dancing (Indigenous)",
+      "rule_subject": "Dance",
+      "admission_subject": true,
+      "arts_basket": 3
+    },
+    {
+      "code": "53",
+      "name": "Dancing (Bharatha)",
+      "rule_subject": "Dance",
+      "admission_subject": true,
+      "arts_basket": 3
+    },
+    {
+      "code": "54",
+      "name": "Oriental Music",
+      "rule_subject": "Music",
+      "admission_subject": true,
+      "arts_basket": 3
+    },
+    {
+      "code": "55",
+      "name": "Carnatic Music",
+      "rule_subject": "Music",
+      "admission_subject": true,
+      "arts_basket": 3
+    },
+    {
+      "code": "56",
+      "name": "Western Music",
+      "rule_subject": "Music",
+      "admission_subject": true,
+      "arts_basket": 3
+    },
+    {
+      "code": "57",
+      "name": "Drama and Theatre (Sinhala)",
+      "rule_subject": "Drama & Theatre",
+      "admission_subject": true,
+      "arts_basket": 3
+    },
+    {
+      "code": "58",
+      "name": "Drama and Theatre (Tamil)",
+      "rule_subject": "Drama & Theatre",
+      "admission_subject": true,
+      "arts_basket": 3
+    },
+    {
+      "code": "59",
+      "name": "Drama and Theatre (English)",
+      "rule_subject": "Drama & Theatre",
+      "admission_subject": true,
+      "arts_basket": 3
+    },
+    {
+      "code": "65",
+      "name": "Engineering Technology",
+      "rule_subject": "Engineering Technology",
+      "admission_subject": true,
+      "arts_basket": null
+    },
+    {
+      "code": "66",
+      "name": "Bio Systems Technology",
+      "rule_subject": "Biosystems Technology",
+      "admission_subject": true,
+      "arts_basket": null
+    },
+    {
+      "code": "67",
+      "name": "Science for Technology",
+      "rule_subject": "Science for Technology",
+      "admission_subject": true,
+      "arts_basket": null
+    },
+    {
+      "code": "71",
+      "name": "Sinhala",
+      "rule_subject": "Sinhala",
+      "admission_subject": true,
+      "arts_basket": 4
+    },
+    {
+      "code": "72",
+      "name": "Tamil",
+      "rule_subject": "Tamil",
+      "admission_subject": true,
+      "arts_basket": 4
+    },
+    {
+      "code": "73",
+      "name": "English",
+      "rule_subject": "English",
+      "admission_subject": true,
+      "arts_basket": 4
+    },
+    {
+      "code": "74",
+      "name": "Pali",
+      "rule_subject": "Pali",
+      "admission_subject": true,
+      "arts_basket": 4
+    },
+    {
+      "code": "75",
+      "name": "Sanskrit",
+      "rule_subject": "Sanskrit",
+      "admission_subject": true,
+      "arts_basket": 4
+    },
+    {
+      "code": "78",
+      "name": "Arabic",
+      "rule_subject": "Arabic",
+      "admission_subject": true,
+      "arts_basket": 4
+    },
+    {
+      "code": "79",
+      "name": "Malay",
+      "rule_subject": "Malay",
+      "admission_subject": true,
+      "arts_basket": 4
+    },
+    {
+      "code": "81",
+      "name": "French",
+      "rule_subject": "French",
+      "admission_subject": true,
+      "arts_basket": 4
+    },
+    {
+      "code": "82",
+      "name": "German",
+      "rule_subject": "German",
+      "admission_subject": true,
+      "arts_basket": 4
+    },
+    {
+      "code": "83",
+      "name": "Russian",
+      "rule_subject": "Russian",
+      "admission_subject": true,
+      "arts_basket": 4
+    },
+    {
+      "code": "84",
+      "name": "Hindi",
+      "rule_subject": "Hindi",
+      "admission_subject": true,
+      "arts_basket": 4
+    },
+    {
+      "code": "86",
+      "name": "Chinese",
+      "rule_subject": "Chinese",
+      "admission_subject": true,
+      "arts_basket": 4
+    },
+    {
+      "code": "87",
+      "name": "Japanese",
+      "rule_subject": "Japanese",
+      "admission_subject": true,
+      "arts_basket": 4
+    }
+  ],
+  "old_syllabus_aliases": [
+    {
+      "code": "25A",
+      "name": "History of India",
+      "rule_subject": "History",
+      "syllabus": "old"
+    },
+    {
+      "code": "25B",
+      "name": "History of Europe",
+      "rule_subject": "History",
+      "syllabus": "old"
+    },
+    {
+      "code": "25C",
+      "name": "History of Modern World",
+      "rule_subject": "History",
+      "syllabus": "old"
+    }
+  ],
+  "handbook_only_subjects": [
+    {
+      "rule_subject": "Korean",
+      "arts_basket": 4,
+      "note": "Listed in handbook basket 04 (foreign languages); not in the provided official list."
+    }
+  ]
+}

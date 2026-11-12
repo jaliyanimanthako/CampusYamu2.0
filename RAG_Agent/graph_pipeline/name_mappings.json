@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "annotation_suffixes": [
+    "(New)"
+  ],
+  "course_name_overrides_by_code": {
+    "019": "Arts",
+    "140": "Service Management"
+  },
+  "course_aliases": {
+    "Applied Sciences (Bio. Sc.)": "Applied Sciences (Biological Science)",
+    "Applied Sciences (Biological Sc.)": "Applied Sciences (Biological Science)",
+    "Applied Sciences (Phy. Sc.)": "Applied Sciences (Physical Science)",
+    "Applied Sciences (Physical Sc.)": "Applied Sciences (Physical Science)",
+    "Arts (including Additional Intake)": "Arts",
+    "Mass Media": "Arts (SP) - Mass Media",
+    "Performing Arts": "Arts (SP) - Performing Arts",
+    "Biosystems Technology (BST) (New)": "Biosystems Technology (BST)",
+    "Information Communication Tech.": "Information Communication Technology",
+    "Information Communication Tech. (New)": "Information Communication Technology",
+    "Teaching English as a Second Language (TESL) (New)": "Teaching English as a Second Language (TESL)",
+    "Marine and Freshwater Sciences": "Marine and Fresh Water Sciences",
+    "Urban Bio Resources": "Urban Bioresources",
+    "Polymer Science and Industrial Mgt.": "Polymer Science and Industrial Management",
+    "Service Management (New)": "Service Management"
+  },
+  "institution_aliases": {
+    "Sripalee Campus, University of Colombo": {
+      "canonical_name": "Sripalee Campus",
+      "type": "Campus",
+      "parent_name": "University of Colombo"
+    },
+    "Trincomalee Campus, Eastern University, Sri Lanka": {
+      "canonical_name": "Trincomalee Campus",
+      "type": "Campus",
+      "parent_name": "Eastern University, Sri Lanka"
+    },
+    "University of Colombo School of Computing": {
+      "canonical_name": "University of Colombo School of Computing",
+      "type": "Institute",
+      "parent_name": "University of Colombo"
+    },
+    "Swamy Vipulananda Institute of Aesthetic Studies, Eastern University, Sri Lanka": {
+      "canonical_name": "Swamy Vipulananda Institute of Aesthetic Studies",
+      "type": "Institute",
+      "parent_name": "Eastern University, Sri Lanka"
+    }
+  },
+  "protected_course_distinctions": [
+    {
+      "course_ids": [
+        "course:038",
+        "course:104"
+      ],
+      "reason": "Information and Communication Technology (ICT) and Information Communication Technology are distinct UGC courses."
+    }
+  ]
+}
