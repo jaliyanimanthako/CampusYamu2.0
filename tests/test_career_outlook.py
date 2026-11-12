@@ -5,8 +5,8 @@ import time
 import unittest
 from pathlib import Path
 
-from web_app.career_outlook import CareerOutlookStore, CareerResearchJobs, compact, slug
-from web_app.course_chat import CourseChat
+from campusyamu.web.career_outlook import CareerOutlookStore, CareerResearchJobs, compact, slug
+from campusyamu.web.course_chat import CourseChat
 
 RESULT = {
     "status": "success", "generated_at": "2026-11-12T10:00:00+00:00",
@@ -90,7 +90,7 @@ class StartOnRequestTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        from web_app.server import WebApp
+        from campusyamu.web.server import WebApp
         cls.web = WebApp()
         cls.web.options["llm_available"] = True
 
@@ -112,7 +112,7 @@ class StartOnRequestTests(unittest.TestCase):
         return data
 
     def test_no_research_unless_asked(self) -> None:
-        import web_app.server as server
+        import campusyamu.web.server as server
         original = server.missing_keys
         server.missing_keys = lambda: []
         try:

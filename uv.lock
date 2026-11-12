@@ -39,8 +39,8 @@ wheels = [
 ]
 
 [[package]]
-name = "campusyamu-agents"
-version = "0.3.0"
+name = "campusyamu"
+version = "0.4.0"
 source = { editable = "." }
 dependencies = [
     { name = "langgraph" },
@@ -49,6 +49,7 @@ dependencies = [
     { name = "networkx", version = "3.7", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "pymupdf" },
     { name = "pymupdf4llm" },
+    { name = "pyyaml" },
 ]
 
 [package.optional-dependencies]
@@ -63,6 +64,7 @@ requires-dist = [
     { name = "networkx", specifier = ">=3.3" },
     { name = "pymupdf", specifier = ">=2.1" },
     { name = "pymupdf4llm", specifier = ">=2.1" },
+    { name = "pyyaml", specifier = ">=6.0" },
     { name = "sentence-transformers", marker = "extra == 'rerank'", specifier = ">=3.0" },
 ]
 provides-extras = ["rerank"]

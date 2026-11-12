@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import unittest
 
-from course_finder.finder import CourseFinder
-from ranking_agent import CUTOFF_WEIGHT, build_rankings, distance_order, preference_order, zscore_order
-from student_pipeline.graph import build_pipeline, run_pipeline
+from campusyamu.agents.course_finder.finder import CourseFinder
+from campusyamu.agents.ranking import CUTOFF_WEIGHT, build_rankings, distance_order, preference_order, zscore_order
+from campusyamu.pipeline.graph import build_pipeline, run_pipeline
 
 STUDENT = dict(stream="Physical Science", al=["Combined Mathematics:A", "Physics:B", "Chemistry:C"],
                cgt=40, admission_district="Gampaha", home="Minuwangoda",

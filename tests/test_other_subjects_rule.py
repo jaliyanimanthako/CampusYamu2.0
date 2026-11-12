@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import unittest
 
-from RAG_Agent.graph_pipeline.al_rule_semantics import Student, evaluate_rules, uses_other_subjects
-from RAG_Agent.graph_pipeline.build_graph import load_graph
-from RAG_Agent.graph_pipeline.eligibility import EligibilityChecker, make_student
+from campusyamu.knowledge_graph.al_rule_semantics import Student, evaluate_rules, uses_other_subjects
+from campusyamu.knowledge_graph.build_graph import load_graph
+from campusyamu.knowledge_graph.eligibility import EligibilityChecker, make_student
 
 LIST = ["Combined Mathematics", "Higher Mathematics", "Mathematics", "Physics", "Chemistry",
         "Information & Communication Technology"]

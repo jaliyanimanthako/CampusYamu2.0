@@ -6,9 +6,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from travel_time_agent import build_db
-from travel_time_agent.neo4j_load import statements
-from travel_time_agent.repository import LookupError_, TravelRepository
+from campusyamu.agents.travel_time import build_db
+from campusyamu.agents.travel_time.neo4j_load import statements
+from campusyamu.agents.travel_time.repository import LookupError_, TravelRepository
 
 
 class TravelDatabaseTests(unittest.TestCase):
@@ -29,7 +29,7 @@ class TravelDatabaseTests(unittest.TestCase):
         self.assertEqual(self.counts["pairs"], self.counts["ds_divisions"] * self.counts["campuses"])
 
     def test_every_campus_maps_to_a_kg_institution(self) -> None:
-        from RAG_Agent.graph_pipeline.build_graph import load_graph
+        from campusyamu.knowledge_graph.build_graph import load_graph
         graph = load_graph()
         rows = self.repo._all("SELECT campus_id, institution_id, university_id FROM campuses")
         for row in rows:

@@ -3,10 +3,12 @@
 import unittest
 from pathlib import Path
 
-from zscore_agent import ZScoreAgent
+from campusyamu.core.paths import ZSCORE_DB
+
+from campusyamu.agents.zscore import ZScoreAgent
 
 
-DATABASE = Path(__file__).parents[1] / "data" / "z_scores.db"
+DATABASE = ZSCORE_DB
 
 
 class ZScoreAgentOutputTest(unittest.TestCase):

@@ -1,0 +1,13 @@
+.git
+.venv
+.env
+.env.*
+!.env.example
+**/__pycache__
+.pytest_cache
+outputs
+tests
+docs
+*.egg-info
+.DS_Store
+data/raw/handbook/student_handbook_english.pdf

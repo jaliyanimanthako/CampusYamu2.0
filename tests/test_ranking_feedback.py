@@ -3,10 +3,10 @@ from __future__ import annotations
 import json
 import unittest
 
-from course_finder.finder import CourseFinder
-from ranking_agent.feedback import FeedbackWriter, LLMFeedback, TemplateFeedback
-from ranking_agent.sensitivity import analyse
-from student_pipeline.graph import build_pipeline, run_pipeline
+from campusyamu.agents.course_finder.finder import CourseFinder
+from campusyamu.agents.ranking.feedback import FeedbackWriter, LLMFeedback, TemplateFeedback
+from campusyamu.agents.ranking.sensitivity import analyse
+from campusyamu.pipeline.graph import build_pipeline, run_pipeline
 
 STUDENT = dict(stream="Physical Science", al=["Combined Mathematics:A", "Physics:B", "Chemistry:C"],
                cgt=40, admission_district="Kandy", home="Gangawata Korale",

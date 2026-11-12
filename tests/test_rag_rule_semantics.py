@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import unittest
 
-from RAG_Agent.graph_pipeline.al_clause_parsers import canonical_subject
-from RAG_Agent.graph_pipeline.al_rule_semantics import (
+from campusyamu.knowledge_graph.al_clause_parsers import canonical_subject
+from campusyamu.knowledge_graph.al_rule_semantics import (
     NotEvaluable,
     Student,
     compile_rule,

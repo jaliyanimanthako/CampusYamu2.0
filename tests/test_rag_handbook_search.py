@@ -5,10 +5,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from RAG_Agent.handbook_search import chunking, embeddings
-from RAG_Agent.handbook_search.retriever import HybridRetriever, reciprocal_rank_fusion
-from RAG_Agent.handbook_search.store import lucene_query
-from RAG_Agent.graph_pipeline.source_registry import PROJECT_ROOT
+from campusyamu.handbook_search import chunking, embeddings
+from campusyamu.handbook_search.retriever import HybridRetriever, reciprocal_rank_fusion
+from campusyamu.handbook_search.store import lucene_query
+from campusyamu.knowledge_graph.source_registry import PROJECT_ROOT
 
 
 class ChunkingTests(unittest.TestCase):

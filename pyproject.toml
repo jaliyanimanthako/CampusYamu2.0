@@ -3,9 +3,10 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "campusyamu-agents"
-version = "0.3.0"
-description = "Modular Z-score and career-trend agents for CampusYamu"
+name = "campusyamu"
+version = "0.4.0"
+description = "CampusYamu: admissions advisor for Sri Lankan state universities (UGC 2024/2025 handbook)"
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "langgraph>=1.0",
@@ -13,22 +14,33 @@ dependencies = [
     "networkx>=3.3",
     "pymupdf>=2.1",
     "pymupdf4llm>=2.1",
+    "pyyaml>=6.0",
 ]
-
-[project.scripts]
-campus-zscore-agent = "zscore_agent.cli:main"
-campus-career-trends = "career_trends_agent.cli:main"
-campus-career-analysis = "career_trends_agent.analysis_cli:main"
-campus-career-swot = "career_trends_agent.pipeline_cli:main"
-campus-travel = "travel_time_agent.cli:main"
 
 [project.optional-dependencies]
 rerank = [
     "sentence-transformers>=3.0",
 ]
 
-[tool.setuptools.packages.find]
-include = ["zscore_agent*", "career_trends_agent*", "travel_time_agent*"]
+[project.scripts]
+# student-facing
+campusyamu-web = "campusyamu.web.server:main"
+campusyamu-student = "campusyamu.pipeline.cli:main"
+campusyamu-courses = "campusyamu.agents.course_finder.cli:main"
+# individual agents
+campus-zscore-agent = "campusyamu.agents.zscore.cli:main"
+campus-travel = "campusyamu.agents.travel_time.cli:main"
+campus-career-trends = "campusyamu.agents.career_trends.cli:main"
+campus-career-analysis = "campusyamu.agents.career_trends.analysis_cli:main"
+campus-career-swot = "campusyamu.agents.career_trends.pipeline_cli:main"
 
-[tool.setuptools.data-files]
-"share/campusselection" = ["data/z_scores.db", "data/travel_times.db"]
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["campusyamu*"]
+
+[tool.setuptools.package-data]
+"campusyamu.web" = ["static/*"]
+"campusyamu.knowledge_graph" = ["templates/*", "*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

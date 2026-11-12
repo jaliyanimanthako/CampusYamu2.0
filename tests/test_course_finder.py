@@ -5,8 +5,8 @@ import json
 import unittest
 from contextlib import redirect_stdout
 
-from course_finder.cli import interactive_profile, main
-from course_finder.finder import (APTITUDE, BLOCKED_OL, CHECK_OL, OPEN, CourseFinder, ProfileError,
+from campusyamu.agents.course_finder.cli import interactive_profile, main
+from campusyamu.agents.course_finder.finder import (APTITUDE, BLOCKED_OL, CHECK_OL, OPEN, CourseFinder, ProfileError,
                                   StudentProfile)
 
 STUDENT = dict(stream="Physical Science", al=["Combined Mathematics:A", "Physics:B", "Chemistry:C"],

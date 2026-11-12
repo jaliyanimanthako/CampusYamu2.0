@@ -5,8 +5,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from web_app.career_outlook import CareerOutlookStore
-from web_app.course_chat import CourseChat
+from campusyamu.web.career_outlook import CareerOutlookStore
+from campusyamu.web.course_chat import CourseChat
 
 COURSE = {"course_code": "023", "uni_code": "023G", "course_name": "Architecture",
           "university": "University of Moratuwa", "band": "strong", "latest_cutoff": 0.7878,

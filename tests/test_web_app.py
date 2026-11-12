@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from web_app.server import WebApp
+from campusyamu.web.server import WebApp
 
 FORM = {"stream": "Physical Science",
         "al": [{"subject": "Combined Mathematics", "grade": "A"}, {"subject": "Physics", "grade": "B"},

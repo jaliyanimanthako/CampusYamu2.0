@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import unittest
 
-from RAG_Agent.graph_pipeline.name_normalization import load_name_mappings
-from RAG_Agent.graph_pipeline.normalize_names import normalize_graph_data
-from RAG_Agent.graph_pipeline.parse_tables import build_graph_data
-from RAG_Agent.graph_pipeline.source_registry import PROJECT_ROOT, build_registry
+from campusyamu.knowledge_graph.name_normalization import load_name_mappings
+from campusyamu.knowledge_graph.normalize_names import normalize_graph_data
+from campusyamu.knowledge_graph.parse_tables import build_graph_data
+from campusyamu.knowledge_graph.source_registry import PROJECT_ROOT, build_registry
 
 
 class GraphNameNormalizationTests(unittest.TestCase):

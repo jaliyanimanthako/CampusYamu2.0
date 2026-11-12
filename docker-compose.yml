@@ -1,0 +1,41 @@
+# CampusYamu — local / single-host deployment
+#
+#   docker compose up --build -d                    web app only  -> http://127.0.0.1:8770
+#   docker compose --profile neo4j up --build -d    + Neo4j for the handbook search in the course chat
+#   docker compose logs -f web | docker compose down
+#
+# Keys come from .env (see .env.example). The web app reaches Neo4j at NEO4J_URI_DOCKER:
+# the bundled service (neo4j://neo4j:7687) or Neo4j Desktop on the host (host.docker.internal).
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: campusyamu-web
+    env_file:
+      - .env
+    environment:
+      CAMPUSYAMU_HOME: /app
+      NEO4J_URI: ${NEO4J_URI_DOCKER:-neo4j://host.docker.internal:7687}
+    ports:
+      - "8770:8770"
+    volumes:
+      - ./config:/app/config:ro          # edit settings.yaml without rebuilding
+      - ./data/cache:/app/data/cache      # career research survives restarts
+      - ./outputs:/app/outputs
+    restart: unless-stopped
+
+  neo4j:
+    profiles: ["neo4j"]
+    image: neo4j:5.26.0
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:?set NEO4J_PASSWORD in .env}
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+
+volumes:
+  neo4j_data:

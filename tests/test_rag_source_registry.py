@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from RAG_Agent.graph_pipeline.source_registry import (
+from campusyamu.knowledge_graph.source_registry import (
     DATASET_ID,
     PROJECT_ROOT,
     SourceRegistrationError,

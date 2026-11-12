@@ -3,12 +3,12 @@ from __future__ import annotations
 import json
 import unittest
 
-from course_finder.finder import CourseFinder
-from preference_agent import (CATEGORY_BY_ID, Interpretation, KeywordInterpreter, LLMInterpreter, Preference,
+from campusyamu.agents.course_finder.finder import CourseFinder
+from campusyamu.agents.preference import (CATEGORY_BY_ID, Interpretation, KeywordInterpreter, LLMInterpreter, Preference,
                               PreferenceInterpreter, categorize, load_course_tags)
-from preference_agent.interpreter import baseline_mark, baseline_mismatch
-from RAG_Agent.graph_pipeline.build_graph import load_graph
-from student_pipeline.graph import build_pipeline, run_pipeline
+from campusyamu.agents.preference.interpreter import baseline_mark, baseline_mismatch
+from campusyamu.knowledge_graph.build_graph import load_graph
+from campusyamu.pipeline.graph import build_pipeline, run_pipeline
 
 STUDENT = dict(stream="Physical Science", al=["Combined Mathematics:A", "Physics:B", "Chemistry:C"],
                cgt=40, admission_district="Gampaha", home="Minuwangoda",

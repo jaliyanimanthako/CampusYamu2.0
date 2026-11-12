@@ -5,11 +5,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from RAG_Agent.graph_pipeline.parse_tables import (
+from campusyamu.knowledge_graph.parse_tables import (
     build_graph_data,
     write_graph_data,
 )
-from RAG_Agent.graph_pipeline.source_registry import PROJECT_ROOT, build_registry
+from campusyamu.knowledge_graph.source_registry import PROJECT_ROOT, build_registry
 
 
 class GraphTableParserTests(unittest.TestCase):

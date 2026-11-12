@@ -7,10 +7,10 @@ import urllib.error
 import urllib.request
 from http.server import ThreadingHTTPServer
 
-from RAG_Agent.graph_pipeline.build_graph import build_graph
-from RAG_Agent.graph_pipeline.chat_server import ChatAgent, GraphTools, bind_server, make_handler
-from RAG_Agent.graph_pipeline.graph_viewer import render_viewer
-from RAG_Agent.graph_pipeline.source_registry import PROJECT_ROOT
+from campusyamu.knowledge_graph.build_graph import build_graph
+from campusyamu.knowledge_graph.chat_server import ChatAgent, GraphTools, bind_server, make_handler
+from campusyamu.knowledge_graph.graph_viewer import render_viewer
+from campusyamu.knowledge_graph.source_registry import PROJECT_ROOT
 
 
 class ScriptedModel:

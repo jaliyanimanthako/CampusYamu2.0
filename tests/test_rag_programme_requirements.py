@@ -4,17 +4,17 @@ import json
 import unittest
 from pathlib import Path
 
-from RAG_Agent.graph_pipeline.al_rule_semantics import Student, evaluate_rules
-from RAG_Agent.graph_pipeline.handbook_prose import (
+from campusyamu.knowledge_graph.al_rule_semantics import Student, evaluate_rules
+from campusyamu.knowledge_graph.handbook_prose import (
     OWNER_INTERPRETATIONS,
     deterministic_proposal,
     parse_handbook_structure,
 )
-from RAG_Agent.graph_pipeline.name_normalization import load_name_mappings
-from RAG_Agent.graph_pipeline.normalize_names import normalize_graph_data
-from RAG_Agent.graph_pipeline.parse_tables import build_graph_data
-from RAG_Agent.graph_pipeline.programme_requirements import build_programme_requirements
-from RAG_Agent.graph_pipeline.source_registry import PROJECT_ROOT, build_registry, file_sha256
+from campusyamu.knowledge_graph.name_normalization import load_name_mappings
+from campusyamu.knowledge_graph.normalize_names import normalize_graph_data
+from campusyamu.knowledge_graph.parse_tables import build_graph_data
+from campusyamu.knowledge_graph.programme_requirements import build_programme_requirements
+from campusyamu.knowledge_graph.source_registry import PROJECT_ROOT, build_registry, file_sha256
 
 
 def student(*subjects, stream="Commerce"):
@@ -28,11 +28,11 @@ class ProgrammeRequirementTests(unittest.TestCase):
         graph, _ = normalize_graph_data(
             build_graph_data(PROJECT_ROOT, registry), load_name_mappings()
         )
-        path = PROJECT_ROOT / "RAG_Agent/student_handbook_english_structured.md"
+        path = PROJECT_ROOT / "data/raw/handbook/student_handbook_english_structured.md"
         _, requests = parse_handbook_structure(
             path.read_text(encoding="utf-8"),
             graph,
-            source_path="RAG_Agent/student_handbook_english_structured.md",
+            source_path="data/raw/handbook/student_handbook_english_structured.md",
             source_checksum=file_sha256(path),
         )
         cls.requests = requests["requests"]

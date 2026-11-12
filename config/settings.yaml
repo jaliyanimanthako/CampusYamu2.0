@@ -1,0 +1,41 @@
+# CampusYamu settings: tunable numbers and defaults, kept out of the code.
+# Secrets (API keys, Neo4j password) live only in .env. Model names here are
+# defaults; the environment variable named next to each one wins when set.
+# Changing a value takes effect on the next run (restart the web app).
+
+ranking:
+  suggestions: 20              # entries per suggestion list
+  cutoff_weight: 2.5           # order 2/3: preference mark + cutoff_weight x last-year cut-off
+  distance_mode: equal         # order 3: "equal" (distance spread = cut-off spread) or "fixed"
+  distance_weight: -2.0        # fixed mode: distance_weight x car minutes / distance_scale_min
+  distance_scale_min: 540
+
+what_if:                       # order-3 sensitivity analysis
+  nudge: 1.5                   # "matters more" = this factor on one score part
+  notable_move: 3              # places
+  safe_top: 10                 # "stays in your top N whatever you prioritise"
+  close_gap: 0.15              # score points between neighbours for a near tie
+
+preferences:
+  min_mark: 5                  # list a course under an interest from this match mark
+  rank_weights: [1.0, 0.9, 0.8, 0.7]   # 1st, 2nd, 3rd, 4th interest; later ones use last_weight
+  last_weight: 0.6
+  poor_fit: -5                 # preference score at or below this = far from every interest
+  second_category_weight: 0.85 # offline marks: an interest's second category counts this much
+
+models:                        # env var that overrides -> default
+  preference: gpt-4o-mini      # PREFERENCE_MODEL, then OPENAI_MODEL
+  feedback: gpt-4o-mini        # FEEDBACK_MODEL, then OPENAI_MODEL
+  chat: gpt-4o-mini            # CHAT_MODEL, then OPENAI_MODEL
+
+chat:
+  search_hits: 4               # extra handbook passages per question (needs Neo4j)
+  history_turns: 8
+
+career:
+  region: Sri Lanka
+  horizon_years: 5
+
+web:
+  host: 127.0.0.1
+  port: 8770

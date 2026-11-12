@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import unittest
 
-from RAG_Agent.graph_pipeline.arts_rules import check_arts_combination
-from RAG_Agent.graph_pipeline.build_graph import UNIVERSITY_MINIMUM_ID, build_graph
-from RAG_Agent.graph_pipeline.eligibility import EligibilityChecker, make_student
-from RAG_Agent.graph_pipeline.source_registry import PROJECT_ROOT
+from campusyamu.knowledge_graph.arts_rules import check_arts_combination
+from campusyamu.knowledge_graph.build_graph import UNIVERSITY_MINIMUM_ID, build_graph
+from campusyamu.knowledge_graph.eligibility import EligibilityChecker, make_student
+from campusyamu.knowledge_graph.source_registry import PROJECT_ROOT
 
 
 class ArtsRuleTests(unittest.TestCase):
@@ -93,7 +93,7 @@ class KnowledgeGraphTests(unittest.TestCase):
         self.assertTrue(all(p["met"] for p in with_accounting.programme_requirements))
 
     def test_viewer_payload_covers_graph_with_readable_rules(self) -> None:
-        from RAG_Agent.graph_pipeline.graph_viewer import build_payload
+        from campusyamu.knowledge_graph.graph_viewer import build_payload
 
         payload = build_payload(self.graph)
         self.assertEqual(len(payload["nodes"]), self.graph.number_of_nodes())
@@ -109,7 +109,7 @@ class KnowledgeGraphTests(unittest.TestCase):
         import tempfile
         from pathlib import Path as _Path
 
-        from RAG_Agent.graph_pipeline.graph_viewer import FORCE_GRAPH_URL, write_viewer
+        from campusyamu.knowledge_graph.graph_viewer import FORCE_GRAPH_URL, write_viewer
 
         with tempfile.TemporaryDirectory() as tmp:
             html = write_viewer(self.graph, _Path(tmp) / "viewer.html").read_text(encoding="utf-8")

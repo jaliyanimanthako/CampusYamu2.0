@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import unittest
 
-from course_finder.finder import CourseFinder
-from student_pipeline.graph import BAND_ORDER, build_pipeline, match_reports, run_pipeline
+from campusyamu.agents.course_finder.finder import CourseFinder
+from campusyamu.pipeline.graph import BAND_ORDER, build_pipeline, match_reports, run_pipeline
 
 STUDENT = dict(stream="Physical Science", al=["Combined Mathematics:A", "Physics:B", "Chemistry:C"],
                cgt=40, admission_district="Gampaha", home="Minuwangoda",

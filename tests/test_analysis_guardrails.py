@@ -3,13 +3,13 @@ from __future__ import annotations
 import copy
 import unittest
 
-from career_trends_agent.analysis_guardrails import (
+from campusyamu.agents.career_trends.analysis_guardrails import (
     drop_items,
     offending_sentences,
     specificity_problems,
     strip_offending,
 )
-from career_trends_agent.future_analytics import FutureCareerAnalyticsAgent
+from campusyamu.agents.career_trends.future_analytics import FutureCareerAnalyticsAgent
 
 
 EVIDENCE = [

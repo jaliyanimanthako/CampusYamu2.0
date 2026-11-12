@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from RAG_Agent.graph_pipeline.handbook_prose import (
+from campusyamu.knowledge_graph.handbook_prose import (
     HandbookProseError,
     extraction_schema,
     parse_handbook_structure,
@@ -12,17 +12,17 @@ from RAG_Agent.graph_pipeline.handbook_prose import (
     select_extraction_requests,
     validate_proposal,
 )
-from RAG_Agent.graph_pipeline.name_normalization import load_name_mappings
-from RAG_Agent.graph_pipeline.normalize_names import normalize_graph_data
-from RAG_Agent.graph_pipeline.parse_tables import build_graph_data
-from RAG_Agent.graph_pipeline.source_registry import PROJECT_ROOT, build_registry, file_sha256
+from campusyamu.knowledge_graph.name_normalization import load_name_mappings
+from campusyamu.knowledge_graph.normalize_names import normalize_graph_data
+from campusyamu.knowledge_graph.parse_tables import build_graph_data
+from campusyamu.knowledge_graph.source_registry import PROJECT_ROOT, build_registry, file_sha256
 
 
 def force_llm_path():
     """Exercise the LLM harness on a unit that is now parsed deterministically."""
 
     return patch(
-        "RAG_Agent.graph_pipeline.handbook_prose.deterministic_proposal",
+        "campusyamu.knowledge_graph.handbook_prose.deterministic_proposal",
         return_value=None,
     )
 
@@ -33,7 +33,7 @@ class HandbookProseTests(unittest.TestCase):
         registry = build_registry(PROJECT_ROOT)
         table_data = build_graph_data(PROJECT_ROOT, registry)
         graph_data, _ = normalize_graph_data(table_data, load_name_mappings())
-        cls.source_path = Path("RAG_Agent/student_handbook_english_structured.md")
+        cls.source_path = Path("data/raw/handbook/student_handbook_english_structured.md")
         absolute_source = PROJECT_ROOT / cls.source_path
         cls.structure, cls.requests = parse_handbook_structure(
             absolute_source.read_text(encoding="utf-8"),
@@ -259,7 +259,7 @@ class HandbookProseTests(unittest.TestCase):
         )
 
     def test_subject_combination_parser_is_all_or_nothing(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import (
+        from campusyamu.knowledge_graph.handbook_prose import (
             deterministic_subject_combination_proposal,
         )
 
@@ -747,7 +747,7 @@ class HandbookProseTests(unittest.TestCase):
         )
 
     def test_owner_interpretation_selects_the_matching_model_answer(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import _apply_interpretation
+        from campusyamu.knowledge_graph.handbook_prose import _apply_interpretation
 
         request, answer, _ = self._llm_unit_and_answer()
         strict, loose = answer(2, c_grades=1), answer(3)
@@ -777,7 +777,7 @@ class HandbookProseTests(unittest.TestCase):
         self.assertFalse(unsettled["interpretation"]["applied"])
 
     def test_owner_stream_lists_reach_only_units_that_count_stream_subjects(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import _check_rule_meaning
+        from campusyamu.knowledge_graph.handbook_prose import _check_rule_meaning
 
         with_lists = {
             r["section_number"]: r["reference_stream_subjects"]
@@ -798,7 +798,7 @@ class HandbookProseTests(unittest.TestCase):
             _check_rule_meaning(dict(rule), text, None)
 
     def test_nursing_height_is_kept_as_other_admission_requirement(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import deterministic_proposal
+        from campusyamu.knowledge_graph.handbook_prose import deterministic_proposal
 
         request = self._request("al-extraction:2.2.3.14")
         rules = validate_proposal(
@@ -812,7 +812,7 @@ class HandbookProseTests(unittest.TestCase):
         self.assertIn("in height", height["conditions"][0])
 
     def test_model_subject_group_without_subjects_is_rejected(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import _check_rule_meaning
+        from campusyamu.knowledge_graph.handbook_prose import _check_rule_meaning
 
         rule = {"subjects": [], "subject_groups": [
             {"name": "Stream subjects", "subjects": [], "minimum_required": 3,
@@ -859,7 +859,7 @@ class HandbookProseTests(unittest.TestCase):
     # --- deterministic clause parsers -------------------------------------
 
     def test_deterministic_coverage_floor_and_every_proposal_validates(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import deterministic_proposal
+        from campusyamu.knowledge_graph.handbook_prose import deterministic_proposal
 
         converted = 0
         for request in self.requests["requests"]:
@@ -871,7 +871,7 @@ class HandbookProseTests(unittest.TestCase):
         self.assertGreaterEqual(converted, 110)
 
     def test_or_separated_clauses_become_one_alternative_group(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import deterministic_proposal
+        from campusyamu.knowledge_graph.handbook_prose import deterministic_proposal
 
         # 2.2.8.39: "...Engineering/Biosystem Technology Stream" OR "...any three of
         # the following list" -> two OR'd options, never two AND'd rules.
@@ -883,7 +883,7 @@ class HandbookProseTests(unittest.TestCase):
         )
 
     def test_category_headings_become_alternatives(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import deterministic_proposal
+        from campusyamu.knowledge_graph.handbook_prose import deterministic_proposal
 
         request = self._request("al-extraction:2.2.8.29")
         rules = validate_proposal(request, deterministic_proposal(request))
@@ -895,7 +895,7 @@ class HandbookProseTests(unittest.TestCase):
         )
 
     def test_trailing_or_outside_the_ledger_still_declines(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import deterministic_proposal
+        from campusyamu.knowledge_graph.handbook_prose import deterministic_proposal
 
         # 2.2.8.11 Category (B) continues with "or Two subjects including Accounting
         # ..." which is not a ledger clause; converting would drop that option.
@@ -910,7 +910,7 @@ class HandbookProseTests(unittest.TestCase):
             validate_proposal(request, proposal)
 
     def test_consensus_ignores_alternative_group_labels(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import (
+        from campusyamu.knowledge_graph.handbook_prose import (
             _rule_signature,
             deterministic_proposal,
         )
@@ -924,13 +924,13 @@ class HandbookProseTests(unittest.TestCase):
         self.assertEqual(_rule_signature(rules), _rule_signature(relabelled))
 
     def test_requirement_text_outside_the_ledger_blocks_conversion(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import deterministic_proposal
+        from campusyamu.knowledge_graph.handbook_prose import deterministic_proposal
 
         # 2.2.8.2 continues with "(i)/(ii)" stream options the ledger does not hold.
         self.assertIsNone(deterministic_proposal(self._request("al-extraction:2.2.8.2")))
 
     def test_combination_slots_are_expanded_and_deduplicated(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import deterministic_proposal
+        from campusyamu.knowledge_graph.handbook_prose import deterministic_proposal
 
         proposal = deterministic_proposal(self._request("al-extraction:2.2.3.4"))
         combos = [
@@ -943,7 +943,7 @@ class HandbookProseTests(unittest.TestCase):
         )
 
     def test_medicine_grade_counts(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import deterministic_proposal
+        from campusyamu.knowledge_graph.handbook_prose import deterministic_proposal
 
         rule = deterministic_proposal(self._request("al-extraction:2.2.3.1"))["rules"][0]
         self.assertEqual(rule["minimum_grades"]["required_c_grades"], 2)
@@ -1039,7 +1039,7 @@ class HandbookProseTests(unittest.TestCase):
         self.assertEqual(report["review_counts"]["auto_accepted"], 1)
 
     def test_verifier_disagreement_is_unresolved_and_queued(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import build_review_queue
+        from campusyamu.knowledge_graph.handbook_prose import build_review_queue
 
         request, answer, Fixed = self._llm_unit_and_answer()
         with force_llm_path():
@@ -1058,14 +1058,14 @@ class HandbookProseTests(unittest.TestCase):
         self.assertEqual(queue["item_count"], 1)
 
     def test_only_open_merge_keeps_accepted_and_replaces_open(self) -> None:
-        from RAG_Agent.graph_pipeline import handbook_prose
-        from RAG_Agent.graph_pipeline.handbook_prose import merge_proposals, open_requests
+        from campusyamu.knowledge_graph import handbook_prose
+        from campusyamu.knowledge_graph.handbook_prose import merge_proposals, open_requests
 
         request, answer, Fixed = self._llm_unit_and_answer()
         deterministic = self._request("al-extraction:2.2.3.2")
         real = handbook_prose.deterministic_proposal
         only_request_is_llm = patch(
-            "RAG_Agent.graph_pipeline.handbook_prose.deterministic_proposal",
+            "campusyamu.knowledge_graph.handbook_prose.deterministic_proposal",
             side_effect=lambda item: None if item["id"] == request["id"] else real(item),
         )
         with only_request_is_llm:
@@ -1091,7 +1091,7 @@ class HandbookProseTests(unittest.TestCase):
         self.assertEqual(report["review_counts"]["auto_accepted"], 2)
 
     def test_course_dependent_credit_subject_uses_stated_examples(self) -> None:
-        from RAG_Agent.graph_pipeline.handbook_prose import deterministic_proposal
+        from campusyamu.knowledge_graph.handbook_prose import deterministic_proposal
 
         request = self._request("al-extraction:2.2.1.1:special-8")
         rules = validate_proposal(request, deterministic_proposal(request))

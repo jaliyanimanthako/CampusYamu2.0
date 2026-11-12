@@ -3,10 +3,10 @@ from __future__ import annotations
 import json
 import unittest
 
-from career_trends_agent.harness import ModelTurn, Tool, ToolCall, ToolRegistry
-from career_trends_agent.harness.model import parse_turn
-from career_trends_agent.models import WebDocument
-from career_trends_agent.research_harness import ResearchHarness, _parse_answer
+from campusyamu.agents.career_trends.harness import ModelTurn, Tool, ToolCall, ToolRegistry
+from campusyamu.agents.career_trends.harness.model import parse_turn
+from campusyamu.agents.career_trends.models import WebDocument
+from campusyamu.agents.career_trends.research_harness import ResearchHarness, _parse_answer
 
 
 PAGES = {

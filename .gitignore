@@ -1,11 +1,29 @@
+# Python
 __pycache__/
-.pytest_cache/
 *.py[cod]
-.env
-.venv/
 *.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Generated research output (saved evidence from runs) and caches
+# Environments and secrets
+.venv/
+.env
+.env.*
+!.env.example
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Run outputs: reports, saved evidence, SWOT text (see outputs/README.md)
+outputs/*
+!outputs/README.md
+
+# Caches rebuilt by the agents
+data/cache/career_paths_cache.json
 *_evidence*.json
 *_web_data.json
-data/career_paths_cache.json

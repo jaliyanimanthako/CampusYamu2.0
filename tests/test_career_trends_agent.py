@@ -7,7 +7,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from career_trends_agent import (
+from campusyamu.agents.career_trends import (
     ApifyRedditClient,
     CareerWebResearchAgent,
     FirecrawlClient,
@@ -17,26 +17,26 @@ from career_trends_agent import (
     WebDocument,
     WebResearchRequest,
 )
-from career_trends_agent.cli import build_parser, format_answer
-from career_trends_agent.analytics_evidence import (
+from campusyamu.agents.career_trends.cli import build_parser, format_answer
+from campusyamu.agents.career_trends.analytics_evidence import (
     _fair_shares,
     build_evidence_packet,
     cap_unverified_confidence,
 )
-from career_trends_agent.pipeline import CareerTrendsPipeline
-from career_trends_agent.career_discovery import (
+from campusyamu.agents.career_trends.pipeline import CareerTrendsPipeline
+from campusyamu.agents.career_trends.career_discovery import (
     CareerDiscovery,
     grounded_titles,
     merge_profile,
 )
-from career_trends_agent.pipeline_cli import format_answer as pipeline_format_answer
-from career_trends_agent.apify_reddit import reddit_documents
-from career_trends_agent.environment import load_environment
-from career_trends_agent.providers import web_provider_name
-from career_trends_agent.search_planner import build_search_queries
-from career_trends_agent.course_taxonomy import profile_for
-from career_trends_agent.source_registry import classify_domain
-from career_trends_agent.tavily import TavilyClient
+from campusyamu.agents.career_trends.pipeline_cli import format_answer as pipeline_format_answer
+from campusyamu.agents.career_trends.apify_reddit import reddit_documents
+from campusyamu.agents.career_trends.environment import load_environment
+from campusyamu.agents.career_trends.providers import web_provider_name
+from campusyamu.agents.career_trends.search_planner import build_search_queries
+from campusyamu.agents.career_trends.course_taxonomy import profile_for
+from campusyamu.agents.career_trends.source_registry import classify_domain
+from campusyamu.agents.career_trends.tavily import TavilyClient
 import time
 
 
@@ -500,7 +500,7 @@ class TavilyAndConcurrencyTest(unittest.TestCase):
         self.assertIsNone(queries["global_outlook"].country)
 
     def test_social_media_pages_are_dropped(self) -> None:
-        from career_trends_agent.web_results import select_documents
+        from campusyamu.agents.career_trends.web_results import select_documents
 
         def doc(domain):
             return WebDocument(
@@ -670,7 +670,7 @@ class CareerDiscoveryTest(unittest.TestCase):
         )
 
     def test_career_passages_skip_page_boilerplate(self) -> None:
-        from career_trends_agent.career_discovery import career_passages
+        from campusyamu.agents.career_trends.career_discovery import career_passages
 
         page = "\n".join(["Home", "Apply now", "Fees and scholarships"] * 200 + [
             "Entry requirements: A/L Maths",
@@ -683,7 +683,7 @@ class CareerDiscoveryTest(unittest.TestCase):
         self.assertNotIn("Apply now", passage)
 
     def test_discovered_titles_lead_and_taxonomy_fills(self) -> None:
-        from career_trends_agent.course_taxonomy import profile_for
+        from campusyamu.agents.career_trends.course_taxonomy import profile_for
 
         mapped = merge_profile(profile_for("Banking and Finance"), ("risk analyst", "accountant"))
         self.assertEqual(mapped.focus_areas[:3], ("risk analyst", "accountant", "auditor"))

@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 import unittest
 
-from RAG_Agent.graph_pipeline.build_graph import DEFAULT_OUTPUT, load_graph
-from RAG_Agent.graph_pipeline.neo4j_export import (
+from campusyamu.knowledge_graph.build_graph import DEFAULT_OUTPUT, load_graph
+from campusyamu.knowledge_graph.neo4j_export import (
     SHARED_LABEL,
     cypher_literal,
     cypher_script,
@@ -12,7 +12,7 @@ from RAG_Agent.graph_pipeline.neo4j_export import (
     stream_eligibility,
     to_neo4j,
 )
-from RAG_Agent.graph_pipeline.source_registry import PROJECT_ROOT
+from campusyamu.knowledge_graph.source_registry import PROJECT_ROOT
 
 PRIMITIVES = (bool, int, float, str)
 
