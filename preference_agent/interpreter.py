@@ -21,12 +21,11 @@ import difflib
 import json
 import os
 import re
-import urllib.error
-import urllib.request
 from dataclasses import asdict, dataclass, field
 from typing import Any, Protocol
 
 from .categories import CATEGORIES, CATEGORY_BY_ID, CourseTags, relatedness
+from .openai_client import call_structured
 
 DEFAULT_MODEL = "gpt-4o-mini"
 NO_PREFERENCE = {"anything", "any", "everything", "no preference", "none", "not sure", "dont know",
@@ -267,24 +266,7 @@ class LLMInterpreter:
         }
 
     def _call(self, payload: dict[str, Any]) -> dict[str, Any]:
-        request = urllib.request.Request(
-            self.url, data=json.dumps(payload).encode("utf-8"), method="POST",
-            headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json",
-                     "User-Agent": "CampusYamu-PreferenceAgent/0.1"})
-        try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                body = json.loads(response.read().decode("utf-8"))
-        except urllib.error.HTTPError as exc:
-            raise RuntimeError(f"OpenAI HTTP {exc.code}: {exc.read().decode('utf-8', 'replace')[:300]}") from exc
-        except urllib.error.URLError as exc:
-            raise RuntimeError(f"OpenAI request failed: {exc.reason}") from exc
-        for item in body.get("output", []):
-            for content in item.get("content", []) if item.get("type") == "message" else []:
-                if content.get("type") == "refusal":
-                    raise RuntimeError(f"model refused: {content.get('refusal')}")
-                if content.get("type") == "output_text":
-                    return json.loads(content["text"])
-        raise RuntimeError(f"no structured output (status {body.get('status')})")
+        return call_structured(payload, self.api_key, self.timeout, "CampusYamu-PreferenceAgent/0.1", self.url)
 
     def interpret(self, text: str, courses: list[str] | None = None) -> Interpretation:
         return self.parse(text, self._call(self.request_payload(text, courses)), courses)

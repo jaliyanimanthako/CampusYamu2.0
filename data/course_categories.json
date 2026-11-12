@@ -1,0 +1,897 @@
+{
+ "_about": "Owner-reviewed course -> interest category marks (1-10: how close the course is to that category; categories not listed count as 1). The highest mark is the course's main category. Edit freely; tests require every KG course to have valid marks.",
+ "courses": {
+  "001": {
+   "name": "Medicine",
+   "marks": {
+    "health": 10
+   }
+  },
+  "002": {
+   "name": "Dental Surgery",
+   "marks": {
+    "health": 10
+   }
+  },
+  "003": {
+   "name": "Veterinary Science",
+   "marks": {
+    "health": 10,
+    "agriculture_environment": 5,
+    "biological_sciences": 5
+   }
+  },
+  "004": {
+   "name": "Agriculture",
+   "marks": {
+    "agriculture_environment": 10,
+    "biological_sciences": 5
+   }
+  },
+  "005": {
+   "name": "Food Science & Nutrition",
+   "marks": {
+    "agriculture_environment": 9,
+    "health": 6,
+    "biological_sciences": 5
+   }
+  },
+  "006": {
+   "name": "Biological Science",
+   "marks": {
+    "biological_sciences": 10
+   }
+  },
+  "007": {
+   "name": "Applied Sciences (Biological Science)",
+   "marks": {
+    "biological_sciences": 10,
+    "agriculture_environment": 4
+   }
+  },
+  "008": {
+   "name": "Engineering",
+   "marks": {
+    "engineering": 10,
+    "mathematics": 5
+   }
+  },
+  "009": {
+   "name": "Engineering (EM)",
+   "marks": {
+    "engineering": 10,
+    "mathematics": 5
+   }
+  },
+  "010": {
+   "name": "Engineering (TM)",
+   "marks": {
+    "engineering": 10,
+    "mathematics": 5
+   }
+  },
+  "011": {
+   "name": "Quantity Surveying",
+   "marks": {
+    "built_environment": 10,
+    "business": 6,
+    "engineering": 5
+   }
+  },
+  "012": {
+   "name": "Computer Science",
+   "marks": {
+    "computing": 10,
+    "mathematics": 6
+   }
+  },
+  "013": {
+   "name": "Physical Science",
+   "marks": {
+    "physical_sciences": 10,
+    "mathematics": 8,
+    "computing": 5
+   }
+  },
+  "014": {
+   "name": "Surveying Science",
+   "marks": {
+    "built_environment": 9,
+    "engineering": 6,
+    "physical_sciences": 4
+   }
+  },
+  "015": {
+   "name": "Applied Sciences (Physical Science)",
+   "marks": {
+    "physical_sciences": 10,
+    "mathematics": 7
+   }
+  },
+  "016": {
+   "name": "Management",
+   "marks": {
+    "business": 10
+   }
+  },
+  "017": {
+   "name": "Real Estate Management and Valuation",
+   "marks": {
+    "built_environment": 8,
+    "business": 7
+   }
+  },
+  "018": {
+   "name": "Commerce",
+   "marks": {
+    "business": 10
+   }
+  },
+  "019": {
+   "name": "Arts",
+   "marks": {
+    "humanities": 9,
+    "languages": 6,
+    "performing_arts_media": 3
+   }
+  },
+  "020": {
+   "name": "Arts (SP) - Mass Media",
+   "marks": {
+    "performing_arts_media": 9,
+    "languages": 6
+   }
+  },
+  "021": {
+   "name": "Arts (SAB)",
+   "marks": {
+    "humanities": 9,
+    "languages": 5
+   }
+  },
+  "022": {
+   "name": "Management Studies (TV)",
+   "marks": {
+    "business": 10
+   }
+  },
+  "023": {
+   "name": "Architecture",
+   "marks": {
+    "built_environment": 10,
+    "design": 8,
+    "engineering": 4
+   }
+  },
+  "024": {
+   "name": "Design",
+   "marks": {
+    "design": 10,
+    "built_environment": 4,
+    "engineering": 3
+   }
+  },
+  "025": {
+   "name": "Law",
+   "marks": {
+    "law": 10,
+    "humanities": 5
+   }
+  },
+  "026": {
+   "name": "Information Technology (IT)",
+   "marks": {
+    "computing": 10
+   }
+  },
+  "027": {
+   "name": "Management and Information Technology (MIT)",
+   "marks": {
+    "computing": 8,
+    "business": 7
+   }
+  },
+  "028": {
+   "name": "Management and Public Policy",
+   "marks": {
+    "business": 8,
+    "humanities": 7
+   }
+  },
+  "029": {
+   "name": "Communication Studies",
+   "marks": {
+    "performing_arts_media": 9,
+    "languages": 6,
+    "humanities": 4
+   }
+  },
+  "030": {
+   "name": "Urban Informatics and Planning",
+   "marks": {
+    "built_environment": 10,
+    "computing": 6
+   }
+  },
+  "031": {
+   "name": "Peace and Conflict Resolution",
+   "marks": {
+    "humanities": 10
+   }
+  },
+  "032": {
+   "name": "Ayurveda Medicine and Surgery",
+   "marks": {
+    "indigenous_medicine": 10,
+    "health": 7
+   }
+  },
+  "033": {
+   "name": "Unani Medicine and Surgery",
+   "marks": {
+    "indigenous_medicine": 10,
+    "health": 7
+   }
+  },
+  "034": {
+   "name": "Fashion Design & Product Development",
+   "marks": {
+    "design": 10,
+    "business": 5
+   }
+  },
+  "035": {
+   "name": "Food Science & Technology",
+   "marks": {
+    "agriculture_environment": 10,
+    "physical_sciences": 4,
+    "engineering": 4
+   }
+  },
+  "036": {
+   "name": "Siddha Medicine and Surgery",
+   "marks": {
+    "indigenous_medicine": 10,
+    "health": 7
+   }
+  },
+  "037": {
+   "name": "Nursing",
+   "marks": {
+    "health": 10
+   }
+  },
+  "038": {
+   "name": "Information and Communication Technology (ICT)",
+   "marks": {
+    "computing": 10
+   }
+  },
+  "039": {
+   "name": "Agricultural Technology & Management",
+   "marks": {
+    "agriculture_environment": 10,
+    "engineering": 4,
+    "business": 4
+   }
+  },
+  "041": {
+   "name": "Arts (SP) - Performing Arts",
+   "marks": {
+    "performing_arts_media": 10,
+    "humanities": 4
+   }
+  },
+  "050": {
+   "name": "Health Promotion",
+   "marks": {
+    "health": 9,
+    "humanities": 5
+   }
+  },
+  "051": {
+   "name": "Pharmacy",
+   "marks": {
+    "health": 10,
+    "physical_sciences": 4
+   }
+  },
+  "052": {
+   "name": "Medical Laboratory Sciences",
+   "marks": {
+    "health": 10,
+    "biological_sciences": 6
+   }
+  },
+  "053": {
+   "name": "Radiography",
+   "marks": {
+    "health": 10,
+    "physical_sciences": 4
+   }
+  },
+  "054": {
+   "name": "Physiotherapy",
+   "marks": {
+    "health": 10
+   }
+  },
+  "055": {
+   "name": "Environmental Conservation & Management",
+   "marks": {
+    "agriculture_environment": 9,
+    "biological_sciences": 7
+   }
+  },
+  "056": {
+   "name": "Facilities Management",
+   "marks": {
+    "built_environment": 8,
+    "business": 7,
+    "engineering": 4
+   }
+  },
+  "057": {
+   "name": "Transport Management & Logistics Engineering (TMLE)",
+   "marks": {
+    "engineering": 9,
+    "business": 6
+   }
+  },
+  "058": {
+   "name": "Biochemistry & Molecular Biology",
+   "marks": {
+    "biological_sciences": 10,
+    "health": 5,
+    "physical_sciences": 4
+   }
+  },
+  "059": {
+   "name": "Industrial Statistics & Mathematical Finance",
+   "marks": {
+    "mathematics": 10,
+    "business": 6
+   }
+  },
+  "060": {
+   "name": "Statistics & Operations Research",
+   "marks": {
+    "mathematics": 10,
+    "computing": 5,
+    "business": 3
+   }
+  },
+  "062": {
+   "name": "Fisheries & Marine Sciences",
+   "marks": {
+    "agriculture_environment": 10,
+    "biological_sciences": 7
+   }
+  },
+  "063": {
+   "name": "Islamic Studies",
+   "marks": {
+    "humanities": 10,
+    "languages": 6
+   }
+  },
+  "064": {
+   "name": "Science and Technology",
+   "marks": {
+    "engineering": 8,
+    "physical_sciences": 7,
+    "computing": 5
+   }
+  },
+  "065": {
+   "name": "Computer Science & Technology",
+   "marks": {
+    "computing": 10,
+    "engineering": 4
+   }
+  },
+  "066": {
+   "name": "Entrepreneurship and Management",
+   "marks": {
+    "business": 10
+   }
+  },
+  "067": {
+   "name": "Animal Production and Food Technology",
+   "marks": {
+    "agriculture_environment": 10,
+    "biological_sciences": 5
+   }
+  },
+  "068": {
+   "name": "Music",
+   "marks": {
+    "performing_arts_media": 10
+   }
+  },
+  "069": {
+   "name": "Dance",
+   "marks": {
+    "performing_arts_media": 10
+   }
+  },
+  "070": {
+   "name": "Art & Design",
+   "marks": {
+    "design": 10,
+    "performing_arts_media": 3
+   }
+  },
+  "071": {
+   "name": "Drama & Theatre",
+   "marks": {
+    "performing_arts_media": 10
+   }
+  },
+  "072": {
+   "name": "Visual & Technological Arts",
+   "marks": {
+    "design": 9,
+    "performing_arts_media": 6,
+    "computing": 3
+   }
+  },
+  "073": {
+   "name": "Export Agriculture",
+   "marks": {
+    "agriculture_environment": 10,
+    "business": 5
+   }
+  },
+  "075": {
+   "name": "Industrial Information Technology",
+   "marks": {
+    "computing": 9,
+    "engineering": 5
+   }
+  },
+  "076": {
+   "name": "Mineral Resources and Technology",
+   "marks": {
+    "engineering": 9,
+    "physical_sciences": 7
+   }
+  },
+  "077": {
+   "name": "Business Information Systems (Honours) (BIS)",
+   "marks": {
+    "computing": 8,
+    "business": 7
+   }
+  },
+  "079": {
+   "name": "Management and Information Technology (SEUSL)",
+   "marks": {
+    "computing": 8,
+    "business": 7
+   }
+  },
+  "081": {
+   "name": "Physical Education",
+   "marks": {
+    "education_sport": 10,
+    "health": 4
+   }
+  },
+  "082": {
+   "name": "Sports Science & Management",
+   "marks": {
+    "education_sport": 9,
+    "health": 6,
+    "business": 5
+   }
+  },
+  "083": {
+   "name": "Speech and Hearing Sciences",
+   "marks": {
+    "health": 10
+   }
+  },
+  "084": {
+   "name": "Arabic Language",
+   "marks": {
+    "languages": 10,
+    "humanities": 6
+   }
+  },
+  "085": {
+   "name": "Visual Arts",
+   "marks": {
+    "design": 9,
+    "performing_arts_media": 4
+   }
+  },
+  "086": {
+   "name": "Animal Science & Fisheries",
+   "marks": {
+    "agriculture_environment": 10,
+    "biological_sciences": 6
+   }
+  },
+  "087": {
+   "name": "Food Production & Technology Management",
+   "marks": {
+    "agriculture_environment": 9,
+    "business": 6
+   }
+  },
+  "088": {
+   "name": "Aquatic Resources Technology",
+   "marks": {
+    "agriculture_environment": 9,
+    "biological_sciences": 6
+   }
+  },
+  "090": {
+   "name": "Hospitality, Tourism and Events Management",
+   "marks": {
+    "tourism": 10,
+    "business": 7
+   }
+  },
+  "091": {
+   "name": "Information Technology & Management",
+   "marks": {
+    "computing": 8,
+    "business": 7
+   }
+  },
+  "092": {
+   "name": "Tourism & Hospitality Management",
+   "marks": {
+    "tourism": 10,
+    "business": 7
+   }
+  },
+  "093": {
+   "name": "Agricultural Resource Management and Technology",
+   "marks": {
+    "agriculture_environment": 10,
+    "business": 4
+   }
+  },
+  "094": {
+   "name": "Agribusiness Management",
+   "marks": {
+    "agriculture_environment": 9,
+    "business": 8
+   }
+  },
+  "095": {
+   "name": "Green Technology",
+   "marks": {
+    "agriculture_environment": 9,
+    "engineering": 6
+   }
+  },
+  "096": {
+   "name": "Information Systems",
+   "marks": {
+    "computing": 10,
+    "business": 4
+   }
+  },
+  "097": {
+   "name": "Landscape Architecture",
+   "marks": {
+    "built_environment": 9,
+    "design": 7,
+    "agriculture_environment": 6
+   }
+  },
+  "098": {
+   "name": "Translation Studies",
+   "marks": {
+    "languages": 10
+   }
+  },
+  "099": {
+   "name": "Software Engineering",
+   "marks": {
+    "computing": 10,
+    "engineering": 5
+   }
+  },
+  "100": {
+   "name": "Film & Television Studies",
+   "marks": {
+    "performing_arts_media": 10,
+    "design": 6
+   }
+  },
+  "101": {
+   "name": "Project Management",
+   "marks": {
+    "business": 9,
+    "built_environment": 4,
+    "engineering": 3
+   }
+  },
+  "102": {
+   "name": "Engineering Technology (ET)",
+   "marks": {
+    "engineering": 10
+   }
+  },
+  "103": {
+   "name": "Biosystems Technology (BST)",
+   "marks": {
+    "engineering": 9,
+    "agriculture_environment": 6,
+    "biological_sciences": 4
+   }
+  },
+  "104": {
+   "name": "Information Communication Technology",
+   "marks": {
+    "computing": 10
+   }
+  },
+  "105": {
+   "name": "Teaching English as a Second Language (TESL)",
+   "marks": {
+    "languages": 9,
+    "education_sport": 8
+   }
+  },
+  "106": {
+   "name": "Marine and Fresh Water Sciences",
+   "marks": {
+    "agriculture_environment": 9,
+    "biological_sciences": 8
+   }
+  },
+  "107": {
+   "name": "Food Business Management",
+   "marks": {
+    "agriculture_environment": 8,
+    "business": 7
+   }
+  },
+  "108": {
+   "name": "Physical Science - ICT",
+   "marks": {
+    "computing": 9,
+    "physical_sciences": 7,
+    "mathematics": 6
+   }
+  },
+  "109": {
+   "name": "Business Science",
+   "marks": {
+    "business": 9,
+    "mathematics": 5
+   }
+  },
+  "110": {
+   "name": "Financial Engineering",
+   "marks": {
+    "mathematics": 9,
+    "business": 8,
+    "computing": 4
+   }
+  },
+  "111": {
+   "name": "Geographical Information Science",
+   "marks": {
+    "physical_sciences": 8,
+    "computing": 7,
+    "built_environment": 7
+   }
+  },
+  "112": {
+   "name": "Social Work",
+   "marks": {
+    "humanities": 10,
+    "health": 3
+   }
+  },
+  "113": {
+   "name": "Financial Mathematics and Industrial Statistics",
+   "marks": {
+    "mathematics": 10,
+    "business": 6
+   }
+  },
+  "114": {
+   "name": "Human Resource Development",
+   "marks": {
+    "business": 9,
+    "humanities": 4
+   }
+  },
+  "115": {
+   "name": "Occupational Therapy",
+   "marks": {
+    "health": 10
+   }
+  },
+  "116": {
+   "name": "Optometry",
+   "marks": {
+    "health": 10
+   }
+  },
+  "117": {
+   "name": "Artificial Intelligence",
+   "marks": {
+    "computing": 10,
+    "mathematics": 7
+   }
+  },
+  "118": {
+   "name": "Applied Chemistry",
+   "marks": {
+    "physical_sciences": 10,
+    "engineering": 4
+   }
+  },
+  "119": {
+   "name": "Electronics and Computer Science",
+   "marks": {
+    "computing": 9,
+    "engineering": 8,
+    "physical_sciences": 4
+   }
+  },
+  "120": {
+   "name": "Indigenous Medicinal Resources",
+   "marks": {
+    "indigenous_medicine": 9,
+    "biological_sciences": 6,
+    "agriculture_environment": 4
+   }
+  },
+  "121": {
+   "name": "Health Information and Communication Technology",
+   "marks": {
+    "computing": 9,
+    "health": 5
+   }
+  },
+  "122": {
+   "name": "Health Tourism and Hospitality Management",
+   "marks": {
+    "tourism": 9,
+    "health": 6,
+    "business": 5
+   }
+  },
+  "123": {
+   "name": "Biomedical Technology",
+   "marks": {
+    "health": 9,
+    "engineering": 6
+   }
+  },
+  "124": {
+   "name": "Indigenous Pharmaceutical Technology",
+   "marks": {
+    "indigenous_medicine": 9,
+    "health": 6,
+    "physical_sciences": 4
+   }
+  },
+  "125": {
+   "name": "Yoga and Parapsychology",
+   "marks": {
+    "indigenous_medicine": 8,
+    "health": 6,
+    "education_sport": 4
+   }
+  },
+  "126": {
+   "name": "Social Studies in Indigenous Knowledge",
+   "marks": {
+    "humanities": 9,
+    "indigenous_medicine": 5
+   }
+  },
+  "127": {
+   "name": "Accounting Information Systems",
+   "marks": {
+    "business": 9,
+    "computing": 6
+   }
+  },
+  "128": {
+   "name": "Arts-Information Technology",
+   "marks": {
+    "computing": 7,
+    "humanities": 6
+   }
+  },
+  "129": {
+   "name": "Aquatic Bioresources",
+   "marks": {
+    "agriculture_environment": 9,
+    "biological_sciences": 7
+   }
+  },
+  "130": {
+   "name": "Urban Bioresources",
+   "marks": {
+    "agriculture_environment": 8,
+    "biological_sciences": 7,
+    "built_environment": 4
+   }
+  },
+  "131": {
+   "name": "Financial Economics",
+   "marks": {
+    "business": 9,
+    "mathematics": 6
+   }
+  },
+  "132": {
+   "name": "English Language & Applied Linguistics",
+   "marks": {
+    "languages": 10,
+    "education_sport": 5
+   }
+  },
+  "133": {
+   "name": "Banking and Insurance",
+   "marks": {
+    "business": 10,
+    "mathematics": 4
+   }
+  },
+  "134": {
+   "name": "Creative Music Technology and Production",
+   "marks": {
+    "performing_arts_media": 10,
+    "computing": 5,
+    "engineering": 3
+   }
+  },
+  "135": {
+   "name": "Plantation Management and Technology",
+   "marks": {
+    "agriculture_environment": 9,
+    "business": 6
+   }
+  },
+  "136": {
+   "name": "Data Science",
+   "marks": {
+    "computing": 10,
+    "mathematics": 9
+   }
+  },
+  "137": {
+   "name": "Primary Education",
+   "marks": {
+    "education_sport": 10,
+    "humanities": 4
+   }
+  },
+  "138": {
+   "name": "Medical Imaging Technology",
+   "marks": {
+    "health": 10,
+    "physical_sciences": 4
+   }
+  },
+  "139": {
+   "name": "Polymer Science and Industrial Management",
+   "marks": {
+    "engineering": 8,
+    "physical_sciences": 7,
+    "business": 5
+   }
+  },
+  "140": {
+   "name": "Service Management",
+   "marks": {
+    "business": 9,
+    "tourism": 5
+   }
+  }
+ }
+}
