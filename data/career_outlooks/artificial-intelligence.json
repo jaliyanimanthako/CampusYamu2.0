@@ -1,0 +1,494 @@
+{
+ "course": "Artificial Intelligence",
+ "region": "Sri Lanka",
+ "generated_at": "2026-11-12T15:34:31.376670+00:00",
+ "status": "success",
+ "model": "gpt-4o-mini",
+ "web_source": "TavilyClient",
+ "horizon_years": 5,
+ "collection": {
+  "retained_after_deduplication": 29,
+  "trusted_sources": 8,
+  "career_paths": [
+   "machine learning engineer",
+   "data scientist",
+   "ai researcher",
+   "ai solution architect",
+   "ai ethics officer",
+   "senior data engineer",
+   "technical specialist - ai engineering",
+   "software engineer"
+  ],
+  "emerging_areas": [
+   "natural language processing (nlp)",
+   "responsible ai",
+   "mlops",
+   "machine learning operations",
+   "ai governance",
+   "ai for sustainable supply chain management"
+  ]
+ },
+ "analysis": {
+  "course": "Artificial Intelligence",
+  "status": "success",
+  "analysis_context": {
+   "analysis_year": 2026,
+   "expected_entry_year": 2031,
+   "horizon_years": 5,
+   "evidence_collected_at": "2026-11-12T15:33:35.072014+00:00",
+   "confidence_ratings_lowered": 1,
+   "specificity_problems_found": 5,
+   "revised": true,
+   "generic_items_dropped": 2,
+   "advice_or_advert_sentences_removed": 1,
+   "remaining_problems": []
+  },
+  "evidence_synthesis": [
+   {
+    "theme": "Demand for AI Skills",
+    "key_details": [
+     "Demand for AI related jobs in Sri Lanka has increased significantly, with AI skills growing 75% faster than non-AI skills (E008).",
+     "AI engineering roles are among the fastest-growing technical careers, with demand expected to continue significantly into 2030 (E004)."
+    ],
+    "takeaway": "The need for AI skills is rising rapidly, particularly in specialized areas like machine learning, reflecting a robust job market for future graduates.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E004",
+     "E008"
+    ]
+   },
+   {
+    "theme": "Local Job Market Challenges",
+    "key_details": [
+     "Informal employment in Sri Lanka remains high at over 55% (E002).",
+     "Skill gaps are causing Sri Lankan companies to hire internationally, highlighting a shortage of qualified candidates locally (E003)."
+    ],
+    "takeaway": "While demand exists, significant challenges such as high informal employment rates and a gap in necessary skills may hinder local job opportunities for graduates.",
+    "agreement": "mixed",
+    "evidence_refs": [
+     "E002",
+     "E003"
+    ]
+   },
+   {
+    "theme": "MLOps and Emerging Technologies",
+    "key_details": [
+     "Knowledge of MLOps tools like MLflow, Docker, and Kubernetes is essential for effective model deployment (research agent leads).",
+     "Trends in AI regulation are increasing the focus on responsible AI and environmental standards in AI development (E024, research agent leads)."
+    ],
+    "takeaway": "Emerging areas such as MLOps and responsible AI are becoming critical in the job market, offering opportunities for specialization that align with industry trends.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E024"
+    ]
+   },
+   {
+    "theme": "Further Study and Specialization",
+    "key_details": [
+     "MSc programs in AI, such as the one at the University of Moratuwa, are pivotal for career growth and research opportunities (E006).",
+     "Continuous education in AI compliance and emerging technologies will be necessary for career advancement (research agent leads)."
+    ],
+    "takeaway": "Postgraduate qualifications are advantageous, with specialized courses in MLOps and AI ethics becoming increasingly relevant and necessary.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E006"
+    ]
+   }
+  ],
+  "course_introduction": {
+   "overview": "This AI degree equips students with the skills to design, implement, and manage AI systems. Key learning areas include machine learning, data analysis, and the ethical implications of AI technology.",
+   "career_paths": [
+    {
+     "role": "Machine Learning Engineer",
+     "what_you_do": "Design and implement machine learning models to solve real-world problems."
+    },
+    {
+     "role": "Data Scientist",
+     "what_you_do": "Analyze complex data sets to inform business decisions and strategies."
+    },
+    {
+     "role": "AI Research Scientist",
+     "what_you_do": "Conduct research to advance the field of AI and develop new algorithms."
+    },
+    {
+     "role": "AI Ethics Officer",
+     "what_you_do": "Ensure that AI systems comply with legal, ethical, and social standards."
+    },
+    {
+     "role": "AI Solutions Architect",
+     "what_you_do": "Design AI systems tailored to meet specific business needs."
+    }
+   ],
+   "evidence_refs": [
+    "E006",
+    "E004"
+   ]
+  },
+  "future_swot": {
+   "strengths": [
+    {
+     "course_specifics": [
+      "Courses focusing on MLOps are emerging as essential for career development (research agent leads).",
+      "AI technologies are increasingly integrated into various sectors (E004)."
+     ],
+     "finding": "Education incorporating MLOps and responsible AI principles is becoming crucial for students, making them more competitive in the job market.",
+     "evidence_refs": [
+      "E024",
+      "E008"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    }
+   ],
+   "weaknesses": [
+    {
+     "course_specifics": [
+      "The informal employment rate in Sri Lanka remains over 55% (E002).",
+      "Local firms struggle to find candidates with necessary AI skills (E003)."
+     ],
+     "finding": "High informal employment rates and skills shortages in AI roles complicate the local job market for new graduates.",
+     "evidence_refs": [
+      "E002",
+      "E003"
+     ],
+     "reasoning_type": "direct_evidence",
+     "confidence": "medium"
+    },
+    {
+     "course_specifics": [
+      "AI skills exhibit global recruitment trends, leading companies in Sri Lanka to look abroad for qualified professionals (E003).",
+      "Expectations for local graduates may not align with international hiring standards (E002)."
+     ],
+     "finding": "Sri Lankan companies increasingly hire internationally due to a shortage of local qualified professionals, reflecting a gap in education outcomes versus market needs.",
+     "evidence_refs": [
+      "E002",
+      "E003"
+     ],
+     "reasoning_type": "direct_evidence",
+     "confidence": "medium"
+    }
+   ],
+   "opportunities": [
+    {
+     "course_specifics": [
+      "MLOps tools like MLflow and Kubernetes are essential in AI model deployment (research agent leads).",
+      "Emerging specializations like AI compliance standards are gaining prominence (research agent leads)."
+     ],
+     "finding": "Focusing on MLOps and AI compliance could position graduates favorably, as these areas are expected to see significant demand growth in the job market.",
+     "evidence_refs": [
+      "E024"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    },
+    {
+     "course_specifics": [
+      "Programs at the University of Moratuwa emphasize practical applications in AI (E006).",
+      "AI ethics and governance are becoming increasingly critical across industries (E024)."
+     ],
+     "finding": "Advanced studies in AI ethics and governance may lead to leadership opportunities in industries focused on responsible AI practices.",
+     "evidence_refs": [
+      "E006",
+      "E024"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    }
+   ],
+   "threats": [
+    {
+     "course_specifics": [
+      "Continuous evolution of technology may lead to automation of routine tasks, impacting job availability (E019).",
+      "AI skills gaps indicate a lag between industry needs and educational outputs (E003)."
+     ],
+     "finding": "Fast-paced technological advancements could surpass local educational institutions' ability to equip students, threatening employability in AI roles.",
+     "evidence_refs": [
+      "E003",
+      "E019"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    }
+   ]
+  },
+  "local_vs_overseas": {
+   "label": "balanced",
+   "explanation": "Local job opportunities in AI are developing, but companies are increasingly hiring internationally due to skills shortages locally.",
+   "evidence_refs": [
+    "E003"
+   ]
+  },
+  "further_study": {
+   "role": "helpful",
+   "explanation": "Further study, particularly in specialized AI areas, enhances job prospects and provides a pathway to advanced roles.",
+   "evidence_refs": [
+    "E006"
+   ]
+  },
+  "niche_specialisations": [
+   {
+    "area": "Responsible AI",
+    "why_it_matters": "Increasing interest in ethical AI development practices promotes jobs related to compliance and governance in AI.",
+    "evidence_refs": [
+     "E022"
+    ]
+   },
+   {
+    "area": "MLOps Tools & Best Practices",
+    "why_it_matters": "Rising adoption of MLOps within AI projects makes knowledge of tools critical for operational success.",
+    "evidence_refs": [
+     "E024"
+    ]
+   }
+  ],
+  "overall_outlook": {
+   "label": "mixed",
+   "summary": "The Sri Lankan AI job market is poised for growth, driven by increasing demand for AI skills across various sectors. However, challenges such as high informal employment rates and skills shortages may complicate prospects for new graduates. By 2031, niche areas like MLOps and responsible AI will be particularly vital for career advancement.",
+   "evidence_refs": [
+    "E003",
+    "E004",
+    "E006"
+   ],
+   "confidence": "medium"
+  },
+  "limitations": [
+   "Limited data on salary structures and job stability for new graduates in Sri Lanka.",
+   "Community discussions reflect personal experiences but may not represent overall market conditions.",
+   "Few sources provide comprehensive insights on regional variations affecting AI job markets."
+  ]
+ },
+ "evidence_index": [
+  {
+   "evidence_id": "E001",
+   "title": "Data Scientist/Engineer Intern at Robotic Assistance Devices",
+   "url": "https://startup.jobs/data-scientist-engineer-intern-robotic-assistance-devices-8764762",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_live_jobs"
+  },
+  {
+   "evidence_id": "E002",
+   "title": "Labour Day in the Age of Artificial Intelligence",
+   "url": "https://www.linkedin.com/pulse/labour-day-age-artificial-intelligence-redefining-work-s-t-seelan-wgn5c",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E003",
+   "title": "Recruitment challenges 2026 | Boundless",
+   "url": "https://boundlesshq.com/blog/recruitment-challenges-2026",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E004",
+   "title": "Top AI Careers for 2026: Engineers, Managers, and Scientists in Demand | Mark Mayo posted on the topic | LinkedIn",
+   "url": "https://www.linkedin.com/posts/mark-mayo-649abb8_best-careers-in-ai-for-2026-artificial-activity-7411193213513854977-wHjQ",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "global_outlook"
+  },
+  {
+   "evidence_id": "E005",
+   "title": "Best remote AI Researcher employees for hire in Sri Lanka in Dec 2025 | Himalayas",
+   "url": "https://himalayas.app/talent/countries/sri-lanka/ai-researcher",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "international_pathways"
+  },
+  {
+   "evidence_id": "E006",
+   "title": "MSc in Artificial Intelligence | University of Moratuwa",
+   "url": "http://uom.lk/itfac/education/postgraduate/artificial",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "further_study"
+  },
+  {
+   "evidence_id": "E007",
+   "title": "Top Emerging Careers in Artificial Intelligence",
+   "url": "https://www.linkedin.com/top-content/artificial-intelligence/skills-for-the-ai-workforce/top-emerging-careers-in-artificial-intelligence",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E008",
+   "title": "Is AI adoption impacting job markets in South Asia?",
+   "url": "https://blogs.worldbank.org/en/endpovertyinsouthasia/labor-market-implications-of-ai-adoption-in-south-asia-in-five-c",
+   "source_tier": "global_official",
+   "trusted": true,
+   "query_category": "field_sources"
+  },
+  {
+   "evidence_id": "E009",
+   "title": "Internships - Ai / ML Engineering at sixn.ai — Colombo, Western Province, Sri Lanka | LinkedIn Jobs",
+   "url": "https://lk.linkedin.com/jobs/view/internships-ai-ml-engineering-at-sixn-ai-4469418551",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "career_paths"
+  },
+  {
+   "evidence_id": "E010",
+   "title": "Thoughts on MSc In AI at UOM",
+   "url": "https://www.reddit.com/r/DevLK/comments/1v7r3lq/thoughts_on_msc_in_ai_at_uom/",
+   "source_tier": "community_discussion",
+   "trusted": false,
+   "query_category": "community_signals"
+  },
+  {
+   "evidence_id": "E011",
+   "title": "Remote AI Engineer Jobs in Sri Lanka",
+   "url": "https://www.remoterocketship.com/country/sri-lanka/jobs/ai-engineer",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_live_jobs"
+  },
+  {
+   "evidence_id": "E012",
+   "title": "Labor Market Implications of AI Adoption in South Asia",
+   "url": "https://openknowledge.worldbank.org/bitstreams/a6e15c66-daaa-4c9f-80d5-65951eea2cc5/download",
+   "source_tier": "global_official",
+   "trusted": true,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E013",
+   "title": "Bridging Skill Gaps for the Future: New Jobs Creation in the AI Age (SDN/2026/001)",
+   "url": "https://www.imf.org/-/media/files/publications/sdn/2026/english/sdnea2026001.pdf",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E014",
+   "title": "What Is a Machine Learning Engineer? (+ How to Get Started) | Coursera",
+   "url": "https://www.coursera.org/articles/what-is-machine-learning-engineer",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "global_outlook"
+  },
+  {
+   "evidence_id": "E015",
+   "title": "Remote Data Science Jobs in Sri Lanka | RemoteRocketship.com",
+   "url": "https://www.remoterocketship.com/country/sri-lanka/jobs/data-scientist",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "international_pathways"
+  },
+  {
+   "evidence_id": "E016",
+   "title": "Remote AI Developer Jobs in Sri Lanka",
+   "url": "https://www.crossover.com/jobs/ai-developer/lk",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "further_study"
+  },
+  {
+   "evidence_id": "E017",
+   "title": "What does an Artificial Intelligence Specialist (AI Specialist) do? Career Overview, Roles, Jobs | MAFSI",
+   "url": "https://careercenter.mafsi.org/career/artificial-intelligence-specialist-ai-specialist-2",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E018",
+   "title": "Publication: Sri Lanka Jobs Diagnostic",
+   "url": "https://openknowledge.worldbank.org/entities/publication/b48f653d-1b2a-561b-b503-38559ac26b4a",
+   "source_tier": "global_official",
+   "trusted": true,
+   "query_category": "field_sources"
+  },
+  {
+   "evidence_id": "E019",
+   "title": "AI and Data Engineering Jobs in Sri Lanka | ITPro.lk",
+   "url": "https://itpro.lk/jobs/ai-and-data",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "career_paths"
+  },
+  {
+   "evidence_id": "E020",
+   "title": "IT roles in Sri Lanka paying 600K+ take-home?",
+   "url": "https://www.reddit.com/r/DevLK/comments/1vkafaw/it_roles_in_sri_lanka_paying_600k_takehome/",
+   "source_tier": "community_discussion",
+   "trusted": false,
+   "query_category": "community_signals"
+  },
+  {
+   "evidence_id": "E021",
+   "title": "AI Compliance: Top 6 challenges & Real-life failures",
+   "url": "https://aimultiple.com/ai-compliance",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E022",
+   "title": "Notes from the Asia-Pacific region: China issues new AI ethics guidelines, Hong Kong conducts compliance checks | IAPP",
+   "url": "https://iapp.org/news/a/notes-from-the-asia-pacific-region-china-issues-new-ai-ethics-guidelines-hong-kong-conducts-compliance-checks",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E023",
+   "title": "What Is Responsible AI? Ethics, Governance, and Core Principles",
+   "url": "https://www.zscaler.com/zpedia/what-is-responsible-ai",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E024",
+   "title": "MLOps: Build & Deploy ML Systems | Coursera",
+   "url": "https://www.coursera.org/specializations/mlops-build-deploy-ml-systems",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E025",
+   "title": "Top 15 MLOps Tools to Learn in 2026 for ML Engineers | Prepzee",
+   "url": "https://prepzee.com/blog/top-15-mlops-tools-to-learn",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E026",
+   "title": "Concepts - Machine Learning Operations (MLOps) for AI and Machine Learning Workflows in AKS - Azure Kubernetes Service | Microsoft Learn",
+   "url": "https://learn.microsoft.com/en-us/azure/aks/concepts-machine-learning-ops",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E027",
+   "title": "Designing Metrics to Enable Trusted AI Ecosystems in Asia | Asia Society",
+   "url": "https://asiasociety.org/policy-institute/designing-metrics-enable-trusted-ai-ecosystems-asia",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E028",
+   "title": "Sri Lanka AI Data Centre Concessions: A Reality Check",
+   "url": "https://www.linkedin.com/posts/stephanie-nicolle-2a491816a_new-policy-note-a-resource-reality-check-activity-7419958840646926336-WCeE",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E029",
+   "title": "AI-Driven Environmental Management System: Assessing Implementation, Practitioner Involvement, and Opportunities for Continuous Improvement",
+   "url": "https://www.mdpi.com/2071-1050/18/21/11341",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  }
+ ]
+}
