@@ -147,6 +147,14 @@ def statements(graph: nx.MultiDiGraph) -> Iterable[tuple[str, dict[str, Any]]]:
     # re-link handbook passages (RAG_Agent.handbook_search) to the reloaded sections
     yield ("MATCH (p:HandbookPassage) MATCH (s:HandbookSection {section_number: p.section_number}) "
            "MERGE (p)-[:IN_SECTION]->(s)", {})
+    # re-link campuses (travel_time_agent) to the reloaded institutions
+    yield ("MATCH (c:Campus) MATCH (i:Institution {id: c.institution_id}) "
+           "MERGE (c)-[:CAMPUS_OF]->(i)", {})
+    yield ("MATCH (c:Campus) MATCH (u:Institution {id: c.university_id}) "
+           "MERGE (c)-[:OF_UNIVERSITY]->(u)", {})
+    yield ("MATCH (c:Campus) UNWIND coalesce(c.taught_offerings, []) AS oid "
+           "MATCH (o:Offering {id: oid}) MERGE (o)-[t:TAUGHT_AT]->(c) "
+           "SET t.needs_review = oid IN coalesce(c.review_offerings, [])", {})
 
 
 def stream_eligibility(graph: nx.MultiDiGraph,

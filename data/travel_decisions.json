@@ -1,0 +1,16 @@
+{
+  "decided_by": "project owner",
+  "notes": "Owner decisions applied when building data/travel_times.db (travel_time_agent.build_db).",
+  "site_decisions": {
+    "USJ-ENG-SIDDAMULLA": {"status": "confirmed", "date": "2026-11-12",
+                           "reason": "USJ Faculty of Engineering is at Siddamulla, Kottawa"},
+    "USJ-ENG-RATMALANA": {"status": "excluded", "date": "2026-11-12",
+                          "reason": "Rejected candidate location for the USJ Faculty of Engineering"}
+  },
+  "bus_estimate": {
+    "factor": 1.5,
+    "overhead_min": 15,
+    "label": "Rough public-transport estimate: car time x 1.5 + 15 min (waiting, changes). Not a timetable."
+  },
+  "offering_sites": {}
+}

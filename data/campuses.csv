@@ -1,0 +1,40 @@
+site_no,campus_id,university,campus_site,district,lat,lon,coord_source,needs_review,handbook_listed
+A1,UOC-MAIN,University of Colombo,"College House, Colombo 03 (main)",Colombo,6.9006,79.8627,osm way/47013678,no,yes
+A2,UOC-MED,University of Colombo,"Faculty of Medicine, Kynsey Rd, Colombo 08",Colombo,6.9191,79.8709,osm node/1378988167,no,yes
+A3,UOC-UCSC,University of Colombo,"UCSC, Reid Ave, Colombo 07",Colombo,6.9022,79.8612,osm way/233486895,no,yes
+A4,UOC-SRIPALEE,University of Colombo,"Sripalee Campus, Wewala, Horana",Kalutara,6.7075,80.0701,osm node/2097609269,no,yes
+A5,USJ-MAIN,University of Sri Jayewardenepura,"Gangodawila, Nugegoda (incl. Medical and Dental Sciences)",Colombo,6.8518,79.9022,osm way/199946347,no,yes
+A6,UOM-MAIN,University of Moratuwa,"Bandaranayake Mw, Moratuwa",Colombo,6.7961,79.9013,nominatim campus road,no,yes
+A7,UOM-MED,University of Moratuwa,"Faculty of Medicine, Kalutara",Kalutara,6.5632,79.9849,approx: Nagoda General Hospital Kalutara (OSM only maps a medicine building at Katubedda),yes,yes
+A8,UVPA-MAIN,University of the Visual & Performing Arts,"Albert Crescent, Colombo 07",Colombo,6.9101,79.8626,osm way/371204653,no,yes
+A9,UOK-MAIN,University of Kelaniya,"Dalugama, Kelaniya",Gampaha,6.9747,79.9163,osm way/48960229,no,yes
+A10,UOK-MED,University of Kelaniya,"Faculty of Medicine, Ragama",Gampaha,7.0287,79.9296,osm relation/8207240,no,yes
+A11,GWUIM-MAIN,Gampaha Wickramarachchi Univ. of Indigenous Medicine,Yakkala,Gampaha,7.0913,80.0370,osm way/382406317,no,yes
+A12,UOP-MAIN,University of Peradeniya,"Peradeniya (incl. Medicine, Dental, Vet)",Kandy,7.2546,80.5989,osm relation/9382856,no,yes
+A13,UOR-MAIN,University of Ruhuna,"Wellamadama, Matara (main)",Matara,5.9382,80.5771,osm way/1226878189,no,yes
+A14,UOR-AGRI,University of Ruhuna,"Faculty of Agriculture, Mapalana, Kamburupitiya",Matara,6.0610,80.5663,osm way/477435987,no,yes
+A15,UOR-ENG,University of Ruhuna,"Faculty of Engineering, Hapugala, Galle",Galle,6.0794,80.1925,osm node/3377431493,no,yes
+A16,UOR-MED,University of Ruhuna,"Faculty of Medicine, Karapitiya, Galle",Galle,6.0696,80.2266,osm way/564893218,no,yes
+A17,SUSL-MAIN,Sabaragamuwa University,"Pambahinna, Belihuloya (main)",Ratnapura,6.7129,80.7887,osm node/2385001867,no,yes
+A18,SUSL-MED,Sabaragamuwa University,"Faculty of Medicine, Ratnapura",Ratnapura,6.7156,80.3849,approx: Hidellana village,yes,yes
+A19,UWU-MAIN,Uva Wellassa University,"Passara Rd, Badulla (incl. Medicine)",Badulla,6.9830,81.0765,osm way/184108948,no,yes
+A20,WUSL-MAIN,Wayamba University,Kuliyapitiya (incl. Medicine),Kurunegala,7.4629,80.0196,osm relation/7906324,no,yes
+A21,WUSL-MAKANDURA,Wayamba University,"Faculty of Agriculture & Plantation Mgmt, Makandura, Gonawila",Kurunegala,7.3238,79.9895,osm way/174042997,no,yes
+A22,RUSL-MAIN,Rajarata University,Mihintale (main),Anuradhapura,8.3586,80.5058,osm node/5519614221,no,yes
+A23,RUSL-MED,Rajarata University,"Faculty of Medicine & Allied Sciences, Saliyapura",Anuradhapura,8.3899,80.4223,approx: Saliyapura railway halt,yes,yes
+A24,UOJ-MAIN,University of Jaffna,"Thirunelvely, Jaffna (incl. Medicine)",Jaffna,9.6847,80.0230,osm way/454460412,no,yes
+A25,UOV-MAIN,University of Vavuniya,"Pampaimadu, Vavuniya",Vavuniya,8.7889,80.4214,approx: Pampaimadu village,yes,yes
+A26,EUSL-MAIN,Eastern University,"Vantharumoolai, Chenkalady (main)",Batticaloa,7.7944,81.5787,osm relation/17528742,no,yes
+A27,EUSL-FHCS,Eastern University,"Faculty of Health-Care Sciences, Batticaloa",Batticaloa,7.7278,81.6686,osm way/1301846604,no,yes
+A28,EUSL-SVIAS,Eastern University,"Swamy Vipulananda Institute of Aesthetic Studies, Kallady",Batticaloa,7.7003,81.7181,nominatim SVIAS building,no,yes
+A29,EUSL-TRINCO,Eastern University,"Trincomalee Campus, Konesapuri, Nilaveli",Trincomalee,8.6585,81.2134,osm way/834166312,no,yes
+A30,SEUSL-MAIN,South Eastern University,"University Park, Oluvil",Ampara,7.2994,81.8570,osm way/594575991,no,yes
+B1,UOJ-KILI,University of Jaffna,"Kilinochchi premises, Ariviyal Nagar",Kilinochchi,9.3137,80.4017,osm node/5185032855,no,no
+B2,UOC-FOT,University of Colombo,"Faculty of Technology, Pitipana, Homagama",Colombo,6.8253,80.0393,approx: Mahenwatta hamlet,yes,no
+B3,USJ-FOT,University of Sri Jayewardenepura,"Faculty of Technology, Pitipana, Homagama",Colombo,6.8222,80.0423,osm way/836084373 (tagged University of Sri Jayawardenapura),no,no
+B4,UOR-FOT,University of Ruhuna,"Faculty of Technology, Kamburupitiya",Matara,6.0444,80.5147,approx: Karagoda Uyangoda village,yes,no
+B5,SEUSL-FAS,South Eastern University,"Faculty of Applied Sciences, Sammanthurai",Ampara,7.3593,81.7845,osm way/286832011,no,no
+B6,RUSL-AGRI,Rajarata University,"Faculty of Agriculture, Puliyankulama",Anuradhapura,8.3710,80.4204,osm way/278899518,no,no
+B7,WUSL-LFN,Wayamba University,"Faculty of Livestock, Fisheries & Nutrition, Makandura",Kurunegala,7.3238,79.9895,osm way/174042997 (same premises as A21),no,no
+B8a,USJ-ENG-RATMALANA,University of Sri Jayewardenepura,"Faculty of Engineering (candidate 1: Ratmalana)",Colombo,6.8255,79.8727,osm way/583232430,yes,no
+B8b,USJ-ENG-SIDDAMULLA,University of Sri Jayewardenepura,"Faculty of Engineering (candidate 2: Siddamulla, Kottawa)",Colombo,6.8236,79.9683,osm node/13061424303,yes,no
