@@ -113,7 +113,30 @@ def render_preferences(prefs: dict[str, Any], limit: int | None) -> list[str]:
     return lines
 
 
-def render_rankings(rankings: dict[str, Any]) -> list[str]:
+def details_line(details: dict[str, Any], code: str | None, block: int | None) -> str | None:
+    """One line of handbook facts for a course: programme · duration · medium · first note · citation."""
+
+    blocks = (details.get(code or "") or {}).get("blocks") or []
+    if not blocks:
+        return None
+    chosen = [blocks[block]] if block is not None and block < len(blocks) else blocks
+    first = chosen[0]
+    bits = []
+    if first["degree_programmes"]:
+        bits.append(first["degree_programmes"][0] + (f" (+{len(first['degree_programmes']) - 1} more)"
+                                                     if len(first["degree_programmes"]) > 1 else ""))
+    if first["duration"]:
+        bits.append(" / ".join(first["duration"]))
+    if first["medium"]:
+        bits.append(", ".join(first["medium"]) + " medium")
+    if first["notes"]:
+        note = first["notes"][0]
+        bits.append(note if len(note) <= 90 else note[:90].rsplit(" ", 1)[0] + " …")
+    bits.append(first["citation"] + (f" (+{len(chosen) - 1} more sections)" if len(chosen) > 1 else ""))
+    return "        handbook: " + " · ".join(bits)
+
+
+def render_rankings(rankings: dict[str, Any], details: dict[str, Any] | None = None) -> list[str]:
     lines = []
     for number, ranking in enumerate(rankings.values(), 1):
         shown = len(ranking["suggestions"])
@@ -132,6 +155,9 @@ def render_rankings(rankings: dict[str, Any]) -> list[str]:
                          f"{s['course_name']} | {where} | {cutoff}{margin} | car {_time(s.get('car_min'))}"
                          + (f"  ({', '.join(s['flags'])})" if s["flags"] else ""))
             lines += _what_if_lines(ranking, s["uni_code"])
+            if ranking.get("id") == "distance" and details:
+                line = details_line(details, s.get("course_code"), s.get("details_block"))
+                lines += [line] if line else []
         lines += [f"  Note: {n}" for n in ranking["notes"]]
         lines += render_feedback(ranking)
     return lines
@@ -191,7 +217,7 @@ def render(state: dict[str, Any], limit: int | None, sort: str = "travel", view:
         "Step 2 (Z-score): " + ", ".join(f"{counts['band_' + b]} {b.replace('_', ' ')}" for b in BAND_ORDER),
     ]
     if view in ("all", "rankings"):
-        lines += render_rankings(report.get("rankings") or {})
+        lines += render_rankings(report.get("rankings") or {}, report.get("course_details"))
     if view == "rankings":
         return "\n".join(lines)
     lines += render_preferences(report.get("preferences") or {"method": "none"}, limit)

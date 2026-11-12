@@ -41,6 +41,8 @@ def _entry(row: dict[str, Any], **extra: Any) -> dict[str, Any]:
         flags.append("O/L to confirm")
     return {
         "uni_code": row["uni_code"],
+        "course_code": row.get("course_code"),
+        "details_block": row.get("details_block"),
         "course_name": row.get("course_name"),
         "university": row.get("university"),
         "site": (row.get("site") or "").split(" (incl.")[0] or None,

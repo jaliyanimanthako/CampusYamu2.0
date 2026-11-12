@@ -2,7 +2,7 @@
 
     START -> validate_profile -> find_courses
           -> (fan-out, in parallel) analyze_course x N  +  score_preferences
-          -> assemble -> rank_suggestions -> explain_rankings -> END
+          -> assemble -> course_details -> rank_suggestions -> explain_rankings -> END
 
 * ``validate_profile`` builds the StudentProfile and resolves the admission
   district and home town; invalid input ends the run with errors.
@@ -20,6 +20,10 @@
   unlikely / no history), nearest teaching site first within each band, and
   groups the same rows by the student's interests, highest mark first.
 
+* ``course_details`` attaches each course's handbook facts for the course cards:
+  degree programmes, duration, medium, notes (aptitude tests, selection by the
+  faculty, ...) and the section text with its citation. Found by the course
+  code in the handbook (course_details); no search or LLM.
 * ``rank_suggestions`` (ranking_agent) builds the suggestion lists, 20 each:
   by Z-score analysis, by interests + last-year cut-off, and the same made
   distance-aware (far teaching sites pushed down). It also runs a what-if
@@ -43,6 +47,7 @@ from typing import Annotated, Any, TypedDict
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Send
 
+from course_details import HandbookCourseIndex
 from course_finder.finder import BLOCKED_OL, CourseFinder, ProfileError, StudentProfile
 from preference_agent import Interpretation, Preference, PreferenceInterpreter, categorize, load_course_tags
 from preference_agent.categorizer import DEFAULT_MIN_MARK
@@ -129,6 +134,7 @@ def build_pipeline(finder: CourseFinder | None = None, zscore: ZScoreAgent | Non
     tags = load_course_tags()
     interpreter = interpreter or PreferenceInterpreter(tags, use_llm=use_llm)
     feedback_writer = feedback_writer or FeedbackWriter(use_llm=use_llm)
+    handbook = HandbookCourseIndex()
     lookups = {a["uni_code"]: a.get("zscore_lookup") or {}
                for _, a in finder.graph.nodes(data=True) if a["type"] == "Offering"}
 
@@ -248,6 +254,22 @@ def build_pipeline(finder: CourseFinder | None = None, zscore: ZScoreAgent | Non
             ],
         }}
 
+    def course_details(state: PipelineState) -> dict[str, Any]:
+        report = state["report"]
+        details: dict[str, Any] = {}
+        bands = {}
+        for band, rows in report["bands"].items():
+            out = []
+            for row in rows:
+                code = row.get("course_code") or ""
+                if code not in details:
+                    details[code] = {"course_name": row.get("course_name"),
+                                     "blocks": [b.to_dict() for b in handbook.blocks_for(code)]}
+                out.append({**row, "details_block": handbook.block_for_offering(
+                    code, row.get("university"), row.get("site"))})
+            bands[band] = out
+        return {"report": {**report, "bands": bands, "course_details": details}}
+
     def rank_suggestions(state: PipelineState) -> dict[str, Any]:
         report = state["report"]
         rankings = build_rankings(report, suggestions)
@@ -298,6 +320,7 @@ def build_pipeline(finder: CourseFinder | None = None, zscore: ZScoreAgent | Non
     graph.add_node("score_preferences", score_preferences)
     graph.add_node("analyze_course", analyze_course)
     graph.add_node("assemble", assemble)
+    graph.add_node("course_details", course_details)
     graph.add_node("rank_suggestions", rank_suggestions)
     graph.add_node("explain_rankings", explain_rankings)
     graph.add_edge(START, "validate_profile")
@@ -305,7 +328,8 @@ def build_pipeline(finder: CourseFinder | None = None, zscore: ZScoreAgent | Non
     graph.add_conditional_edges("find_courses", fan_out, ["analyze_course", "score_preferences", "assemble"])
     graph.add_edge("analyze_course", "assemble")
     graph.add_edge("score_preferences", "assemble")
-    graph.add_edge("assemble", "rank_suggestions")
+    graph.add_edge("assemble", "course_details")
+    graph.add_edge("course_details", "rank_suggestions")
     graph.add_edge("rank_suggestions", "explain_rankings")
     graph.add_edge("explain_rankings", END)
     return graph.compile()
