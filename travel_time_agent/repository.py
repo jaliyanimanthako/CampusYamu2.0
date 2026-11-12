@@ -27,6 +27,17 @@ class Origin:
     province: str
 
 
+def _best_match(key: str, options: list[str]) -> str | None:
+    """A clear typo fix: the closest option when it is close and well ahead of the next one."""
+
+    scored = sorted(((difflib.SequenceMatcher(None, key, o).ratio(), o) for o in options), reverse=True)
+    if not scored:
+        return None
+    top = scored[0]
+    runner_up = scored[1][0] if len(scored) > 1 else 0.0
+    return top[1] if top[0] >= 0.85 and top[0] - runner_up >= 0.1 else None
+
+
 def _norm(text: str) -> str:
     return " ".join(text.casefold().replace("-", " ").replace(".", " ").split())
 
@@ -65,9 +76,10 @@ class TravelRepository:
         exact = {_norm(n): n for n in names}
         if _norm(name) in exact:
             return exact[_norm(name)]
+        best = _best_match(_norm(name), list(exact))
+        if best:
+            return exact[best]
         close = difflib.get_close_matches(_norm(name), list(exact), n=3, cutoff=0.6)
-        if len(close) == 1:
-            return exact[close[0]]
         raise LookupError_(f"Unknown district {name!r}", [exact[c] for c in close])
 
     def find_origin(self, name: str, district: str | None = None) -> Origin:
@@ -81,6 +93,9 @@ class TravelRepository:
         partial = [o for k, o in by_name.items() if key in k.split() or k.startswith(key)]
         if len(partial) == 1:
             return partial[0]
+        best = None if partial else _best_match(key, list(by_name))
+        if best:
+            return by_name[best]
         close = difflib.get_close_matches(key, list(by_name), n=5, cutoff=0.75)
         if len(close) == 1 and not partial:
             return by_name[close[0]]

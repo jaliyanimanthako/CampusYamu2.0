@@ -38,6 +38,21 @@ class KnowledgeGraphTests(unittest.TestCase):
     def check(self, course, subjects, stream, cgp=50):
         return self.checker.check_course(course, make_student(subjects, stream, cgp))
 
+    def test_architecture_owner_reading(self) -> None:
+        """§2.2.8.6/§2.2.8.8: >=1 from list (i); all three from (i) allowed; the rest from list (ii)."""
+
+        cases = [
+            (["Combined Mathematics:A", "Physics:B", "Chemistry:C"], "Physical Science", "eligible"),
+            (["Chemistry:S", "Physics:S", "Accounting:S"], None, "eligible"),
+            (["Art:S", "Accounting:S", "Economics:S"], None, "eligible"),
+            (["Accounting:S", "Economics:S", "History:S"], None, "not_eligible"),   # nothing from (i)
+            (["Art:S", "Accounting:S", "Music:S"], None, "not_eligible"),          # Music in neither list
+        ]
+        for course in ("course:023", "course:097"):
+            for subjects, stream, expected in cases:
+                with self.subTest(course=course, subjects=subjects):
+                    self.assertEqual(self.check(course, subjects, stream).decision, expected)
+
     def test_graph_validates_and_every_course_has_the_university_minimum(self) -> None:
         self.assertEqual(self.report["problems"], [])
         courses = [n for n, a in self.graph.nodes(data=True) if a["type"] == "Course"]

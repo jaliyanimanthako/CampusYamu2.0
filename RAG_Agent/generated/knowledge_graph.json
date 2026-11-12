@@ -14646,7 +14646,7 @@
     "subjects": [],
     "subject_groups": [
      {
-      "name": "First subject list",
+      "name": "At least one of the following subjects",
       "subjects": [
        "Art",
        "Chemistry",
@@ -14658,43 +14658,7 @@
       ],
       "minimum_required": 1,
       "maximum_allowed": 0,
-      "condition": ""
-     },
-     {
-      "name": "Other subjects list",
-      "subjects": [
-       "Accounting",
-       "Hindu Civilization",
-       "Business Statistics",
-       "Islamic Civilization",
-       "Greek & Roman Civilization",
-       "Political Science",
-       "English",
-       "Sinhala",
-       "Communication & Media Studies",
-       "Christian Civilization",
-       "Hindi",
-       "Buddhist Civilization",
-       "Home Economics",
-       "Chinese",
-       "Logic & Scientific Method",
-       "Mathematics",
-       "Sanskrit",
-       "German",
-       "Information & Communication Technology",
-       "Arabic",
-       "History",
-       "Business Studies",
-       "Japanese",
-       "Economics",
-       "Pali",
-       "French",
-       "Tamil",
-       "Agricultural Science"
-      ],
-      "minimum_required": 1,
-      "maximum_allowed": 0,
-      "condition": ""
+      "condition": "(i)  At least one of the following subjects;"
      }
     ],
     "minimum_grades": {
@@ -14702,7 +14666,7 @@
      "required_b_grades": 0,
      "required_c_grades": 0,
      "required_s_grades": 3,
-     "grade_condition_text": "At least ‘S’ passes at the G.C.E. (Advanced Level) Examination."
+     "grade_condition_text": "A candidate should have obtained at least ‘S’ passes at the G.C.E. (Advanced Level) Examination in;"
     },
     "subject_grade_requirements": [],
     "common_general_paper": {
@@ -14713,7 +14677,7 @@
     "selection_constraints": [
      {
       "constraint_type": "only_from",
-      "group_name": "First and other subject lists",
+      "group_name": "Allowed A/L subjects",
       "subjects": [
        "Art",
        "Chemistry",
@@ -14751,8 +14715,8 @@
        "Tamil",
        "Agricultural Science"
       ],
-      "count": 0,
-      "condition": ""
+      "count": 3,
+      "condition": "(ii) The other subject/ subjects from the following list;"
      }
     ],
     "exception_to": "",
@@ -14773,9 +14737,9 @@
    "extraction_method": "llm_harness",
    "interpretation": {
     "request_id": "al-extraction:2.2.8.6",
-    "reading": "'(i) At least one of the following subjects ... and (ii) The other subject/ subjects from the following list': one or two subjects come from list (i) and the remaining subject(s) from list (ii); all three subjects from list (i) is not eligible.",
+    "reading": "'(i) At least one of the following subjects ... and (ii) The other subject/ subjects from the following list': at least one subject comes from list (i). All three subjects from list (i) is eligible; when only one or two come from list (i), the remaining subject(s) must come from list (ii). A subject in neither list is not eligible.",
     "decided_by": "project owner",
-    "date": "2026-11-11",
+    "date": "2026-11-12",
     "basis": "Owner reading of ambiguous wording; not stated verbatim in the handbook.",
     "cases": [
      {
@@ -14796,11 +14760,19 @@
      },
      {
       "subjects": [
+       "Combined Mathematics",
+       "Physics",
+       "Chemistry"
+      ],
+      "eligible": true
+     },
+     {
+      "subjects": [
        "Art",
        "Biology",
        "Chemistry"
       ],
-      "eligible": false
+      "eligible": true
      },
      {
       "subjects": [
@@ -14819,8 +14791,9 @@
       "eligible": false
      }
     ],
+    "previous_reading": "one or two subjects from list (i), the rest from list (ii); all three from list (i) not eligible (2026-11-11)",
     "applied": true,
-    "selected": "primary"
+    "selected": "verifier"
    },
    "evidence_text": "A candidate should have obtained at least ‘S’ passes at the G.C.E. (Advanced Level) Examination in;\n\n(i)  At least one of the following subjects;\n\n- Art\n- Chemistry\n\n- Higher Mathematics\n\n- Combined Mathematics\n\n- Biology\n\n- Physics\n\n- Geography\n\n- and\n\n- (ii) The other subject/ subjects from the following list;\n\n- Accounting\n\n- Hindu Civilization\n\n- Business Statistics\n\n- Islamic Civilization\n\n- Greek & Roman Civilization\n\n- Political Science\n\n- English\n\n- Sinhala\n\n- Communication & Media Studies\n\n- Christian Civilization\n\n- Hindi\n\n- Buddhist Civilization\n\n- Home Economics\n\n- Chinese\n\n- Logic & Scientific Method\n\n- Mathematics\n\n- Sanskrit\n\n- German\n\n- Information & Communication Technology\n\n- Arabic\n\n- History\n\n- Business Studies\n\n- Japanese\n\n- Economics\n\n- Pali\n\n- French\n\n- Tamil\n\n- Agricultural Science",
    "alternative_group": "",
@@ -14904,7 +14877,7 @@
     "subjects": [],
     "subject_groups": [
      {
-      "name": "First subject list",
+      "name": "At least one of the following subjects",
       "subjects": [
        "Art",
        "Geography",
@@ -14917,42 +14890,7 @@
       ],
       "minimum_required": 1,
       "maximum_allowed": 0,
-      "condition": ""
-     },
-     {
-      "name": "Other subject list",
-      "subjects": [
-       "Accounting",
-       "Arabic",
-       "Buddhist Civilization",
-       "Business Statistics",
-       "Business Studies",
-       "Chinese",
-       "Greek & Roman Civilization",
-       "Economics",
-       "Mathematics",
-       "English",
-       "French",
-       "German",
-       "Tamil",
-       "Hindi",
-       "Hindu Civilization",
-       "History",
-       "Home Economics",
-       "Islamic Civilization",
-       "Japanese",
-       "Logic & Scientific Method",
-       "Political Science",
-       "Pali",
-       "Sanskrit",
-       "Sinhala",
-       "Communication & Media Studies",
-       "Information & Communication Technology",
-       "Christian Civilization"
-      ],
-      "minimum_required": 1,
-      "maximum_allowed": 0,
-      "condition": ""
+      "condition": "(i) At least one of the following subjects;"
      }
     ],
     "minimum_grades": {
@@ -14960,7 +14898,7 @@
      "required_b_grades": 0,
      "required_c_grades": 0,
      "required_s_grades": 3,
-     "grade_condition_text": "At least ‘S’ passes at the G.C.E. (Advanced Level) Examination"
+     "grade_condition_text": "A candidate should have obtained at least ‘S’ passes at the G.C.E. (Advanced Level) Examination in;"
     },
     "subject_grade_requirements": [],
     "common_general_paper": {
@@ -14971,7 +14909,7 @@
     "selection_constraints": [
      {
       "constraint_type": "only_from",
-      "group_name": "First subject list and other subject list",
+      "group_name": "Allowed A/L subjects",
       "subjects": [
        "Art",
        "Geography",
@@ -15009,8 +14947,8 @@
        "Information & Communication Technology",
        "Christian Civilization"
       ],
-      "count": 0,
-      "condition": ""
+      "count": 3,
+      "condition": "(ii) The other subject/ subjects from the following list;"
      }
     ],
     "exception_to": "",
@@ -15031,9 +14969,9 @@
    "extraction_method": "llm_harness",
    "interpretation": {
     "request_id": "al-extraction:2.2.8.8",
-    "reading": "'(i) At least one of the following subjects ... and (ii) The other subject/ subjects from the following list': one or two subjects come from list (i) and the remaining subject(s) from list (ii); all three subjects from list (i) is not eligible.",
+    "reading": "'(i) At least one of the following subjects ... and (ii) The other subject/ subjects from the following list': at least one subject comes from list (i). All three subjects from list (i) is eligible; when only one or two come from list (i), the remaining subject(s) must come from list (ii). A subject in neither list is not eligible.",
     "decided_by": "project owner",
-    "date": "2026-11-11",
+    "date": "2026-11-12",
     "basis": "Owner reading of ambiguous wording; not stated verbatim in the handbook.",
     "cases": [
      {
@@ -15054,11 +14992,19 @@
      },
      {
       "subjects": [
+       "Combined Mathematics",
+       "Physics",
+       "Chemistry"
+      ],
+      "eligible": true
+     },
+     {
+      "subjects": [
        "Art",
        "Biology",
        "Agricultural Science"
       ],
-      "eligible": false
+      "eligible": true
      },
      {
       "subjects": [
@@ -15077,8 +15023,9 @@
       "eligible": false
      }
     ],
+    "previous_reading": "one or two subjects from list (i), the rest from list (ii); all three from list (i) not eligible (2026-11-11)",
     "applied": true,
-    "selected": "primary"
+    "selected": "verifier"
    },
    "evidence_text": "A candidate should have obtained at least ‘S’ passes at the G.C.E. (Advanced Level) Examination in;\n\n(i) At least one of the following subjects;\n\n- Art\n- Geography\n\n- Biology\n\n- Chemistry\n\n- Higher Mathematics\n\n- Physics\n\n- Combined Mathematics\n- Agricultural Science\n\n- and\n\n(ii) The other subject/ subjects from the following list;\n\n- Accounting\n\n- Arabic\n\n- Buddhist Civilization\n\n- Business Statistics\n\n- Business Studies\n\n- Chinese\n\n- Greek & Roman Civilization\n\n- Economics\n\n- Mathematics\n\n- English\n\n- French\n\n- German\n\n- Tamil\n\n- Hindi\n\n- Hindu Civilization\n\n- History\n\n- Home Economics\n\n- Islamic Civilization\n\n- Japanese\n\n- Logic & Scientific Method\n\n- Political Science\n\n- Pali\n\n- Sanskrit\n\n- Sinhala\n\n- Communication & Media Studies\n\n- Information & Communication Technology\n\n- Christian Civilization",
    "alternative_group": "",

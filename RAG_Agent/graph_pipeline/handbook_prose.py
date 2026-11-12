@@ -2886,9 +2886,16 @@ def _apply_interpretation(
         except (NotEvaluable, KeyError, TypeError, ValueError):
             return False
 
-    if result.get("review_status") == "auto_accepted":
+    previously_settled = result.get("review_basis") == "owner_interpretation"
+    if previously_settled:
+        # An earlier owner selection is kept only while it matches the current
+        # reading; when the owner changes the reading, the candidates are re-chosen.
+        if reproduces(result["rules"]):
+            selected = (result.get("interpretation") or {}).get("selected", "primary")
+            return {**result, "interpretation": {**interpretation, "applied": True, "selected": selected}}
+    elif result.get("review_status") == "auto_accepted":
         # Model agreement never overrides the owner's recorded reading.
-        if result.get("review_basis") == "owner_interpretation" or reproduces(result["rules"]):
+        if reproduces(result["rules"]):
             return result
         return {
             **result,
@@ -2898,6 +2905,13 @@ def _apply_interpretation(
         }
     matching = [candidate for candidate in candidates if reproduces(candidate[1])]
     if not matching:
+        if previously_settled:
+            return {
+                **result,
+                "review_status": "unresolved",
+                "review_basis": "contradicts_owner_interpretation",
+                "interpretation": {**interpretation, "applied": False},
+            }
         return {**result, "interpretation": {**interpretation, "applied": False}}
     source, rules, raw = matching[0]
     accepted = {

@@ -94,6 +94,13 @@ SUBJECT_ALIASES = {
     # subject Agricultural Science (there is no A/L subject "Agriculture").
     "agriculture": "Agricultural Science",
     "dancing": "Dance",
+    # common ways students write subject names
+    "combined maths": "Combined Mathematics",
+    "combined math": "Combined Mathematics",
+    "c. maths": "Combined Mathematics",
+    "c maths": "Combined Mathematics",
+    "higher maths": "Higher Mathematics",
+    "bio": "Biology",
 }
 OFFICIAL_SUBJECTS_PATH = (
     Path(__file__).resolve().parents[1] / "reference" / "doe_al_subjects.json"

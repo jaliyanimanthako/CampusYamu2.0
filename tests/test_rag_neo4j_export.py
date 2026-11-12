@@ -62,8 +62,9 @@ class Neo4jExportTests(unittest.TestCase):
     def test_physical_science_can_apply_for_edges(self) -> None:
         rows = [r for r in stream_eligibility(self.graph) if r["source"] == "stream:physical-science"]
         names = {self.graph.nodes[r["target"]]["name"]: r["props"]["lowest_grades"] for r in rows}
-        self.assertEqual(len(names), 53)
+        self.assertEqual(len(names), 55)
         self.assertEqual(names["Engineering"], "S S S")
+        self.assertEqual(names["Architecture"], "S S S")          # owner reading of §2.2.8.6
         self.assertEqual(names["Computer Science"], "C C C")
         self.assertNotIn("Medicine", names)
 
