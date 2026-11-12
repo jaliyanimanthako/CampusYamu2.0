@@ -27,7 +27,7 @@ from typing import Any, Sequence
 import networkx as nx
 
 from .al_clause_parsers import canonical_stream, canonical_subject
-from .al_rule_semantics import NotEvaluable, Student, evaluate_rules
+from .al_rule_semantics import NotEvaluable, Student, evaluate_rules, rule_uses_other_subjects
 from .arts_rules import check_arts_combination
 from .build_graph import ARTS_RULES_ID, DEFAULT_OUTPUT, load_graph
 from .handbook_prose import PROJECT_ROOT
@@ -102,7 +102,9 @@ class EligibilityChecker:
 
     # --- checks --------------------------------------------------------------
     def _check_rules(self, nodes: Sequence[str], student: Student) -> list[Finding]:
-        """Evaluate mandatory rules one by one and alternative groups as a whole."""
+        """Evaluate mandatory rules one by one and alternative groups as a whole,
+        then all of them together: "two other subjects" clauses must not reuse
+        the subject that met another clause (see al_rule_semantics)."""
 
         failed: list[Finding] = []
         groups: dict[str, dict[int, list[str]]] = {}
@@ -125,6 +127,13 @@ class EligibilityChecker:
                     f"None of the {len(options)} alternative options is satisfied"
                 )
                 failed.append(finding)
+        if not failed and nodes and not evaluate_rules([self.graph.nodes[n]["rule"] for n in nodes], student):
+            culprit = next((n for n in nodes if rule_uses_other_subjects(self.graph.nodes[n]["rule"])), nodes[0])
+            finding = self._finding(culprit, student)
+            finding.reasons.append(
+                "The 'other' subjects must be different from the subject used for the grade requirement; "
+                "one subject cannot count for both")
+            failed.append(finding)
         return failed
 
     def _finding(self, node: str, student: Student) -> Finding:

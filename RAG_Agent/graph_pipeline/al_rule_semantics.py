@@ -20,7 +20,11 @@ Field semantics (the prompt states the same contract to the models):
   lie within [minimum_required, maximum_allowed] (0 = no cap).
 * ``selection_constraints``: minimum_count / maximum_count / required_one_of
   count passed subjects from the list (an empty list in minimum_count means any
-  subject); prohibited_combination forbids taking ``count`` (default all) of the
+  subject). A minimum_count worded "N *other* subjects" (handbook: "a 'C' in
+  Combined Mathematics or Physics ... and 'S' grades in two other subjects
+  listed below") counts only subjects different from those used for the
+  course's subject grade requirements -- the clauses are checked together, so
+  one subject cannot satisfy both; prohibited_combination forbids taking ``count`` (default all) of the
   listed subjects together; allowed_combination constraints in one rule are
   ORed and each needs ``count`` (default all, at most three) of its subjects;
   only_from requires every passed subject to come from its list.
@@ -123,7 +127,7 @@ class _CompiledRule:
     grade_counts: tuple[int, int, int, int]
     grade_items: tuple[tuple[int, frozenset[str]], ...]
     groups: tuple[tuple[frozenset[str], int, int], ...]
-    min_counts: tuple[tuple[frozenset[str], int], ...]
+    min_counts: tuple[tuple[frozenset[str], int, bool], ...]   # (subjects, count, "other" wording)
     max_counts: tuple[tuple[frozenset[str], int], ...]
     one_of: tuple[tuple[frozenset[str], int], ...]
     prohibited: tuple[tuple[frozenset[str], int], ...]
@@ -139,9 +143,9 @@ class _CompiledRule:
         for collection in (self.groups,):
             for subjects, _, _ in collection:
                 found |= subjects
-        for collection in (
-            self.min_counts, self.max_counts, self.one_of, self.prohibited, self.allowed
-        ):
+        for subjects, _, _ in self.min_counts:
+            found |= subjects
+        for collection in (self.max_counts, self.one_of, self.prohibited, self.allowed):
             for subjects, _ in collection:
                 found |= subjects
         for subjects in self.only_from:
@@ -203,7 +207,7 @@ def compile_rule(rule: dict[str, Any]) -> _CompiledRule:
             opaque.append((str(kind), " ".join(name.casefold().split()), str(count)))
             continue
         if kind == "minimum_count":
-            min_counts.append((subjects, count))
+            min_counts.append((subjects, count, uses_other_subjects(constraint)))
             continue
         if kind == "maximum_count":
             max_counts.append((subjects, count))
@@ -227,7 +231,7 @@ def compile_rule(rule: dict[str, Any]) -> _CompiledRule:
         mentioned |= options
     for subjects, _, _ in groups:
         mentioned |= subjects
-    for subjects, _ in (*min_counts, *max_counts, *one_of, *prohibited, *allowed):
+    for subjects, *_ in (*min_counts, *max_counts, *one_of, *prohibited, *allowed):
         mentioned |= subjects
     for subjects in only_from:
         mentioned |= subjects
@@ -311,7 +315,7 @@ def _rule_ok(rule: _CompiledRule, student: Student) -> bool:
     passed = student.passed()
     if rule.groups and not _groups_ok(rule.groups, passed):
         return False
-    for subjects, count in rule.min_counts:
+    for subjects, count, _ in rule.min_counts:
         pool = passed if not subjects else [s for s in passed if s in subjects]
         if len(pool) < count:
             return False
@@ -334,16 +338,76 @@ def _rule_ok(rule: _CompiledRule, student: Student) -> bool:
     return True
 
 
+OTHER_SUBJECTS_RE = re.compile(r"\bother\b", re.IGNORECASE)
+
+
+def uses_other_subjects(constraint: dict[str, Any]) -> bool:
+    """A minimum_count worded "two other subjects", "any other subject", ..."""
+
+    text = f"{constraint.get('condition', '')} {constraint.get('group_name', '')}"
+    return constraint.get("constraint_type") == "minimum_count" and bool(OTHER_SUBJECTS_RE.search(text))
+
+
+def rule_uses_other_subjects(rule: dict[str, Any]) -> bool:
+    return any(uses_other_subjects(c) for c in rule.get("selection_constraints", []))
+
+
+def _grade_assignments(rule: _CompiledRule, student: Student) -> list[frozenset[str]]:
+    """Every way of giving the rule's grade items distinct qualifying subjects."""
+
+    items = [frozenset(s for s in options if student.grade_of(s) >= rank) for rank, options in rule.grade_items]
+    found: set[frozenset[str]] = set()
+
+    def assign(index: int, used: frozenset[str]) -> None:
+        if index == len(items):
+            found.add(used)
+            return
+        for subject in items[index]:
+            if subject not in used:
+                assign(index + 1, used | {subject})
+
+    assign(0, frozenset())
+    return sorted(found, key=sorted)
+
+
+def _others_ok(rules: Sequence[_CompiledRule], student: Student) -> bool:
+    """"N other subjects" clauses are met by subjects not used for the grade items.
+
+    Rules checked together (a course's mandatory rules, plus one alternative
+    option): some choice of subjects for every grade item must leave enough
+    passed subjects for each "other" count.
+    """
+
+    others = [(subjects, count) for rule in rules for subjects, count, other in rule.min_counts if other]
+    if not others:
+        return True
+    passed = student.passed()
+    per_rule = [_grade_assignments(rule, student) for rule in rules if rule.grade_items]
+    for choice in itertools.product(*per_rule):
+        used = frozenset().union(*choice) if choice else frozenset()
+        if all(
+            sum(1 for s in passed if s not in used and (not subjects or s in subjects)) >= count
+            for subjects, count in others
+        ):
+            return True
+    return False
+
+
 def _combine(rules: Sequence[_CompiledRule], student: Student) -> bool:
     options: dict[str, dict[int, list[_CompiledRule]]] = {}
+    mandatory: list[_CompiledRule] = []
     for rule in rules:
         if not rule.group:
             if not _rule_ok(rule, student):
                 return False
+            mandatory.append(rule)
         else:
             options.setdefault(rule.group, {}).setdefault(rule.option, []).append(rule)
+    if not _others_ok(mandatory, student):
+        return False
     return all(
-        any(all(_rule_ok(rule, student) for rule in option) for option in group.values())
+        any(all(_rule_ok(rule, student) for rule in option) and _others_ok([*mandatory, *option], student)
+            for option in group.values())
         for group in options.values()
     )
 

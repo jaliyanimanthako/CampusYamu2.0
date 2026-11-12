@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CampusYamu Course Advisor</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #ffffff; --text: #1d2330; --muted: #5f6b7d; --line: #e2e6ec;
+    --accent: #2457c5; --accent-weak: #e8eefb; --danger: #b42318; --danger-weak: #fdecea;
+    --strong: #1f7a4d; --strong-bg: #e3f4ea; --competitive: #2457c5; --competitive-bg: #e8eefb;
+    --reach: #9a6400; --reach-bg: #fdf1dc; --unlikely: #b42318; --unlikely-bg: #fdecea;
+    --nohist: #5f6b7d; --nohist-bg: #eef0f3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151b; --panel: #1b2029; --text: #e6e9ef; --muted: #9aa5b5; --line: #2c3340;
+      --accent: #7ea6ff; --accent-weak: #1f2a44; --danger: #ff8a80; --danger-weak: #3a1e1e;
+      --strong: #6fd39c; --strong-bg: #173326; --competitive: #8fb2ff; --competitive-bg: #1f2a44;
+      --reach: #f3c46b; --reach-bg: #3a2f17; --unlikely: #ff8a80; --unlikely-bg: #3a1e1e;
+      --nohist: #9aa5b5; --nohist-bg: #262c36;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { padding: 18px 24px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  header h1 { margin: 0; font-size: 20px; }
+  header p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  main { display: grid; grid-template-columns: 380px 1fr; gap: 20px; padding: 20px 24px; align-items: start; }
+  @media (max-width: 960px) { main { grid-template-columns: 1fr; padding: 16px; } }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  form.panel { position: sticky; top: 16px; }
+  @media (max-width: 960px) { form.panel { position: static; } }
+  fieldset { border: 0; padding: 0; margin: 0 0 16px; }
+  legend { font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 8px 0 3px; }
+  select, input[type=text], input[type=number] {
+    width: 100%; padding: 7px 9px; border: 1px solid var(--line); border-radius: 7px;
+    background: var(--bg); color: var(--text); font: inherit; }
+  select:disabled { opacity: .55; }
+  .row { display: grid; grid-template-columns: 1fr 74px; gap: 8px; margin-bottom: 6px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .warn { font-size: 12.5px; color: var(--reach); background: var(--reach-bg); border-radius: 7px;
+          padding: 6px 9px; margin-top: 6px; }
+  .check { display: flex; gap: 8px; align-items: center; margin-top: 10px; font-size: 14px; color: var(--text); }
+  button { font: inherit; border-radius: 8px; cursor: pointer; }
+  button.primary { width: 100%; padding: 10px; border: 0; background: var(--accent); color: #fff; font-weight: 600; }
+  button.primary:disabled { opacity: .6; cursor: wait; }
+  button.ghost { padding: 6px 12px; border: 1px solid var(--line); background: var(--panel); color: var(--text); }
+  .error { background: var(--danger-weak); color: var(--danger); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; }
+  .empty { color: var(--muted); text-align: center; padding: 60px 20px; }
+  .summary { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; }
+  .summary b { font-weight: 600; }
+  .stats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .stat { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+  .stat b { font-size: 16px; margin-right: 4px; }
+  .badge { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+  .band-strong { background: var(--strong-bg); color: var(--strong); }
+  .band-competitive { background: var(--competitive-bg); color: var(--competitive); }
+  .band-reach { background: var(--reach-bg); color: var(--reach); }
+  .band-unlikely { background: var(--unlikely-bg); color: var(--unlikely); }
+  .band-no_history { background: var(--nohist-bg); color: var(--nohist); }
+  .method { background: var(--accent-weak); color: var(--accent); }
+  .feedback h2, .results h2 { font-size: 16px; margin: 0 0 8px; }
+  .feedback ul { margin: 8px 0 0; padding-left: 18px; }
+  .feedback li { margin: 4px 0; }
+  .caution { color: var(--danger); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0 10px; }
+  .tab { padding: 7px 12px; border: 1px solid var(--line); background: var(--panel); color: var(--text); }
+  .tab[aria-selected=true] { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .desc { color: var(--muted); font-size: 13px; margin: 0 0 10px; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; color: var(--muted); font-weight: 600; border-top: 0; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .course { font-weight: 600; }
+  .sub { color: var(--muted); font-size: 12.5px; }
+  .note { font-size: 13px; margin-top: 4px; }
+  .whatif { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .flag { font-size: 11.5px; color: var(--reach); }
+  .stack > * + * { margin-top: 16px; }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor;
+             border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite;
+             vertical-align: -2px; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<header>
+  <h1>CampusYamu Course Advisor</h1>
+  <p>Courses you can apply for (UGC 2024/2025 handbook), Z-score position, interests and distance from home.</p>
+</header>
+<main>
+  <form class="panel" id="form" autocomplete="off">
+    <fieldset>
+      <legend>A/L results</legend>
+      <label for="stream">Stream</label>
+      <select id="stream" required></select>
+      <label>Subjects and grades</label>
+      <div id="al"></div>
+      <div id="streamWarn" class="warn" hidden></div>
+      <div class="two">
+        <div><label for="cgt">Common General Test %</label><input type="number" id="cgt" min="0" max="100" value="40" required></div>
+        <div><label for="z">Z-score</label><input type="number" id="z" step="0.0001" min="-5" max="5" placeholder="e.g. 1.5600"></div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Admission district</legend>
+      <select id="admission" required></select>
+      <div class="hint">The district you sat the exam from (handbook §1.5); used for cut-offs.</div>
+    </fieldset>
+    <fieldset>
+      <legend>Home</legend>
+      <div class="two">
+        <div><label for="homeDistrict">Home district</label><select id="homeDistrict" required></select></div>
+        <div><label for="ds">DS division</label><select id="ds" required disabled><option value="">Choose district first</option></select></div>
+      </div>
+      <div class="hint">Used for travel times only; it can differ from the admission district.</div>
+    </fieldset>
+    <fieldset>
+      <legend>O/L grades</legend>
+      <div class="three" id="ol"></div>
+    </fieldset>
+    <fieldset>
+      <legend>Interests</legend>
+      <input type="text" id="prefs" placeholder="e.g. AI, engineering, design (most liked first)">
+      <label class="check"><input type="checkbox" id="llm"> <span id="llmLabel">Use AI (OpenAI) for interests and feedback</span></label>
+      <label for="n">Suggestions per list</label>
+      <input type="number" id="n" min="5" max="50" value="20">
+    </fieldset>
+    <button class="primary" id="go" type="submit">Find my courses</button>
+  </form>
+
+  <section id="out" class="stack">
+    <div class="panel empty">Fill in the form and press <b>Find my courses</b>.</div>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const time = (m) => m == null ? "—" : (m >= 60 ? `${Math.floor(Math.round(m) / 60)}h${String(Math.round(m) % 60).padStart(2, "0")}` : `${Math.round(m)}m`);
+const num = (v, d = 4) => v == null ? "—" : Number(v).toFixed(d);
+const signed = (v, d = 4) => v == null ? "—" : (v >= 0 ? "+" : "") + Number(v).toFixed(d);
+const band = (b) => `<span class="badge band-${esc(b)}">${esc((b || "").replace("_", " "))}</span>`;
+let OPTIONS = null, REPORT = null;
+
+function fillSelect(el, values, placeholder, selected) {
+  el.innerHTML = (placeholder ? `<option value="">${esc(placeholder)}</option>` : "") +
+    values.map((v) => `<option${v === selected ? " selected" : ""}>${esc(v)}</option>`).join("");
+}
+
+async function init() {
+  OPTIONS = await (await fetch("/api/options")).json();
+  fillSelect($("stream"), OPTIONS.streams, "Choose stream", "Physical Science");
+  const defaults = [["Combined Mathematics", "A"], ["Physics", "B"], ["Chemistry", "C"]];
+  $("al").innerHTML = defaults.map((_, i) => `<div class="row"><select class="al-subject" aria-label="A/L subject ${i + 1}"></select>
+      <select class="al-grade" aria-label="A/L grade ${i + 1}"></select></div>`).join("");
+  document.querySelectorAll(".al-subject").forEach((el, i) => fillSelect(el, OPTIONS.al_subjects, "Subject", defaults[i][0]));
+  document.querySelectorAll(".al-grade").forEach((el, i) => fillSelect(el, OPTIONS.al_grades, null, defaults[i][1]));
+  const olDefault = {Science: "B", English: "B", Mathematics: "A"};
+  $("ol").innerHTML = OPTIONS.ol_subjects.map((s) => `<div><label>${esc(s)}</label>
+      <select class="ol-grade" data-subject="${esc(s)}"></select></div>`).join("");
+  document.querySelectorAll(".ol-grade").forEach((el) => {
+    el.innerHTML = `<option value="">not given</option>` +
+      OPTIONS.ol_grades.map((g) => `<option${g === olDefault[el.dataset.subject] ? " selected" : ""}>${g}</option>`).join("");
+  });
+  fillSelect($("admission"), OPTIONS.districts, "Choose district");
+  fillSelect($("homeDistrict"), OPTIONS.districts, "Choose district");
+  $("homeDistrict").addEventListener("change", () => {
+    const list = OPTIONS.ds_divisions[$("homeDistrict").value] || [];
+    fillSelect($("ds"), list, list.length ? "Choose DS division" : "Choose district first");
+    $("ds").disabled = !list.length;
+  });
+  $("stream").addEventListener("change", () => { applyStreamDefaults(); checkStream(); });
+  document.querySelectorAll(".al-subject").forEach((el) => el.addEventListener("change", checkStream));
+  checkStream();
+  $("llm").checked = OPTIONS.llm_available;
+  $("llm").disabled = !OPTIONS.llm_available;
+  if (!OPTIONS.llm_available) $("llmLabel").textContent = "Use AI (OpenAI): not configured, offline mode";
+}
+
+function applyStreamDefaults() {
+  // a new stream resets the subjects to that stream's usual ones (grades are kept)
+  const defaults = OPTIONS.stream_hints[$("stream").value]?.defaults || [];
+  document.querySelectorAll(".al-subject").forEach((el, i) => { el.value = defaults[i] || ""; });
+}
+
+function checkStream() {
+  const stream = $("stream").value, hint = OPTIONS.stream_hints[stream] || {};
+  const chosen = [...document.querySelectorAll(".al-subject")].map((el) => el.value).filter(Boolean);
+  let message = "";
+  if (new Set(chosen).size < chosen.length) {
+    message = "Choose three different subjects.";
+  } else if (hint.allowed && chosen.some((s) => !hint.allowed.includes(s))) {
+    const odd = chosen.filter((s) => !hint.allowed.includes(s));
+    message = `${stream} subjects are usually ${hint.allowed.join(", ")}; you chose ${odd.join(", ")}.`;
+  } else if (hint.required_all && chosen.length === 3 && !hint.required_all.every((s) => chosen.includes(s))) {
+    message = `${stream} usually includes ${hint.required_all.join(" and ")}.`;
+  } else if (hint.required_any && chosen.length === 3 && !hint.required_any.some((s) => chosen.includes(s))) {
+    message = `${stream} usually includes at least one of ${hint.required_any.join(", ")}.`;
+  }
+  if (message) message += " Courses are decided by your subjects, so check they are right.";
+  $("streamWarn").textContent = message;
+  $("streamWarn").hidden = !message;
+}
+
+function collect() {
+  return {
+    stream: $("stream").value,
+    al: [...document.querySelectorAll("#al .row")].map((r) => ({
+      subject: r.querySelector(".al-subject").value, grade: r.querySelector(".al-grade").value })),
+    cgt: $("cgt").value,
+    z_score: $("z").value,
+    admission_district: $("admission").value,
+    home_district: $("homeDistrict").value,
+    ds_division: $("ds").value,
+    ol: [...document.querySelectorAll(".ol-grade")].map((el) => ({ subject: el.dataset.subject, grade: el.value })),
+    preferences: $("prefs").value,
+    use_llm: $("llm").checked,
+    suggestions: $("n").value,
+  };
+}
+
+$("form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const go = $("go");
+  go.disabled = true;
+  go.innerHTML = `<span class="spinner"></span>Running${$("llm").checked && $("prefs").value.trim() ? " (AI calls take ~20–40 s)" : ""}…`;
+  try {
+    const res = await fetch("/api/run", { method: "POST", headers: { "Content-Type": "application/json" },
+                                           body: JSON.stringify(collect()) });
+    const data = await res.json();
+    if (!res.ok) { showErrors(data.errors || [`Request failed (${res.status})`]); return; }
+    REPORT = data.report;
+    render(data.report, data.used_llm);
+  } catch (err) {
+    showErrors([`Could not reach the server: ${err.message}`]);
+  } finally {
+    go.disabled = false;
+    go.textContent = "Find my courses";
+  }
+});
+
+function showErrors(errors) {
+  $("out").innerHTML = `<div class="error">${errors.map(esc).join("<br>")}</div>` +
+    (REPORT ? "" : `<div class="panel empty">Fix the form and try again.</div>`);
+}
+
+function render(r, usedLlm) {
+  const p = r.profile, o = r.origin, c = r.counts, rk = r.rankings || {};
+  const al = p.al_results.map(([s, g]) => `${s} ${g}`).join(", ");
+  const prefs = r.preferences || {};
+  const interests = (prefs.groups || []).map((g) => `${esc(g.phrase)} → ${esc(g.categories.map((x) => x.name).join(" + "))}`).join(" · ");
+  const html = [];
+  html.push(`<div class="panel">
+    <div class="summary"><span><b>${esc(p.stream)}</b> — ${esc(al)}</span><span>CGT ${esc(p.common_general_test)}</span>
+      <span>Z-score <b>${esc(p.z_score ?? "—")}</b></span><span>Admission: ${esc(p.admission_district)}</span>
+      <span>Home: ${esc(o.ds_division)} (${esc(o.district)})</span></div>
+    <div class="stats">
+      <span class="stat"><b>${c.can_apply}</b>courses open</span><span class="stat"><b>${c.with_conditions}</b>with conditions</span>
+      <span class="stat"><b>${c.band_strong}</b>strong</span><span class="stat"><b>${c.band_competitive}</b>competitive</span>
+      <span class="stat"><b>${c.band_reach}</b>reach</span><span class="stat"><b>${c.band_unlikely}</b>unlikely</span>
+      ${c.band_no_history ? `<span class="stat"><b>${c.band_no_history}</b>no history</span>` : ""}
+    </div>
+    ${interests ? `<div class="hint" style="margin-top:8px">Interests: ${interests}${prefs.unmatched?.length ? ` · not understood: ${esc(prefs.unmatched.join(", "))}` : ""}</div>` : ""}
+    <div style="margin-top:10px"><button class="ghost" type="button" id="dl">Download JSON</button></div>
+  </div>`);
+  const fb = rk.distance?.feedback;
+  if (fb && fb.method !== "none") html.push(feedbackCard(fb, rk.distance.analysis));
+  const tabs = [
+    ["distance", "Balanced + distance", rk.distance],
+    ["preference", "By interests", rk.preference],
+    ["zscore", "By Z-score", rk.zscore],
+    ["bands", "All options", null],
+  ];
+  html.push(`<div class="panel results"><div class="tabs" role="tablist">${tabs.map(([id, label], i) =>
+      `<button class="tab" type="button" role="tab" data-tab="${id}" aria-selected="${i === 0}">${label}</button>`).join("")}</div>
+      <div id="tabBody"></div></div>`);
+  $("out").innerHTML = html.join("");
+  $("dl").addEventListener("click", download);
+  document.querySelectorAll(".tab").forEach((btn) => btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-selected", b === btn));
+    showTab(btn.dataset.tab);
+  }));
+  showTab("distance");
+}
+
+function feedbackCard(fb, analysis) {
+  const how = fb.method === "llm" ? `written by AI (${esc(fb.model)})` : "template feedback";
+  const items = [
+    ...fb.priorities.map((p) => `<li><b>${esc(p.label[0].toUpperCase() + p.label.slice(1))}:</b> ${esc(p.advice)}</li>`),
+    ...fb.close_calls.map((cc) => `<li><b>Close call:</b> ${esc(cc.note)}</li>`),
+    ...fb.cautions.map((t) => `<li class="caution">${esc(t)}</li>`),
+  ];
+  const risers = (analysis?.courses || []).filter((x) => !x.in_list);
+  return `<div class="panel feedback"><h2>Advice on your balanced list <span class="badge method">${how}</span></h2>
+    <div>${esc(fb.summary)}</div>${items.length ? `<ul>${items.join("")}</ul>` : ""}
+    ${risers.length ? `<div class="hint" style="margin-top:8px">Could join your list: ${risers.map((x) =>
+        `${esc(x.course_name)} (${esc(x.university)})`).join(", ")}</div>` : ""}
+    ${(fb.notes || []).map((n) => `<div class="hint">${esc(n)}</div>`).join("")}</div>`;
+}
+
+const WHATIF = { closer_to_home: "closer to home", interest_first: "interest first", selectivity_first: "selectivity first" };
+
+function courseCell(s, extra = "") {
+  const flags = (s.flags || []).length ? `<div class="flag">${esc(s.flags.join(" · "))}</div>` : "";
+  return `<div class="course">${esc(s.course_name)} <span class="sub">${esc(s.uni_code)}</span></div>
+          <div class="sub">${esc(s.university || "?")} — ${esc(s.site || "?")}</div>${flags}${extra}`;
+}
+
+function showTab(id) {
+  const rk = REPORT.rankings || {};
+  const body = $("tabBody");
+  if (id === "bands") { body.innerHTML = bandsTable(); return; }
+  const ranking = rk[id];
+  if (!ranking) { body.innerHTML = `<p class="desc">Not available.</p>`; return; }
+  const notes = (ranking.notes || []).map((n) => `<div class="hint">${esc(n)}</div>`).join("");
+  if (!ranking.suggestions.length) { body.innerHTML = `<p class="desc">${esc(ranking.title)}</p>${notes}`; return; }
+  const facts = Object.fromEntries((ranking.analysis?.courses || []).map((x) => [x.uni_code, x]));
+  const cnotes = ranking.feedback?.course_notes || {};
+  const scored = ranking.suggestions[0].combined_score !== undefined;
+  const rows = ranking.suggestions.map((s) => {
+    let extra = "";
+    if (id === "distance") {
+      const f = facts[s.uni_code];
+      if (f) extra += `<div class="whatif">what-if: ${Object.entries(f.profile_ranks).map(([k, v]) => `${WHATIF[k]} #${v}`).join(" · ")}</div>`;
+      if (cnotes[s.uni_code]) extra += `<div class="note">${esc(cnotes[s.uni_code].note)}</div>`;
+    }
+    const parts = s.parts ? `<div class="sub">${signed(s.parts.interest, 1)} interest · ${signed(s.parts.cutoff, 2)} cut-off · ${signed(s.parts.distance, 2)} distance</div>`
+                : (scored ? `<div class="sub">${signed(s.preference_score, 1)} interest · +${num(2.5 * s.latest_cutoff, 2)} cut-off</div>` : "");
+    return `<tr><td class="num">${s.position}</td><td>${courseCell(s, extra)}</td><td>${band(s.band)}</td>
+      <td class="num">${num(s.latest_cutoff)}<div class="sub">${esc(s.latest_year || "")}</div></td>
+      <td class="num">${signed(s.expected_margin)}</td><td class="num">${time(s.car_min)}</td>
+      ${scored ? `<td class="num"><b>${num(s.combined_score, 2)}</b>${parts}</td>` : ""}</tr>`;
+  }).join("");
+  body.innerHTML = `<p class="desc">${esc(ranking.title)} — top ${ranking.suggestions.length} of ${ranking.total}</p>${notes}
+    <div class="table-wrap"><table><thead><tr><th>#</th><th>Course</th><th>Band</th><th>Last cut-off</th>
+    <th>Your margin</th><th>Car</th>${scored ? "<th>Score</th>" : ""}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function bandsTable() {
+  const order = ["strong", "competitive", "reach", "unlikely", "no_history"];
+  const rows = order.flatMap((b) => (REPORT.bands[b] || []).map((r) => `<tr><td>${courseCell({
+      ...r, site: (r.site || "").split(" (incl.")[0], flags: [r.aptitude_test ? "aptitude test" : null,
+      r.status === "check_ol" ? "O/L to confirm" : null].filter(Boolean) })}</td><td>${band(r.band)}</td>
+      <td class="num">${num(r.predicted_cutoff)}${r.uncertainty != null ? `<div class="sub">± ${num(r.uncertainty)}</div>` : ""}</td>
+      <td class="num">${signed(r.expected_margin)}</td><td class="num">${time(r.car_min)}</td>
+      <td class="num">${r.preference_score == null ? "—" : signed(r.preference_score, 1)}</td></tr>`)).join("");
+  return `<p class="desc">Every option you can apply for, by Z-score band (estimated next cut-off ± uncertainty), nearest first.</p>
+    <div class="table-wrap"><table><thead><tr><th>Course</th><th>Band</th><th>Est. cut-off</th><th>Your margin</th>
+    <th>Car</th><th>Interest</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function download() {
+  const blob = new Blob([JSON.stringify(REPORT, null, 1)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "student_report.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+init().catch((err) => showErrors([`Could not load form options: ${err.message}`]));
+</script>
+</body>
+</html>
