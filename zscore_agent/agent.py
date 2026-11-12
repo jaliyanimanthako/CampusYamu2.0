@@ -28,10 +28,15 @@ class ZScoreAgent:
         course: str,
         z_score: float,
         limit: int = 50,
+        stream: str | None = None,
     ) -> dict[str, Any]:
-        """Run the complete deterministic workflow from three explicit inputs."""
+        """Run the complete deterministic workflow from three explicit inputs.
 
-        request = ZScoreRequest(district=district, course=course, z_score=z_score)
+        ``stream`` (optional) selects stream-specific cut-offs where the tables
+        publish them, e.g. Management Studies (TV) A = Commerce, B = any subjects.
+        """
+
+        request = ZScoreRequest(district=district, course=course, z_score=z_score, stream=stream)
         return self.evaluate(request, limit=limit)
 
     def evaluate(

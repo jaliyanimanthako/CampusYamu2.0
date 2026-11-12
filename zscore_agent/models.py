@@ -14,6 +14,7 @@ class ZScoreRequest:
     district: str
     course: str
     z_score: float
+    stream: str | None = None      # picks stream-specific cut-offs (e.g. Management Studies (TV) A/B)
 
     def __post_init__(self) -> None:
         if not self.district.strip():
@@ -24,7 +25,10 @@ class ZScoreRequest:
             raise ValueError("z_score must be a finite number")
 
     def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
+        data = asdict(self)
+        if data["stream"] is None:
+            del data["stream"]
+        return data
 
 
 @dataclass(frozen=True, order=True)

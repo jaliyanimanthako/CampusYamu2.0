@@ -12,8 +12,11 @@ from .models import CutoffPoint, ZScoreRequest
 from .text import (
     academic_year_start,
     canonical_district,
+    canonical_institution,
+    course_key,
     normalized_text,
     split_course_title,
+    split_course_variant,
 )
 
 
@@ -44,33 +47,51 @@ class SQLScoreStore:
             )
 
         # District is interpolated only after validation against the fixed allowlist.
+        # Every row is read (the table is small) because names vary across years;
+        # courses are compared by course_key and institutions by canonical_institution.
         sql = (
             f'SELECT academic_year, "Course of Study", "{district}" AS cutoff '
-            'FROM z_scores_all '
-            'WHERE lower("Course of Study") LIKE ? ESCAPE \'\\\' '
-            'ORDER BY academic_year, "Course of Study"'
+            'FROM z_scores_all ORDER BY academic_year, "Course of Study"'
         )
-        course_pattern = f"%{self._escape_like(request.course.casefold())}%"
         with closing(self._connect()) as connection:
-            rows = connection.execute(sql, (course_pattern,)).fetchall()
+            rows = connection.execute(sql).fetchall()
 
-        wanted_course = normalized_text(request.course)
-        matches: list[dict[str, str]] = []
+        wanted_course = course_key(request.course)
+        candidates = []
         for row in rows:
-            course, institution = split_course_title(str(row["Course of Study"]))
-            if normalized_text(course) != wanted_course:
+            title = str(row["Course of Study"])
+            course, institution = split_course_title(title)
+            base, letter, variant = split_course_variant(course)
+            if course_key(base) != wanted_course:
                 continue
             cutoff = row["cutoff"]
             if cutoff is None or not str(cutoff).strip():
                 continue
+            candidates.append((str(row["academic_year"]), title, institution, letter, variant,
+                               str(cutoff).strip()))
+
+        variants = {(letter, variant) for *_, letter, variant, _ in candidates if letter}
+        wanted_variant = self._variant_for(request.stream, variants)
+        matches: list[dict[str, str]] = []
+        seen: set[tuple[str, str, str]] = set()
+        for academic_year, title, institution, letter, variant, cutoff in candidates:
+            if letter and wanted_variant and (letter, variant) != wanted_variant:
+                continue
+            display = request.course + (f" — {letter} ({variant})" if letter and not wanted_variant else "")
+            canonical = canonical_institution(institution)
+            key = (academic_year, display, canonical)
+            if key in seen:            # same year printed under two name variants
+                continue
+            seen.add(key)
             matches.append(
                 {
-                    "academic_year": str(row["academic_year"]),
-                    "course": course,
-                    "institution": institution,
+                    "academic_year": academic_year,
+                    "course": display,
+                    "institution": canonical,
                     "district": district.title(),
-                    "z_score": str(cutoff).strip(),
+                    "z_score": cutoff,
                     "source_table": "z_scores_all",
+                    "source_title": title,
                 }
             )
 
@@ -92,6 +113,18 @@ class SQLScoreStore:
             ),
             matches=matches,
         )
+
+    @staticmethod
+    def _variant_for(stream: str | None, variants: set[tuple[str, str]]) -> tuple[str, str] | None:
+        """The stream-specific cut-off list for this student, when the course has several."""
+
+        if not variants or not stream:
+            return None
+        text = normalized_text(stream)
+        for letter, variant in sorted(variants):
+            if variant != "any" and text.startswith(variant):
+                return letter, variant
+        return next(((l, v) for l, v in sorted(variants) if v == "any"), None)
 
     @property
     def academic_years(self) -> tuple[str, ...]:
@@ -116,9 +149,12 @@ class SQLScoreStore:
                 'FROM z_scores_all ORDER BY academic_year, "Course of Study"'
             ).fetchall()
 
-        grouped: dict[tuple[str, str, str], list[CutoffPoint]] = {}
+        grouped: dict[tuple[str, str, str], dict[int, CutoffPoint]] = {}
         for row in rows:
             course, institution = split_course_title(str(row["Course of Study"]))
+            base, letter, variant = split_course_variant(course)
+            course = course_key(base) + (f" {letter}" if letter else "")
+            institution = canonical_institution(institution)
             academic_year = str(row["academic_year"])
             year = academic_year_start(academic_year)
             for district in DISTRICTS:
@@ -127,11 +163,12 @@ class SQLScoreStore:
                 except (TypeError, ValueError):
                     continue
                 series_key = (course, institution, district)
-                grouped.setdefault(series_key, []).append(
-                    CutoffPoint(year, academic_year, cutoff)
+                # one point per year even when a year is printed under two name variants
+                grouped.setdefault(series_key, {}).setdefault(
+                    year, CutoffPoint(year, academic_year, cutoff)
                 )
         return tuple(
-            tuple(sorted(history))
+            tuple(sorted(history.values()))
             for history in grouped.values()
             if len(history) >= 3
         )
