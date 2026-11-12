@@ -82,6 +82,29 @@
   .note { font-size: 13px; margin-top: 4px; }
   .whatif { font-size: 12px; color: var(--muted); margin-top: 3px; }
   .flag { font-size: 11.5px; color: var(--reach); }
+  button.ask { margin-top: 6px; padding: 3px 10px; font-size: 12.5px; border: 1px solid var(--accent);
+               background: transparent; color: var(--accent); border-radius: 999px; }
+  button.ask:hover { background: var(--accent-weak); }
+  #chat { position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100%); background: var(--panel);
+          border-left: 1px solid var(--line); box-shadow: -8px 0 24px rgba(0,0,0,.18); display: flex;
+          flex-direction: column; z-index: 10; }
+  #chat[hidden] { display: none; }
+  .chat-head { padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; gap: 10px; align-items: start; }
+  .chat-head .t { flex: 1; }
+  .chat-msgs { flex: 1; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { padding: 9px 12px; border-radius: 10px; max-width: 92%; font-size: 14px; white-space: pre-wrap; }
+  .msg.user { align-self: flex-end; background: var(--accent); color: #fff; }
+  .msg.bot { align-self: flex-start; background: var(--bg); border: 1px solid var(--line); }
+  .msg .src { margin-top: 6px; font-size: 12px; color: var(--muted); white-space: normal; }
+  .msg.err { background: var(--danger-weak); color: var(--danger); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg);
+          color: var(--text); font-size: 12.5px; }
+  .career-bar { padding: 8px 16px; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  .career-bar button { padding: 4px 10px; font-size: 12.5px; }
+  .msg .src a { color: var(--accent); }
+  .chat-form { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line); }
+  .chat-form input { flex: 1; }
   .stack > * + * { margin-top: 16px; }
   .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor;
              border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite;
@@ -139,6 +162,19 @@
     <div class="panel empty">Fill in the form and press <b>Find my courses</b>.</div>
   </section>
 </main>
+
+<aside id="chat" hidden aria-label="Ask about this course">
+  <div class="chat-head">
+    <div class="t"><div class="course" id="chatTitle"></div><div class="sub" id="chatSub"></div></div>
+    <button class="ghost" type="button" id="chatClose" aria-label="Close">✕</button>
+  </div>
+  <div class="career-bar" id="careerBar"></div>
+  <div class="chat-msgs" id="chatMsgs"></div>
+  <form class="chat-form" id="chatForm" autocomplete="off">
+    <input type="text" id="chatInput" placeholder="Ask about this course…" maxlength="1000">
+    <button class="primary" style="width:auto;padding:8px 14px" id="chatSend" type="submit">Ask</button>
+  </form>
+</aside>
 
 <script>
 const $ = (id) => document.getElementById(id);
@@ -252,6 +288,9 @@ function showErrors(errors) {
 }
 
 function render(r, usedLlm) {
+  Object.keys(CHATS).forEach((k) => delete CHATS[k]);     // a new student: start fresh chats
+  $("chat").hidden = true;
+  CHAT_UNI = null;
   const p = r.profile, o = r.origin, c = r.counts, rk = r.rankings || {};
   const al = p.al_results.map(([s, g]) => `${s} ${g}`).join(", ");
   const prefs = r.preferences || {};
@@ -309,9 +348,140 @@ const WHATIF = { closer_to_home: "closer to home", interest_first: "interest fir
 
 function courseCell(s, extra = "") {
   const flags = (s.flags || []).length ? `<div class="flag">${esc(s.flags.join(" · "))}</div>` : "";
+  const ask = OPTIONS?.llm_available && s.course_code
+    ? `<div><button class="ask" type="button" data-uni="${esc(s.uni_code)}">Ask about this course</button></div>` : "";
   return `<div class="course">${esc(s.course_name)} <span class="sub">${esc(s.uni_code)}</span></div>
-          <div class="sub">${esc(s.university || "?")} — ${esc(s.site || "?")}</div>${flags}${extra}`;
+          <div class="sub">${esc(s.university || "?")} — ${esc(s.site || "?")}</div>${flags}${extra}${ask}`;
 }
+
+// --- "Ask about this course" chat --------------------------------------------------------
+const CHATS = {};            // uni_code -> [{role, content, sources?, notes?, error?}]
+let CHAT_UNI = null;
+const STARTERS = ["What degree will I get and how long is it?", "Is there an aptitude test or any special requirement?",
+                  "What jobs can I get after this course in Sri Lanka?", "How likely am I to get in, based on my Z-score?"];
+let CAREER_POLL = null;
+
+async function loadCareer(announce = false) {
+  const uni = CHAT_UNI, course = courseFacts(uni);
+  if (!course) return;
+  clearTimeout(CAREER_POLL);
+  let info;
+  try { info = await (await fetch(`/api/career?course=${encodeURIComponent(course.course_name)}`)).json(); }
+  catch { $("careerBar").textContent = "Career research status unavailable."; return; }
+  if (CHAT_UNI !== uni) return;
+  const job = info.job, bar = $("careerBar");
+  if (job?.state === "running") {
+    bar.hidden = false;
+    bar.innerHTML = `<span class="spinner"></span>Researching careers for ${esc(course.course_name)} on the web… <span class="sub">${esc(job.message)}</span>`;
+    CAREER_POLL = setTimeout(() => loadCareer(true), 4000);
+    return;
+  }
+  if (info.outlook) {
+    const when = (info.outlook.generated_at || "").slice(0, 10);
+    bar.hidden = false;
+    bar.innerHTML = `Career research ✓ <span class="sub">(web, ${esc(when)}, ${info.outlook.sources} sources)</span> — ask about jobs, demand, pay or further study.`;
+    if (announce && job?.state === "done") {
+      CHATS[uni].push({ role: "assistant", content: "Career research is ready. Ask me about jobs, demand, salaries or further study for this course." });
+      renderChat();
+    }
+    return;
+  }
+  bar.innerHTML = job?.state === "failed" ? `Career research failed: ${esc(job.message)}` : "";
+  bar.hidden = !bar.innerHTML;
+}
+
+function courseFacts(uni) {
+  const row = Object.values(REPORT.bands).flat().find((r) => r.uni_code === uni);
+  if (!row) return null;
+  const order3 = REPORT.rankings?.distance;
+  const pick = order3?.suggestions?.find((x) => x.uni_code === uni);
+  return { ...row, order3_position: pick?.position, parts: pick?.parts,
+           order3_note: order3?.feedback?.course_notes?.[uni]?.note };
+}
+
+function studentFacts() {
+  const p = REPORT.profile, o = REPORT.origin;
+  return { stream: p.stream, al_results: p.al_results, z_score: p.z_score, admission_district: p.admission_district,
+           home: `${o.ds_division} (${o.district})`, interests: REPORT.preferences?.text || "" };
+}
+
+function openChat(uni) {
+  const course = courseFacts(uni);
+  if (!course) return;
+  CHAT_UNI = uni;
+  CHATS[uni] = CHATS[uni] || [];
+  $("chatTitle").textContent = `${course.course_name} (${uni})`;
+  $("chatSub").textContent = `${course.university || ""} — answers from the handbook and your results`;
+  $("chat").hidden = false;
+  $("careerBar").textContent = "";
+  $("careerBar").hidden = true;
+  renderChat();
+  loadCareer();
+  $("chatInput").focus();
+}
+
+function renderChat() {
+  const msgs = CHATS[CHAT_UNI] || [];
+  const html = msgs.map((m) => {
+    if (m.role === "user") return `<div class="msg user">${esc(m.content)}</div>`;
+    const src = (m.sources || []).map((s) => {
+      let line = `${esc(s.id)}: ${esc(s.citation)}${s.kind === "handbook_search" || s.kind === "career_outlook" ? ` — ${esc(s.title)}` : ""}`;
+      if (s.kind === "career_outlook" && s.links?.length) line += "<br>" + s.links.filter((l) => /^https?:\/\//i.test(l.url || "")).slice(0, 6).map((l) =>
+        `<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.title || l.url)}</a>`).join("<br>");
+      return line;
+    }).join("<br>");
+    const notes = (m.notes || []).map((n) => `<div>${esc(n)}</div>`).join("");
+    return `<div class="msg bot${m.error ? " err" : ""}">${esc(m.content)}${src || notes ? `<div class="src">${src}${notes}</div>` : ""}</div>`;
+  });
+  if (!msgs.length) html.push(`<div class="sub">Try one of these:</div><div class="chips">${STARTERS.map((q) =>
+    `<button class="chip" type="button" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>`);
+  $("chatMsgs").innerHTML = html.join("");
+  $("chatMsgs").scrollTop = $("chatMsgs").scrollHeight;
+}
+
+async function sendQuestion(question) {
+  const uni = CHAT_UNI, msgs = CHATS[uni];
+  question = question.trim();
+  if (!question || !uni) return;
+  const history = msgs.filter((m) => !m.error).map((m) => ({ role: m.role, content: m.content }));
+  msgs.push({ role: "user", content: question });
+  msgs.push({ role: "assistant", content: "Thinking…", pending: true });
+  renderChat();
+  $("chatSend").disabled = true;
+  try {
+    const res = await fetch("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ course: courseFacts(uni), student: studentFacts(), question, history }) });
+    const data = await res.json();
+    msgs.pop();
+    if (!res.ok) msgs.push({ role: "assistant", content: (data.errors || ["Request failed"]).join(" "), error: true });
+    else {
+      msgs.push({ role: "assistant", content: data.answer, sources: data.sources, notes: data.notes });
+      if (data.career?.job?.state === "running" && CHAT_UNI === uni) loadCareer(true);
+    }
+  } catch (err) {
+    msgs.pop();
+    msgs.push({ role: "assistant", content: `Could not reach the server: ${err.message}`, error: true });
+  } finally {
+    $("chatSend").disabled = false;
+    if (CHAT_UNI === uni) renderChat();
+  }
+}
+
+$("out").addEventListener("click", (event) => {
+  const button = event.target.closest("button.ask");
+  if (button) openChat(button.dataset.uni);
+});
+$("chatMsgs").addEventListener("click", (event) => {
+  const chip = event.target.closest("button.chip");
+  if (chip) sendQuestion(chip.dataset.q);
+});
+$("chatForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const q = $("chatInput").value;
+  $("chatInput").value = "";
+  sendQuestion(q);
+});
+$("chatClose").addEventListener("click", () => { $("chat").hidden = true; CHAT_UNI = null; clearTimeout(CAREER_POLL); });
 
 function showTab(id) {
   const rk = REPORT.rankings || {};

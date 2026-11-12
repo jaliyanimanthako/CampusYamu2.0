@@ -6,6 +6,9 @@
 GET  /              the form + results page (web_app/static/index.html)
 GET  /api/options   dropdown values: streams, subjects, grades, districts, DS divisions by district
 POST /api/run       run the LangGraph pipeline for one student; returns the report JSON
+POST /api/ask       "Ask about this course": one question about one course (course_chat.py)
+GET  /api/career?course=NAME   cached career outlook (web agent) + research job status
+POST /api/career/research      start the web agent for one course (background, minutes)
 
 Requests are handled one at a time (the pipeline holds SQLite connections).
 OpenAI is used only if OPENAI_API_KEY is set (.env) and the form asks for it.
@@ -22,11 +25,15 @@ import traceback
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from typing import Any
+from urllib.parse import parse_qs, urlparse
 
 from course_finder.finder import AL_GRADES, OL_GRADES, CourseFinder
 from RAG_Agent.graph_pipeline.al_clause_parsers import canonical_subject
 from RAG_Agent.graph_pipeline.handbook_prose import OWNER_INTERPRETATIONS, _load_env
 from student_pipeline.graph import build_pipeline, run_pipeline
+
+from .career_outlook import CareerOutlookStore, CareerResearchJobs, missing_keys
+from .course_chat import CourseChat
 
 STATIC = Path(__file__).resolve().parent / "static"
 DEFAULT_PORT = 8770
@@ -54,8 +61,12 @@ OWNER_STREAM_DEFAULTS = {"Biological Science": ["Biology", "Chemistry", "Physics
 class WebApp:
     def __init__(self) -> None:
         self.finder = CourseFinder()
+        self.outlooks = CareerOutlookStore()
+        self.career_jobs = CareerResearchJobs(self.outlooks)
+        self.chat = CourseChat(outlooks=self.outlooks)
         self._pipelines: dict[tuple[bool, int], Any] = {}
         self.options = self._options()
+        self.course_names = {a["name"] for _, a in self.finder.graph.nodes(data=True) if a["type"] == "Course"}
 
     def pipeline(self, use_llm: bool, suggestions: int = 20):
         key = (use_llm, suggestions)
@@ -98,6 +109,52 @@ class WebApp:
             else:
                 hints[stream] = {**STREAM_FORM_HINTS.get(stream, {"defaults": []}), "source": "form hint"}
         return hints
+
+    def career(self, course: str) -> dict[str, Any]:
+        outlook = self.outlooks.get(course) if course else None
+        missing = missing_keys()
+        return {
+            "course": course,
+            "available": not missing, "missing_keys": missing,
+            "outlook": None if not outlook else {
+                "generated_at": outlook.get("generated_at"), "status": outlook.get("status"),
+                "sources": len(outlook.get("evidence_index", [])),
+                "overall": (outlook.get("analysis") or {}).get("overall_outlook"),
+            },
+            "job": self.career_jobs.status(course) if course else None,
+        }
+
+    def start_career(self, body: dict[str, Any]) -> tuple[int, dict[str, Any]]:
+        course = str(body.get("course") or "").strip()
+        if not course or course not in self.course_names:
+            return 400, {"errors": ["Unknown course"]}
+        if missing := missing_keys():
+            return 400, {"errors": ["Career research needs " + ", ".join(missing) + " in .env"]}
+        started, message = self.career_jobs.start(course)
+        return (202 if started else 409), {"message": message, **self.career(course)}
+
+    def ask(self, body: dict[str, Any]) -> tuple[int, dict[str, Any]]:
+        if not self.options["llm_available"]:
+            return 400, {"errors": ["The course chat needs OPENAI_API_KEY in .env"]}
+        course = body.get("course") or {}
+        if not course.get("course_code") or not str(body.get("question") or "").strip():
+            return 400, {"errors": ["Give a course and a question"]}
+        history = [t for t in body.get("history") or [] if isinstance(t, dict)]
+        try:
+            result = self.chat.ask(body["question"], course, body.get("student") or {}, history)
+        except (RuntimeError, ValueError) as exc:
+            return 502, {"errors": [f"Could not answer: {exc}"]}
+        name = str(course.get("course_name") or "")
+        if result.pop("start_career_research", False) and name in self.course_names:
+            # only when the student asked for it in the chat
+            if missing := missing_keys():
+                result["notes"].append("career research is not configured (" + ", ".join(missing) + ")")
+            else:
+                started, message = self.career_jobs.start(name)
+                if not started:
+                    result["notes"].append(message)
+        result["career"] = self.career(name) if name else None
+        return 200, result
 
     def run(self, form: dict[str, Any]) -> tuple[int, dict[str, Any]]:
         try:
@@ -156,11 +213,14 @@ def make_handler(web: WebApp):
                 self._send(200, (STATIC / "index.html").read_bytes(), "text/html; charset=utf-8")
             elif self.path == "/api/options":
                 self._json(200, web.options)
+            elif self.path.startswith("/api/career?"):
+                query = parse_qs(urlparse(self.path).query)
+                self._json(200, web.career((query.get("course") or [""])[0]))
             else:
                 self._json(404, {"error": "not found"})
 
         def do_POST(self) -> None:  # noqa: N802
-            if self.path != "/api/run":
+            if self.path not in ("/api/run", "/api/ask", "/api/career/research"):
                 self._json(404, {"error": "not found"})
                 return
             length = int(self.headers.get("Content-Length") or 0)
@@ -173,10 +233,11 @@ def make_handler(web: WebApp):
                 self._json(400, {"errors": ["invalid JSON"]})
                 return
             try:
-                status, data = web.run(form)
+                handler = {"/api/ask": web.ask, "/api/career/research": web.start_career}.get(self.path, web.run)
+                status, data = handler(form)
             except Exception as exc:                      # keep the server up; show the reason
                 traceback.print_exc()
-                status, data = 500, {"errors": [f"Pipeline failed: {exc}"]}
+                status, data = 500, {"errors": [f"Request failed: {exc}"]}
             self._json(status, data)
 
         def log_message(self, fmt: str, *args: Any) -> None:
@@ -212,6 +273,7 @@ def main(argv: list[str] | None = None) -> int:
     finally:
         server.server_close()
         web.finder.close()
+        web.chat.close()
     return 0
 
 
