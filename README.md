@@ -53,6 +53,7 @@ docker compose --profile neo4j up --build -d    # + Neo4j for handbook search in
 │   │                      preference, ranking, career_trends
 │   ├── pipeline/          LangGraph student pipeline + CLI
 │   ├── api/               FastAPI service (/v1): the backend for the web page and the mobile app
+│   ├── prompts/           every LLM prompt in one place (python -m campusyamu.prompts lists them)
 │   └── web/               web page (static), course chat, career-outlook cache
 ├── data/
 │   ├── raw/               handbook, UGC tables, travel CSVs, Z-score DB

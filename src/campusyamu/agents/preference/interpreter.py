@@ -28,6 +28,7 @@ from campusyamu.core import settings
 
 from .categories import CATEGORIES, CATEGORY_BY_ID, CourseTags, relatedness
 from campusyamu.core.openai_client import call_structured
+from campusyamu.prompts.preference import INTERESTS_SYSTEM as SYSTEM_PROMPT
 
 DEFAULT_MODEL = "gpt-4o-mini"
 NO_PREFERENCE = {"anything", "any", "everything", "no preference", "none", "not sure", "dont know",
@@ -55,6 +56,7 @@ class Interpretation:
     unmatched: list[str] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
     model: str | None = None
+    baseline_marks: int = 0        # interest x course pairs the engine left out, filled from reviewed marks
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -120,6 +122,7 @@ def fill_marks(result: Interpretation, courses: list[str] | None, tags: dict[str
                 mismatches[code] = baseline_mismatch(tags[code], pref)
                 missing += code in given             # count a course once
         pref.marks, pref.mismatches = marks, mismatches
+    result.baseline_marks = missing
     if missing and result.method == "llm":
         result.notes.append(f"{missing} course marks were missing from the LLM answer; "
                             "used the reviewed category marks for them")
@@ -189,27 +192,6 @@ class KeywordInterpreter:
                 result.unmatched.append(raw.strip())
         return result
 
-
-SYSTEM_PROMPT = """You help Sri Lankan A/L students choose state-university degree programmes.
-Map the student's study interests to the fixed categories given, then mark how close each course is
-to each interest.
-Rules:
-- One entry per distinct interest, in the student's order (first = most preferred).
-- For each entry give 1-2 category ids, best fit first. Use only the given ids.
-- Add course_codes only when the student names or clearly describes a specific programme from "programmes".
-- For each entry, give EVERY course in "courses_to_mark" two marks:
-  * mark, 1 to 10, how close it is to that interest: 10 = exactly what the student asked for,
-    7-9 = strongly related, 4-6 = partly related, 1-3 = barely related.
-  * mismatch, -1 to -10, how far off it is: -1 = on topic, -3 = a near miss (similar subjects and skills),
-    -6 = a clear miss, -10 = nothing to do with the interest.
-  A course can have a low mark and a mild mismatch (for "engineering", Physical Science: mark 2,
-  mismatch -3) or a low mark and a strong mismatch (for "engineering", Design: mark 3, mismatch -7;
-  Dance: mark 1, mismatch -10).
-  Use each course's category_marks as a guide so marks stay consistent, but judge the specific interest:
-  for "fashion", Fashion Design is mark 10, mismatch -1, while Architecture is about mark 3, mismatch -6.
-- "anything", "not sure" and similar mean no preference: return no entry for them.
-- Put words that are not study interests, or that fit no category, in unmatched (copy the student's words).
-- Do not invent interests the student did not express."""
 
 
 def _schema(course_codes: list[str], mark_codes: list[str]) -> dict[str, Any]:
@@ -306,16 +288,43 @@ class LLMInterpreter:
         return fill_marks(result, courses, self.tags)
 
 
-class PreferenceInterpreter:
-    """LLM when available, keywords otherwise (or when the call fails)."""
+ENGINES = ("openai", "gemini_decision")
 
-    def __init__(self, tags: dict[str, CourseTags], use_llm: bool = True, model: str | None = None) -> None:
+
+def preference_engine() -> str:
+    """Which AI reads the interests: PREFERENCE_ENGINE, then preferences.engine in settings.yaml."""
+
+    return (os.getenv("PREFERENCE_ENGINE") or settings.get("preferences.engine", "openai")).strip().lower()
+
+
+def engine_available(engine: str | None = None) -> bool:
+    engine = engine or preference_engine()
+    return bool(os.getenv({"openai": "OPENAI_API_KEY", "gemini_decision": "GEMINI_API_KEY"}.get(engine, "")))
+
+
+class PreferenceInterpreter:
+    """The chosen AI engine when available, keywords otherwise (or when the call fails).
+
+    engine: "openai" (LLMInterpreter, gpt-4o-mini writes the marks) or "gemini_decision"
+    (GeminiDecisionInterpreter, gemini-decision-1 scores them); default from preference_engine().
+    """
+
+    def __init__(self, tags: dict[str, CourseTags], use_llm: bool = True, model: str | None = None,
+                 engine: str | None = None) -> None:
         self.keywords = KeywordInterpreter(tags)
-        self.llm: LLMInterpreter | None = None
+        self.llm: Any = None
+        self.engine = engine or preference_engine()
         self.reason = "LLM disabled (--no-llm)"
         if use_llm:
             try:
-                self.llm = LLMInterpreter(tags, model=model)
+                if self.engine == "openai":
+                    self.llm = LLMInterpreter(tags, model=model)
+                elif self.engine == "gemini_decision":
+                    from .decision import GeminiDecisionInterpreter
+
+                    self.llm = GeminiDecisionInterpreter(tags, model=model)
+                else:
+                    raise RuntimeError(f"unknown preference engine {self.engine!r} (use {' or '.join(ENGINES)})")
             except RuntimeError as exc:
                 self.reason = f"LLM not used: {exc}"
 
