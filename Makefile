@@ -10,7 +10,7 @@ COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
 .PHONY: help install install-rerank test web api student kg kg-refresh kg-viewer kg-chat neo4j-push \
-        search-chunk search-embed search-load travel-db career clean docker-build docker-up docker-down docker-logs
+        search-chunk search-embed search-load travel-db career research clean docker-build docker-up docker-down docker-logs
 
 help:
 	@echo "Setup"
@@ -34,6 +34,7 @@ help:
 	@echo "Data"
 	@echo "  make travel-db        rebuild data/processed/travel/travel_times.db from the CSVs"
 	@echo "  make career COURSE=\"Quantity Surveying\"   web career research for one course (paid)"
+	@echo "  make research COURSE=Engineering UNI=Moratuwa   career + university website + specialisations, in parallel (paid)"
 	@echo "Docker"
 	@echo "  make docker-up        build and start the web app (+ Neo4j) with docker compose"
 	@echo "  make docker-down / docker-logs"
@@ -90,6 +91,9 @@ travel-db:
 career:
 	@test -n "$(COURSE)" || (echo 'usage: make career COURSE="Quantity Surveying"' && exit 1)
 	$(RUN) python -m campusyamu.web.career_outlook --course "$(COURSE)"
+
+research:
+	$(RUN) python -m campusyamu.web.course_research --course "$(COURSE)" --university "$(UNI)"
 
 clean:
 	find . -name __pycache__ -type d -prune -not -path "./.venv/*" -exec rm -rf {} +

@@ -1,0 +1,25 @@
+{
+  "_note": "Official website domains per institution, for the course chat's university-website source. Domain only, no https:// or paths (e.g. \"uom.lk\"). Several allowed; first = main site. Subdomains are included automatically (\"pdn.ac.lk\" also covers \"eng.pdn.ac.lk\"). Owner-reviewed.",
+  "domains": {
+    "Eastern University, Sri Lanka": ["esn.ac.lk"],
+    "Gampaha Wickramarachchi University of Indigenous Medicine, Sri Lanka": ["gwu.ac.lk"],
+    "Rajarata University of Sri Lanka": ["rjt.ac.lk"],
+    "Sabaragamuwa University of Sri Lanka": ["sab.ac.lk"],
+    "South Eastern University of Sri Lanka": ["seu.ac.lk"],
+    "Sripalee Campus": ["spc.cmb.ac.lk"],
+    "Swamy Vipulananda Institute of Aesthetic Studies": ["svias.esn.ac.lk"],
+    "Trincomalee Campus": ["tc.esn.ac.lk"],
+    "University of Colombo": ["cmb.ac.lk"],
+    "University of Colombo School of Computing": ["ucsc.cmb.ac.lk", "ucsc.lk"],
+    "University of Jaffna": ["jfn.ac.lk"],
+    "University of Kelaniya": ["kln.ac.lk"],
+    "University of Moratuwa": ["uom.lk", "mrt.ac.lk"],
+    "University of Peradeniya": ["pdn.ac.lk"],
+    "University of Ruhuna": ["ruh.ac.lk"],
+    "University of Sri Jayewardenepura": ["sjp.ac.lk"],
+    "University of Vavuniya, Sri Lanka": ["vau.ac.lk", "vau.jfn.ac.lk"],
+    "University of the Visual & Performing Arts": ["vpa.ac.lk"],
+    "Uva Wellassa University of Sri Lanka": ["uwu.ac.lk"],
+    "Wayamba University of Sri Lanka": ["wyb.ac.lk"]
+  }
+}

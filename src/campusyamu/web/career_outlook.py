@@ -113,26 +113,53 @@ def run_research(course: str, on_progress: Callable[[dict[str, Any]], None] | No
 
 
 class CareerResearchJobs:
-    """One background research run at a time; status is polled by the page."""
+    """One background research run at a time; status is polled by the page (GET /v1/career-outlook).
 
-    def __init__(self, store: CareerOutlookStore, runner: Callable[..., dict[str, Any]] = run_research) -> None:
+    start(course) runs career research only. start(course, offering) - what the course chat does, with the
+    course row (uni_code, course_code, course_name, university) - runs the full course research
+    (course_research.py): career trends + the university's website + its specialisations, in parallel.
+    """
+
+    def __init__(self, store: CareerOutlookStore, runner: Callable[..., dict[str, Any]] = run_research,
+                 websites: Any = None) -> None:
         self.store = store
         self.runner = runner
+        self.websites = websites                    # UniversityPages; None = career research only
         self.jobs: dict[str, dict[str, Any]] = {}
         self.lock = threading.Lock()
 
     def status(self, course: str) -> dict[str, Any] | None:
         return self.jobs.get(slug(course))
 
-    def start(self, course: str) -> tuple[bool, str]:
+    def start(self, course: str, offering: dict[str, Any] | None = None) -> tuple[bool, str]:
+        full = bool(offering and offering.get("uni_code") and self.websites is not None and self.websites.enabled)
         with self.lock:
             busy = [j for j in self.jobs.values() if j["state"] == "running"]
             if busy:
                 return False, f"Already researching {busy[0]['course']}; try again when it finishes"
-            job = {"course": course, "state": "running", "started": time.time(), "message": "starting…"}
+            job = {"course": course, "state": "running", "started": time.time(), "message": "starting…",
+                   "scope": "course" if full else "career"}
             self.jobs[slug(course)] = job
-        threading.Thread(target=self._run, args=(course, job), daemon=True).start()
+        target, args = (self._run_full, (dict(offering), job)) if full else (self._run, (course, job))
+        threading.Thread(target=target, args=args, daemon=True).start()
         return True, "started"
+
+    def _run_full(self, offering: dict[str, Any], job: dict[str, Any]) -> None:
+        from .course_research import CourseResearch
+
+        def event(agent: str, message: str) -> None:
+            job["message"] = f"{agent}: {message}"[:160]
+
+        try:
+            out = CourseResearch(self.websites, self.store, career_runner=self.runner, on_event=event).run(offering)
+            states = {name: r["state"] for name, r in out["results"].items()}
+            if all(s in ("failed", "skipped") for s in states.values()) and "failed" in states.values():
+                raise RuntimeError("; ".join(f"{n}: {r.get('error') or r.get('reason')}"
+                                             for n, r in out["results"].items()))
+            job.update(state="done", finished=time.time(), parts=states,
+                       message="research ready: " + ", ".join(f"{n} {s}" for n, s in states.items()))
+        except Exception as exc:                        # report to the page, keep the server up
+            job.update(state="failed", message=str(exc)[:200], finished=time.time())
 
     def _run(self, course: str, job: dict[str, Any]) -> None:
         def progress(event: dict[str, Any]) -> None:
