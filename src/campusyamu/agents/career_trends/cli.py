@@ -56,7 +56,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--provider",
         choices=WEB_PROVIDERS,
-        help="Web search provider (default: SEARCH_PROVIDER, else tavily if "
+        help="Web search provider (default: career.search_provider in settings, else tavily if "
         "TAVILY_API_KEY is set, else firecrawl)",
     )
     parser.add_argument(

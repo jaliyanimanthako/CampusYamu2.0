@@ -8,6 +8,8 @@ import urllib.error
 import urllib.request
 from typing import Any, Protocol
 
+from campusyamu.core import settings
+
 
 class StructuredAnalyticsModel(Protocol):
     model: str
@@ -31,11 +33,9 @@ class OpenAIResponsesClient:
         max_output_tokens: int = 5_000,
     ) -> None:
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        self.model = model or os.getenv("OPENAI_MODEL", "")
+        self.model = model or settings.model("career_analysis")         # models.career_analysis
         if not self.api_key:
             raise ValueError("Set OPENAI_API_KEY before using career analytics")
-        if not self.model:
-            raise ValueError("Set OPENAI_MODEL before using career analytics")
         self.base_url = base_url.rstrip("/")
         self.timeout_seconds = timeout_seconds
         self.max_output_tokens = max_output_tokens

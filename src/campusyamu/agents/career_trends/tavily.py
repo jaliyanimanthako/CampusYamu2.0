@@ -9,6 +9,8 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
+from campusyamu.core import settings
+
 from .firecrawl import _clean_url
 from .models import SearchQuery, WebDocument
 from .source_registry import EXCLUDED_DOMAINS, classify_domain
@@ -33,7 +35,7 @@ class TavilyClient:
         if not self.api_key:
             raise ValueError("Set TAVILY_API_KEY before using the Tavily search client")
         # advanced = 2 credits/search with better relevance; basic = 1 credit.
-        self.search_depth = search_depth or os.getenv("TAVILY_SEARCH_DEPTH") or "advanced"
+        self.search_depth = search_depth or settings.get("career.tavily_search_depth") or "advanced"
         self.base_url = base_url.rstrip("/")
         self.timeout_seconds = timeout_seconds
 

@@ -522,7 +522,11 @@ class TavilyAndConcurrencyTest(unittest.TestCase):
             self.assertEqual(web_provider_name("firecrawl"), "firecrawl")
         with patch.dict("os.environ", {"FIRECRAWL_API_KEY": "k"}, clear=True):
             self.assertEqual(web_provider_name(), "firecrawl")
-        with patch.dict("os.environ", {"SEARCH_PROVIDER": "bing"}, clear=True):
+        from campusyamu.core import settings
+
+        with patch.dict("os.environ", {"TAVILY_API_KEY": "k"}, clear=True), \
+                patch.object(settings, "get", lambda key, default=None: "bing" if key == "career.search_provider"
+                             else default):
             with self.assertRaises(ValueError):
                 web_provider_name()
 

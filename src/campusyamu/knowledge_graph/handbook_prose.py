@@ -1519,15 +1519,11 @@ class OpenAIHandbookExtractionClient:
         max_output_tokens: int = 8_000,
     ) -> None:
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        self.model = model or os.getenv("HANDBOOK_EXTRACTION_MODEL") or os.getenv(
-            "OPENAI_MODEL"
-        )
+        from campusyamu.core import settings
+
+        self.model = model or settings.model("handbook_extraction")     # models.handbook_extraction
         if not self.api_key:
             raise HandbookProseError("Set OPENAI_API_KEY before using --propose")
-        if not self.model:
-            raise HandbookProseError(
-                "Set HANDBOOK_EXTRACTION_MODEL or OPENAI_MODEL before using --propose"
-            )
         self.base_url = base_url.rstrip("/")
         self.timeout_seconds = timeout_seconds
         self.max_output_tokens = max_output_tokens
@@ -3602,7 +3598,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         help="Maximum number of extraction requests to send to the API.",
     )
-    parser.add_argument("--model", help="Override HANDBOOK_EXTRACTION_MODEL/OPENAI_MODEL")
+    parser.add_argument("--model", help="Override models.handbook_extraction in config/settings.yaml")
     parser.add_argument("--env-file", type=Path)
     parser.add_argument(
         "--quiet",

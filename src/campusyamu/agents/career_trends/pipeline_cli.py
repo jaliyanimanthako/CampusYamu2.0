@@ -9,6 +9,8 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence
 
+from campusyamu.core import settings
+
 from . import analysis_cli, cli
 from .environment import load_environment
 from .future_analytics import FutureCareerAnalyticsAgent
@@ -96,7 +98,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     # Check every key up front so no credits are spent on a run that cannot finish.
     search_key = {"tavily": "TAVILY_API_KEY", "firecrawl": "FIRECRAWL_API_KEY"}[provider]
-    for key in (search_key, "OPENAI_API_KEY", "OPENAI_MODEL"):
+    for key in (search_key, "OPENAI_API_KEY"):
         if not os.getenv(key):
             parser.error(f"{key} is missing from the environment or .env file")
 
@@ -116,7 +118,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"Web search: {provider} | Reddit: {'on' if community else 'off'} | "
             f"Career discovery: {'on' if discovery else 'off'} | "
             f"Research agent: {harness.model.model if harness else 'off'} | "
-            f"Model: {os.getenv('OPENAI_MODEL')}",
+            f"Model: {settings.model('career_analysis')}",
             file=sys.stderr,
         )
     pipeline = CareerTrendsPipeline(

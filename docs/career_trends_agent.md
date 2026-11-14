@@ -44,9 +44,9 @@ equivalent command is `campus-career-trends`. Search progress is printed as each
 query finishes; pass `--quiet` to hide it.
 
 Web search uses Tavily (`TAVILY_API_KEY`) or Firecrawl (`FIRECRAWL_API_KEY`).
-Choose with `--provider tavily|firecrawl` or `SEARCH_PROVIDER` in `.env`; by
+Choose with `--provider tavily|firecrawl` or `career.search_provider` in `config/settings.yaml`; by
 default Tavily is used whenever its key is present. Tavily runs `advanced`
-searches (2 credits each, about 10 per course); set `TAVILY_SEARCH_DEPTH=basic`
+searches (2 credits each, about 10 per course); set `career.tavily_search_depth: basic`
 to halve that. The planner expresses site restrictions, recency windows, and
 country boosting as structured query fields, which each provider translates
 into its own syntax.
@@ -64,7 +64,7 @@ bodies, and global outlook organizations. Unrecognized domains are retained as
 
 Set `APIFY_API_TOKEN` in `.env` to add a `community_signals` search that
 collects Reddit posts and their top comments through the Apify actor
-`harshmaur/reddit-scraper` (override with `APIFY_REDDIT_ACTOR`; `trudax/reddit-scraper-lite` is also supported). Without the
+`harshmaur/reddit-scraper` (change with `career.reddit_actor` in settings; `trudax/reddit-scraper-lite` is also supported). Without the
 token, or with `--no-reddit`, this step is skipped and the run is otherwise
 unchanged. Reddit evidence is tagged `community_discussion`, is never marked
 trusted, and the SWOT prompt forbids high-confidence findings based on it
@@ -106,7 +106,7 @@ built-in course taxonomy filling any gaps, so unlisted courses such as
 Financial Mathematics are searched by real roles (risk analyst, actuarial
 analyst, quantitative analyst) instead of by their name. Results are cached for
 30 days in `data/cache/career_paths_cache.json` (`--refresh` ignores the cache,
-`--no-discovery` skips the step, `DISCOVERY_MODEL` can name a cheaper model).
+`--no-discovery` skips the step, `models.career_discovery` in settings can name a cheaper model).
 Reddit collection starts immediately and runs alongside discovery.
 
 Discovery also looks for emerging specialisations: small, growing areas inside
@@ -140,7 +140,7 @@ found and searches for what they missed. It is built on a reusable harness in
 | Part | File | What it does here |
 | --- | --- | --- |
 | Tool registry | `harness/tools.py` | One tool, `web_search` (the configured Tavily/Firecrawl crawler). Tool errors go back to the model as text. |
-| Model | `harness/model.py` | Tool calling through the Responses API. `AGENT_MODEL`, default `gpt-4o-mini`. |
+| Model | `harness/model.py` | Tool calling through the Responses API. `models.career_agent` in settings, `gpt-4o-mini`. |
 | Context management | `harness/context.py` | Every 3 turns the transcript is replaced by the model's notes plus a state summary from the harness (sources, searches, open gaps), so code-tracked facts are never lost. |
 | Guardrails | `research_harness.py` | Search budget (6), at most 3 searches per turn, no repeated queries. The answer is refused until every angle has sources, 3 trusted sources are held, all three drivers of change (technology; sustainability or climate; law, regulation or contracts) have been searched, and 3 niche areas are verified. A niche area must be specific (not "sustainability" or "AI and technology") and named in the pages it cites. |
 | Agent loop | `harness/loop.py` | Model turn, guarded tool calls, compaction, guarded finish, up to 9 turns. |
@@ -178,7 +178,7 @@ uv run python -m campusyamu.agents.career_trends.analysis_cli \
   --json
 ```
 
-The analytics CLI loads `OPENAI_API_KEY` and `OPENAI_MODEL` from `.env`. Every
+The analytics CLI loads `OPENAI_API_KEY` from `.env`; the model is `models.career_analysis` in settings. Every
 SWOT finding contains evidence IDs, a `direct_evidence` or `forward_inference`
 label, and confidence. Unknown evidence references cause that course analysis
 to fail rather than returning an unsupported finding. Scraped page instructions

@@ -29,13 +29,19 @@ preferences:
   poor_fit: -5                 # preference score at or below this = far from every interest
   second_category_weight: 0.85 # offline marks: an interest's second category counts this much
 
-models:                        # env var that overrides -> default
-  preference: gpt-4o-mini      # PREFERENCE_MODEL, then OPENAI_MODEL
-  preference_decision: gemini-decision-1   # PREFERENCE_DECISION_MODEL (engine gemini_decision)
-  feedback: gpt-4o-mini        # FEEDBACK_MODEL, then OPENAI_MODEL
-  chat: gpt-4o-mini            # CHAT_MODEL, then OPENAI_MODEL
-  website: gpt-4o-mini         # WEBSITE_MODEL, then OPENAI_MODEL (reads university pages)
-  memory: gpt-4o-mini          # MEMORY_MODEL, then OPENAI_MODEL (chat memory: rewrite, summary, facts)
+models:                        # every model the app uses (set here only, not in .env); OpenAI unless noted
+  preference: gpt-4o-mini      # reads the interests (preferences.engine: openai)
+  preference_decision: gemini-decision-1   # reads the interests (engine gemini_decision); Gemini, GEMINI_API_KEY
+  feedback: gpt-4o-mini        # advice on the ranked lists
+  chat: gpt-4o-mini            # course chat answers
+  memory: gpt-4o-mini          # chat memory: follow-up rewrite, summaries, student facts
+  guardrail: gemini-decision-1 # course chat scope check; Gemini, GEMINI_API_KEY
+  website: gpt-4o-mini         # course research: reads the university pages
+  career_analysis: gpt-4o-mini # career research: the cited future SWOT and career extraction
+  career_discovery: gpt-4o-mini   # career research: job titles from web pages (can be a cheaper model)
+  career_agent: gpt-4o-mini    # career research: the tool-calling research agent
+  handbook_extraction: gpt-4o-mini   # offline handbook rule extraction (paid runs, not the API)
+  kg_chat: gpt-4o-mini         # graph-viewer chatbot (make kg-chat, not the API)
 
 chat:
   website:                     # university website research for the course chat (sources W, D); web/course_research.py
@@ -47,6 +53,10 @@ chat:
     max_specialisations: 10    # 2nd hop: one search per specialisation ("Civil Engineering University of Moratuwa")
   search_hits: 4               # extra handbook passages per question (needs Neo4j)
   history_turns: 8             # only without a signed-in student: earlier turns the client sends
+
+guardrail:                     # course chat scope check (web/guardrail.py): only the course + selection process
+  enabled: true                # off (or no GEMINI_API_KEY): only the chat prompt's own scope rules apply
+  allow_min: 0.4               # refuse when Gemini Decision gives P(in_scope) below this
 
 limits:                        # paid calls per signed-in student per day (api/limits.py); 0 = no limit
   timezone: Asia/Colombo       # when the day resets
@@ -65,6 +75,9 @@ memory:                        # course chat memory per signed-in student (campu
 
 career:
   region: Sri Lanka
+  search_provider: ""          # tavily | firecrawl; empty: tavily when TAVILY_API_KEY is set, else firecrawl
+  tavily_search_depth: advanced   # advanced = 2 credits per search, better results; basic = 1 credit
+  reddit_actor: harshmaur/reddit-scraper   # Apify actor for Reddit (trudax/reddit-scraper-lite also works)
   horizon_years: 5
 
 web:

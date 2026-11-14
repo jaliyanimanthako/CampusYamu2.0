@@ -6,6 +6,8 @@ import os
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 
+from campusyamu.core import settings
+
 from ..openai_client import OpenAIResponsesClient
 
 
@@ -37,7 +39,7 @@ class ToolCallingModel(Protocol):
 
 
 class OpenAIToolModel:
-    """A cheap model for the loop. AGENT_MODEL overrides the default."""
+    """A cheap model for the loop: models.career_agent in settings.yaml."""
 
     def __init__(
         self,
@@ -47,7 +49,7 @@ class OpenAIToolModel:
         max_output_tokens: int = 1_500,
         timeout_seconds: int = 120,
     ) -> None:
-        self.model = model or os.getenv("AGENT_MODEL") or DEFAULT_AGENT_MODEL
+        self.model = model or settings.model("career_agent", DEFAULT_AGENT_MODEL)
         self._client = OpenAIResponsesClient(
             api_key,
             self.model,

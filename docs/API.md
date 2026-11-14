@@ -108,7 +108,7 @@ unlock the AI features:
 | AI reading of free-text interests (`use_llm`) | `OPENAI_API_KEY` | keyword matching is used instead |
 | Course chat (`/v1/chat`) | `OPENAI_API_KEY` | `/v1/chat` returns `400` |
 | Better chat answers (handbook search) | `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD` | chat still works, from the course's own handbook section only |
-| Career research | `OPENAI_API_KEY`, `OPENAI_MODEL`, and `TAVILY_API_KEY` or `FIRECRAWL_API_KEY` | `/v1/career-outlook` reports `available: false` |
+| Career research | `OPENAI_API_KEY`, and `TAVILY_API_KEY` or `FIRECRAWL_API_KEY` | `/v1/career-outlook` reports `available: false` |
 | Student sign-in (Supabase Auth) and chat memory | `SUPABASE_URL`, `SUPABASE_DB_URL` (`SUPABASE_JWT_SECRET` only for legacy projects) | the API is open and the chat has no memory (local development only) |
 | Allow a browser app on another origin | `API_CORS_ORIGINS` | every origin is allowed (`*`) |
 
@@ -596,7 +596,7 @@ Answers one question about one course. Needs `llm_available: true`.
 | Field | Meaning |
 |---|---|
 | `answer` | Plain text (keep line breaks). It may contain source tags like `[S1]` that refer to `sources[].id` |
-| `status` | `answered`, `partly_answered`, or `not_in_sources` (the handbook doesn't cover it: you might show a hint) |
+| `status` | `answered`, `partly_answered`, `not_in_sources` (the handbook doesn't cover it: you might show a hint), or `out_of_scope`: the question was outside the chat's domain (only this course and the university selection process) and `answer` is a fixed refusal. Refused questions are not saved to the chat and count toward the daily limit |
 | `sources` | Citations actually used. Show them under the answer: `citation`, plus `title`, plus `links` as tappable URLs |
 | `career_research` | A cached career outlook was used for this answer |
 | `website_research` | The university website research (sources `W` / `D`) was used for this answer |

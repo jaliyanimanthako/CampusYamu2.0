@@ -46,8 +46,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         parser.error(str(exc))
     if not os.getenv("OPENAI_API_KEY"):
         parser.error("OPENAI_API_KEY is missing from the environment or .env file")
-    if not os.getenv("OPENAI_MODEL"):
-        parser.error("OPENAI_MODEL is missing from the environment or .env file")
 
     progress = None if args.quiet else show_progress
     try:

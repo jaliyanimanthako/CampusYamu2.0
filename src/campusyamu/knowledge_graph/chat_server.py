@@ -31,6 +31,7 @@ from .build_graph import DEFAULT_OUTPUT, load_graph
 from .eligibility import EligibilityChecker, make_student
 from .graph_viewer import render_viewer
 from .handbook_prose import PROJECT_ROOT, _load_env
+from campusyamu.core import settings
 from campusyamu.prompts.kg_chat import KG_CHAT_SYSTEM as SYSTEM_PROMPT
 
 DEFAULT_MODEL = "gpt-4o-mini"
@@ -412,7 +413,7 @@ def bind_server(handler, first_port: int, attempts: int = 20) -> ThreadingHTTPSe
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Serve the graph browser with a chat assistant.")
     parser.add_argument("--graph", type=Path, default=PROJECT_ROOT / DEFAULT_OUTPUT)
-    parser.add_argument("--model", default=os.getenv("CHAT_MODEL", DEFAULT_MODEL))
+    parser.add_argument("--model", default=settings.model("kg_chat", DEFAULT_MODEL))
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--env-file", type=Path)
     args = parser.parse_args(argv)

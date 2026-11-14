@@ -5,7 +5,7 @@ missed (e.g. carbon assessment for quantity surveying). This agent reviews
 what was collected and searches for what is missing, using the harness:
 
 - Tool registry: one tool, ``web_search`` (the configured Tavily/Firecrawl crawler).
-- Model: a cheap tool-calling model (``AGENT_MODEL``, default gpt-4o-mini).
+- Model: a cheap tool-calling model (``models.career_agent`` in settings.yaml, gpt-4o-mini).
 - Context management: the transcript is compacted every 3 iterations.
 - Guardrails: searches are budgeted and de-duplicated; the final answer is
   refused until the evidence is satisfactory, and every niche area it reports

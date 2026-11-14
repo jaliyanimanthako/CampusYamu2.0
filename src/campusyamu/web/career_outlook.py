@@ -85,7 +85,7 @@ def missing_keys() -> list[str]:
     except ValueError as exc:
         return [str(exc)]
     search_key = {"tavily": "TAVILY_API_KEY", "firecrawl": "FIRECRAWL_API_KEY"}.get(provider, "TAVILY_API_KEY")
-    return [k for k in (search_key, "OPENAI_API_KEY", "OPENAI_MODEL") if not os.getenv(k)]
+    return [k for k in (search_key, "OPENAI_API_KEY") if not os.getenv(k)]
 
 
 def run_research(course: str, on_progress: Callable[[dict[str, Any]], None] | None = None,
