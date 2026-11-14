@@ -50,17 +50,16 @@ NAMED_COURSE_MIN = settings.get("preferences.decision_named_course_min", 0.6)
 
 
 def decision_model() -> str:
-    # its own variable: OPENAI_MODEL must not leak in here
-    return os.getenv("PREFERENCE_DECISION_MODEL") or settings.get("models.preference_decision",
-                                                                  DEFAULT_DECISION_MODEL)
+    return settings.model("preference_decision", DEFAULT_DECISION_MODEL)
 
 
-def call_decisions(payload: dict[str, Any], api_key: str, timeout: int = 60,
-                   url: str = DECISIONS_URL) -> dict[str, Any]:
+def call_decisions(payload: dict[str, Any], api_key: str, timeout: int = 60, url: str = DECISIONS_URL,
+                   user_agent: str = "CampusYamu-PreferenceDecision/0.1") -> dict[str, Any]:
+    """One Gemini Decisions request (also used by the chat's scope check, campusyamu.web.guardrail)."""
+
     request = urllib.request.Request(
         url, data=json.dumps(payload).encode("utf-8"), method="POST",
-        headers={"x-goog-api-key": api_key, "Content-Type": "application/json",
-                 "User-Agent": "CampusYamu-PreferenceDecision/0.1"})
+        headers={"x-goog-api-key": api_key, "Content-Type": "application/json", "User-Agent": user_agent})
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             body = json.loads(response.read().decode("utf-8"))

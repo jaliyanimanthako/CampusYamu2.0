@@ -9,7 +9,7 @@
     uv run python -m campusyamu.pipeline            # asks the questions
 
 --prefer is free text (first = most liked). It is read by one small OpenAI call
-(OPENAI_API_KEY from .env; model PREFERENCE_MODEL, else OPENAI_MODEL, else
+(OPENAI_API_KEY from .env; model from models.preference in config/settings.yaml, else
 gpt-4o-mini). Without a key, or with --no-llm, keyword matching is used.
 """
 

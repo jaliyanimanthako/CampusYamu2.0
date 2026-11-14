@@ -13,7 +13,7 @@ For each question (CourseChat.ask with a user_id):
         facts    after memory.facts_every questions, or at once when the student says something like
                  "remember", "my parents ...", "I live ...", one small LLM call updates the fact list
 
-The model for the small calls is models.memory (MEMORY_MODEL). Prompts: campusyamu/prompts/memory.py.
+The model for the small calls is models.memory in settings.yaml. Prompts: campusyamu/prompts/memory.py.
 Token counts are estimates (about 4 characters per token), which is enough for a budget.
 """
 
@@ -103,7 +103,7 @@ class ChatMemory:
                  summarize_every: int = SUMMARIZE_EVERY, facts_every: int = FACTS_EVERY,
                  max_facts: int = MAX_FACTS, rewrite_questions: bool = REWRITE_QUESTIONS) -> None:
         self._store = store
-        self.model = model or settings.model("memory", "MEMORY_MODEL", DEFAULT_MODEL)
+        self.model = model or settings.model("memory", DEFAULT_MODEL)
         self._caller = caller
         self.recent_tokens, self.keep_messages = recent_tokens, keep_messages
         self.summarize_every, self.facts_every, self.max_facts = summarize_every, facts_every, max_facts

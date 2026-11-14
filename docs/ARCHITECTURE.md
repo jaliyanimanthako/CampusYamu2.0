@@ -118,6 +118,14 @@ else from the website profile). Website and specialisations are cached per offer
 `data/cache/university_pages/`. The course chat starts it when the student asks for research and reads
 the cache as sources W and D (`chat.website.enabled` in settings).
 
+Chat guardrails: the course chat only answers questions about its course and the university selection
+process (all its sources: handbook, the student's results, website and career research), nothing from other
+domains. `web/guardrail.py` refuses obvious manipulation phrases at once, then asks one Gemini Decision
+question (in_scope / out_of_scope / manipulation, `models.guardrail`, `guardrail:` in settings) in parallel with
+the memory recall, rewrite and handbook search; below `guardrail.allow_min` the student gets a fixed refusal
+(status `out_of_scope`) with no answer call and nothing saved to memory. It fails open, and the chat prompt
+repeats the scope rules (and stays neutral between courses) as a second layer.
+
 Chat memory (`src/campusyamu/memory/`, settings `memory:`) keeps each signed-in student's course chats on
 the server: one conversation per student per offering, every message, a running summary of older turns,
 and a short list of lasting student facts shared by all their chats. Per question the chat gets the facts,

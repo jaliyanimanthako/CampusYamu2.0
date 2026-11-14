@@ -32,13 +32,20 @@ Memory: with a user_id (a signed-in student) the server keeps the chat
 newest turns go into the prompt, a follow-up is rewritten to stand alone for the
 handbook search, and the turn is saved. Without a user_id the caller sends the
 earlier turns as `history` (the last chat.history_turns are used).
+
+Scope (web/guardrail.py): a Gemini Decision check runs alongside the recall, the
+rewrite and the search; a message outside the course / selection-process domain
+gets a fixed refusal (status out_of_scope) with no answer call and nothing saved.
+The chat prompt has its own scope rules as a second layer.
 """
 
 from __future__ import annotations
 
 import json
+import logging
 import os
 import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
 from campusyamu.core import settings
@@ -47,13 +54,18 @@ from campusyamu.agents.course_details import HandbookCourseIndex
 from campusyamu.core.openai_client import call_structured
 
 from campusyamu.memory import ChatMemory
+from campusyamu.prompts import guardrail as guard_prompts
 
 from .career_outlook import CareerOutlookStore
+from .guardrail import ScopeGuard, Verdict
 from .university_pages import UniversityPages
 from campusyamu.prompts.course_chat import COURSE_CHAT_SYSTEM as SYSTEM_PROMPT
 
+log = logging.getLogger(__name__)
+
 DEFAULT_MODEL = "gpt-4o-mini"
 MAX_QUESTION = 1000
+STATUSES = ("answered", "partly_answered", "not_in_sources", "out_of_scope")
 MAX_HISTORY_TURNS = settings.get("chat.history_turns", 8)
 MAX_HISTORY_CHARS = 1500
 MAX_SECTION_CHARS = 7000
@@ -123,12 +135,15 @@ def website_sources(record: dict[str, Any] | None, course: dict[str, Any]) -> li
 class CourseChat:
     def __init__(self, handbook: HandbookCourseIndex | None = None, model: str | None = None,
                  use_search: bool = True, outlooks: CareerOutlookStore | None = None,
-                 websites: UniversityPages | None = None, memory: ChatMemory | None = None) -> None:
+                 websites: UniversityPages | None = None, memory: ChatMemory | None = None,
+                 guard: ScopeGuard | None = None) -> None:
         self.handbook = handbook or HandbookCourseIndex()
         self.memory = memory
+        self.guard = guard                              # None: no scope check (the prompt's rules only)
+        self._pool: ThreadPoolExecutor | None = None
         self.outlooks = outlooks or CareerOutlookStore()
         self.websites = websites
-        self.model = model or settings.model("chat", "CHAT_MODEL", DEFAULT_MODEL)
+        self.model = model or settings.model("chat", DEFAULT_MODEL)
         self.use_search = use_search
         self._retriever = None
         self._driver = None
@@ -174,6 +189,8 @@ class CourseChat:
             self._driver.close()
         if self.memory is not None:
             self.memory.close()
+        if self._pool is not None:
+            self._pool.shutdown(wait=False)
 
     # --- one question ------------------------------------------------------------------
     def sources(self, course: dict[str, Any], question: str) -> tuple[list[dict[str, Any]], list[str]]:
@@ -252,7 +269,7 @@ class CourseChat:
                 "start_career_research": {"type": "boolean"},
                 "answer": {"type": "string"},
                 "sources_used": {"type": "array", "items": {"type": "string", "enum": [s["id"] for s in sources]}},
-                "status": {"type": "string", "enum": ["answered", "partly_answered", "not_in_sources"]},
+                "status": {"type": "string", "enum": list(STATUSES)},
             },
         }
         return {
@@ -262,6 +279,16 @@ class CourseChat:
                       *turns, {"role": "user", "content": question}],
             "text": {"format": {"type": "json_schema", "name": "course_answer", "strict": True, "schema": schema}},
         }
+
+    def _refusal(self, question: str, course: dict[str, Any], verdict: Verdict, notes: list[str],
+                 search_question: str) -> dict[str, Any]:
+        """The fixed reply for a message outside the chat's domain: no answer call, nothing saved."""
+
+        log.info("chat refused: %s by %s (p_in_scope=%s) %s: %.120s", verdict.verdict, verdict.method,
+                 verdict.p_in_scope, course.get("uni_code"), question)
+        return {"answer": guard_prompts.refusal(course), "status": "out_of_scope", "sources": [],
+                "career_research": False, "website_research": False, "start_career_research": False,
+                "notes": notes, "model": self.model, "search_question": search_question}
 
     def _call(self, payload: dict[str, Any]) -> dict[str, Any]:
         key = os.getenv("OPENAI_API_KEY")
@@ -277,18 +304,28 @@ class CourseChat:
         question = " ".join(str(question or "").split())[:MAX_QUESTION]
         if not question:
             raise ValueError("empty question")
+        if self.guard is not None and self.guard.pattern(question):         # obvious manipulation: no calls
+            return self._refusal(question, course, Verdict("manipulation", "pattern", 0.0), [], question)
         recall, search_question, notes = None, question, []
         uni_code = str(course.get("uni_code") or "")
         if user_id and self.memory is not None and uni_code:
             try:
                 recall = self.memory.recall(user_id, uni_code)
                 history = recall.turns
-                search_question = self.memory.standalone_question(question, recall, course)
             except Exception as exc:                    # answer without memory rather than fail
                 recall = None
                 notes.append(f"chat memory unavailable ({str(exc)[:120]})")
+        scope = None
+        if self.guard is not None and self.guard.active:  # in parallel with the rewrite and the search
+            self._pool = self._pool or ThreadPoolExecutor(2, thread_name_prefix="campusyamu-guard")
+            scope = self._pool.submit(self.guard.check, question, course, list(history or []))
+        if recall is not None:
+            search_question = self.memory.standalone_question(question, recall, course)
         sources, source_notes = self.sources(course, search_question)
         notes += source_notes
+        verdict = scope.result() if scope is not None else None
+        if verdict is not None and verdict.blocked:
+            return self._refusal(question, course, verdict, [], search_question)
         raw = self._call(self.request_payload(question, course, student or {}, history or [], sources,
                                               memory=recall.context() if recall else None,
                                               trim_history=recall is None))
@@ -296,21 +333,23 @@ class CourseChat:
         used = [s for s in raw.get("sources_used", []) if s in known]
         result = {
             "answer": str(raw.get("answer", "")).strip() or "Sorry, I could not answer that.",
-            "status": raw.get("status") if raw.get("status") in ("answered", "partly_answered", "not_in_sources")
-            else "answered",
+            "status": raw.get("status") if raw.get("status") in STATUSES else "answered",
             "sources": [{k: s[k] for k in ("id", "kind", "title", "citation", "links") if k in s}
                         for s in sources if s["id"] in used],
             "career_research": any(s["kind"] == "career_outlook" for s in sources),
             "website_research": any(s["kind"] == "university_website" for s in sources),
             # research runs only when the student asks, and only while something is still missing
-            "start_career_research": bool(raw.get("start_career_research")) and not (
+            "start_career_research": bool(raw.get("start_career_research")) and raw.get("status") != "out_of_scope"
+            and not (
                 any(s["kind"] == "career_outlook" for s in sources)
                 and (any(s["kind"] == "university_website" for s in sources)
                      or not (self.websites is not None and self.websites.enabled))),
             "notes": notes, "model": self.model,
             "search_question": search_question,
         }
-        if recall is not None:
+        if result["status"] == "out_of_scope":            # the prompt's own scope rule refused it
+            log.info("chat refused by the model (%s): %.120s", course.get("uni_code"), question)
+        elif recall is not None:
             try:
                 self.memory.save_turn(user_id, course, question, result["answer"], result["sources"])
             except Exception as exc:

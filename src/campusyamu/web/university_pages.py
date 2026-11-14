@@ -16,7 +16,7 @@ offering (uni_code) this module
    faculty, degree, duration, medium, modules, specialisations, industrial training,
    facilities, careers, entry notes, fees, contact, other; each fact cites its page.
    Cached with the pages (extract_profile). Prompt: campusyamu/prompts/university.py.
-   Model: models.website / WEBSITE_MODEL (gpt-4o-mini);
+   Model: models.website in settings.yaml (gpt-4o-mini);
 6. (2nd hop) for each specialisation, one more search limited to the official domains
    (the searches run in parallel). The names come from the UGC handbook for this university
    (handbook_specialisations) and, only when it lists none, from the website profile ("Civil Engineering University of Moratuwa"); the LLM picks the
@@ -247,7 +247,7 @@ class UniversityPages:
 
 # --- LLM: the applicant profile from the pages -------------------------------------------------------
 def website_model() -> str:
-    return settings.model("website", "WEBSITE_MODEL", "gpt-4o-mini")
+    return settings.model("website")
 
 
 def _pages_for_llm(record: dict[str, Any]) -> list[dict[str, str]]:

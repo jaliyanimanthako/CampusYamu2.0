@@ -21,6 +21,7 @@ from campusyamu.pipeline.graph import build_pipeline, run_pipeline
 
 from campusyamu.web.career_outlook import CareerOutlookStore, CareerResearchJobs, missing_keys
 from campusyamu.web.course_chat import CourseChat
+from campusyamu.web.guardrail import ScopeGuard
 from campusyamu.web.university_pages import UniversityPages
 
 from .limits import DailyLimits
@@ -80,7 +81,8 @@ class AdvisorService:
         self.websites = UniversityPages()                 # chat.website.enabled decides if the chat uses it
         self.career_jobs = CareerResearchJobs(self.outlooks, websites=self.websites)
         self.memory = ChatMemory()                         # opens its store on first use
-        self.chat = CourseChat(outlooks=self.outlooks, websites=self.websites, memory=self.memory)
+        self.chat = CourseChat(outlooks=self.outlooks, websites=self.websites, memory=self.memory,
+                               guard=ScopeGuard())        # scope check: Gemini Decision (GEMINI_API_KEY)
         self.limits = DailyLimits(lambda: self.memory.store)
         self._pipelines: dict[tuple[bool, int], Any] = {}
         self.options = self._options()

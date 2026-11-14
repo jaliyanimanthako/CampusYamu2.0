@@ -2,7 +2,7 @@
 
     uv run python -m campusyamu.agents.preference "engineering, design"
 
-Uses preferences.engine from config/settings.yaml (or PREFERENCE_ENGINE in .env):
+Uses preferences.engine from config/settings.yaml:
 openai or gemini_decision. To compare the two, run it, change the setting, run it
 again with the same text. Both runs mark the same courses and print the SAME rows
 in the SAME order (chosen from the reviewed category marks, which do not depend on

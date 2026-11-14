@@ -12,6 +12,7 @@ preference.py     INTERESTS_SYSTEM          reading interests, engine openai (gp
                   *_question()
 feedback.py       FEEDBACK_SYSTEM           advice on the ranked list
 course_chat.py    COURSE_CHAT_SYSTEM        course chat (POST /v1/chat)
+guardrail.py      SCOPE_GUIDE, SCOPE_CHOICES course chat scope check, Gemini Decision (in / out of scope / manipulation)
 memory.py         STANDALONE_QUESTION       course chat memory: a follow-up -> a standalone handbook search
                   CONVERSATION_SUMMARY      course chat memory: older turns -> the chat's running summary
                   STUDENT_FACTS             course chat memory: the student's lasting facts (all course chats)
@@ -48,6 +49,21 @@ def _decision_example() -> str:
             + json.dumps(payload["questions"], indent=1, ensure_ascii=False))
 
 
+def _guardrail_example() -> str:
+    """The scope-check request for a sample follow-up, as sent to Gemini Decision."""
+
+    import json
+
+    from campusyamu.web.guardrail import ScopeGuard
+
+    payload = ScopeGuard(api_key="-").payload(
+        "and is there an aptitude test?",
+        {"course_name": "Architecture", "uni_code": "023G", "university": "University of Moratuwa"},
+        [{"role": "user", "content": "Tell me about Architecture"}, {"role": "assistant", "content": "It is a ..."}])
+    return (f"--- input ---\n{payload['input']}\n\n--- question ---\n"
+            + json.dumps(payload["questions"], indent=1, ensure_ascii=False))
+
+
 def _handbook() -> str:
     from campusyamu.knowledge_graph.handbook_prose import DEVELOPER_PROMPT
 
@@ -68,6 +84,7 @@ PROMPTS: dict[str, tuple[str, Callable[[], str]]] = {
     "interests_gemini": ("reading interests, engine gemini_decision (sample request)", _decision_example),
     "feedback": ("advice on the ranked list", _attr("feedback", "FEEDBACK_SYSTEM")),
     "course_chat": ("course chat, POST /v1/chat", _attr("course_chat", "COURSE_CHAT_SYSTEM")),
+    "guardrail_scope": ("course chat scope check, Gemini Decision (sample request)", _guardrail_example),
     "memory_standalone_question": ("chat memory: a follow-up -> a standalone handbook search",
                                    _attr("memory", "STANDALONE_QUESTION")),
     "memory_summary": ("chat memory: older turns -> running summary", _attr("memory", "CONVERSATION_SUMMARY")),

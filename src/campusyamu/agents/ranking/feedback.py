@@ -122,7 +122,7 @@ class LLMFeedback:
     method = "llm"
 
     def __init__(self, model: str | None = None, api_key: str | None = None, timeout: int = 90) -> None:
-        self.model = model or settings.model("feedback", "FEEDBACK_MODEL", DEFAULT_MODEL)
+        self.model = model or settings.model("feedback", DEFAULT_MODEL)
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         if not self.api_key:
             raise RuntimeError("OPENAI_API_KEY is not set")

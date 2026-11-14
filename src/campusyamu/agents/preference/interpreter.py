@@ -226,7 +226,7 @@ class LLMInterpreter:
     def __init__(self, tags: dict[str, CourseTags], model: str | None = None,
                  api_key: str | None = None, timeout: int = 45) -> None:
         self.tags = tags
-        self.model = model or settings.model("preference", "PREFERENCE_MODEL", DEFAULT_MODEL)
+        self.model = model or settings.model("preference", DEFAULT_MODEL)
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         if not self.api_key:
             raise RuntimeError("OPENAI_API_KEY is not set")
@@ -292,9 +292,9 @@ ENGINES = ("openai", "gemini_decision")
 
 
 def preference_engine() -> str:
-    """Which AI reads the interests: PREFERENCE_ENGINE, then preferences.engine in settings.yaml."""
+    """Which AI reads the interests: preferences.engine in settings.yaml."""
 
-    return (os.getenv("PREFERENCE_ENGINE") or settings.get("preferences.engine", "openai")).strip().lower()
+    return str(settings.get("preferences.engine", "openai") or "openai").strip().lower()
 
 
 def engine_available(engine: str | None = None) -> bool:

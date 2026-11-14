@@ -124,30 +124,34 @@ class ParseTests(unittest.TestCase):
 
 
 class EngineSwitchTests(unittest.TestCase):
-    def test_engine_comes_from_settings_then_env(self) -> None:
+    def test_engine_comes_from_settings_only(self) -> None:
         from campusyamu.agents.preference import interpreter as module
 
         empty = lambda key, default=None: default                       # no settings.yaml value
-        with mock.patch.dict(os.environ, {"PREFERENCE_ENGINE": ""}), mock.patch.object(module.settings, "get", empty):
+        with mock.patch.object(module.settings, "get", empty):
             self.assertEqual(preference_engine(), "openai")             # built-in default
-        yaml = lambda key, default=None: "gemini_decision" if key == "preferences.engine" else default
+        yaml = lambda key, default=None: "Gemini_Decision" if key == "preferences.engine" else default
         with mock.patch.object(module.settings, "get", yaml):
-            with mock.patch.dict(os.environ, {"PREFERENCE_ENGINE": ""}):
-                self.assertEqual(preference_engine(), "gemini_decision")
-            with mock.patch.dict(os.environ, {"PREFERENCE_ENGINE": "OpenAI"}):
-                self.assertEqual(preference_engine(), "openai")         # .env wins, any case
+            with mock.patch.dict(os.environ, {"PREFERENCE_ENGINE": "openai"}):
+                self.assertEqual(preference_engine(), "gemini_decision")  # .env no longer overrides; any case
 
-    def test_env_picks_the_engine(self) -> None:
-        env = {"PREFERENCE_ENGINE": "gemini_decision", "GEMINI_API_KEY": "k", "OPENAI_API_KEY": "o"}
-        with mock.patch.dict(os.environ, env):
+    def test_settings_pick_the_engine(self) -> None:
+        from campusyamu.agents.preference import interpreter as module
+
+        env = {"GEMINI_API_KEY": "k", "OPENAI_API_KEY": "o"}
+        yaml = lambda key, default=None: "gemini_decision" if key == "preferences.engine" else default
+        with mock.patch.dict(os.environ, env), mock.patch.object(module.settings, "get", yaml):
             self.assertIsInstance(PreferenceInterpreter(TAGS).llm, GeminiDecisionInterpreter)
             self.assertIsInstance(PreferenceInterpreter(TAGS, engine="openai").llm, LLMInterpreter)
             self.assertTrue(engine_available())
 
-    def test_openai_model_does_not_leak_into_gemini(self) -> None:
-        env = {"GEMINI_API_KEY": "k", "OPENAI_MODEL": "gpt-4o-mini", "PREFERENCE_DECISION_MODEL": ""}
+    def test_models_come_from_settings_not_env(self) -> None:
+        env = {"GEMINI_API_KEY": "k", "OPENAI_MODEL": "gpt-4.1", "PREFERENCE_DECISION_MODEL": "other"}
         with mock.patch.dict(os.environ, env):
             self.assertEqual(GeminiDecisionInterpreter(TAGS).model, "gemini-decision-1")
+            from campusyamu.core import settings
+
+            self.assertEqual(settings.model("chat"), settings.get("models.chat"))     # OPENAI_MODEL ignored
 
     def test_missing_key_or_unknown_engine_falls_back_to_keywords(self) -> None:
         with mock.patch.dict(os.environ, {"GEMINI_API_KEY": ""}):

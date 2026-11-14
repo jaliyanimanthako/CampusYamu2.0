@@ -107,7 +107,8 @@ class Usage(BaseModel):
 
 class ChatResponse(BaseModel):
     answer: str
-    status: Literal["answered", "partly_answered", "not_in_sources"]
+    status: Literal["answered", "partly_answered", "not_in_sources", "out_of_scope"] = Field(
+        description="out_of_scope: the question was outside the course / selection-process domain and was refused")
     sources: list[ChatSource]
     career_research: bool = Field(description="True when a cached career outlook was used")
     notes: list[str]
