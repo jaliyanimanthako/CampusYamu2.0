@@ -3,7 +3,9 @@
     uv run python -m campusyamu.web              # http://127.0.0.1:8770
     uv run python -m campusyamu.web --port 8771
 
-GET /   the form + results page (src/campusyamu/web/static/index.html)
+GET /           the form + results page (src/campusyamu/web/static/index.html)
+GET /config.js  the page's public settings from .env: SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY
+                (sign-in), CAMPUSYAMU_API_BASE_URL (optional). Only these public values, never secrets.
 
 The page gets all its data from the CampusYamu API (campusyamu.api, `make api`,
 port 8780), the same /v1 endpoints the mobile app uses, so run both. The API
@@ -14,6 +16,8 @@ from __future__ import annotations
 
 import argparse
 import errno
+import json
+import os
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -25,6 +29,14 @@ from campusyamu.core import settings
 STATIC = Path(__file__).resolve().parent / "static"
 DEFAULT_PORT = settings.get("web.port", 8770)
 API_PORT = settings.get("api.port", 8780)
+
+
+def page_config() -> dict[str, str | None]:
+    """Public settings for the page. The publishable key is meant for browsers; secrets never go here."""
+
+    return {"supabaseUrl": os.getenv("SUPABASE_URL") or None,
+            "supabaseKey": os.getenv("SUPABASE_PUBLISHABLE_KEY") or os.getenv("SUPABASE_ANON_KEY") or None,
+            "apiBaseUrl": os.getenv("CAMPUSYAMU_API_BASE_URL") or None}
 
 
 class PageHandler(BaseHTTPRequestHandler):
@@ -39,8 +51,12 @@ class PageHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self) -> None:  # noqa: N802
-        if urlparse(self.path).path in ("/", "/index.html"):
+        path = urlparse(self.path).path
+        if path in ("/", "/index.html"):
             self._send(200, (STATIC / "index.html").read_bytes(), "text/html; charset=utf-8")
+        elif path == "/config.js":
+            self._send(200, f"window.CAMPUSYAMU_CONFIG = {json.dumps(page_config())};\n".encode(),
+                       "text/javascript; charset=utf-8")
         else:
             self._send(404, b"Not found. Data lives in the CampusYamu API (/v1, port 8780).",
                        "text/plain; charset=utf-8")
@@ -54,6 +70,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--host", default=settings.get("web.host", "127.0.0.1"))
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
     args = parser.parse_args(argv)
+    from campusyamu.knowledge_graph.handbook_prose import _load_env
+
+    try:
+        _load_env(None)                                 # .env: SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY
+    except Exception as exc:
+        print(f"warning: could not load .env: {exc}", file=sys.stderr)
     try:
         server = ThreadingHTTPServer((args.host, args.port), PageHandler)
     except OSError as exc:

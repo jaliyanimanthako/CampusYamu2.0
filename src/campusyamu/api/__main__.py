@@ -29,9 +29,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     import uvicorn
 
     from .app import create_app
+    from .auth import SupabaseAuth
 
+    auth = SupabaseAuth()
     print(f"CampusYamu API docs on http://{args.host}:{args.port}/docs")
-    uvicorn.run(create_app(), host=args.host, port=args.port, log_level="info")
+    print(f"Sign-in: Supabase ({auth.url})" if auth.enabled else
+          "Sign-in: OFF (no SUPABASE_URL) - the API is open and the chat has no memory; local development only")
+    uvicorn.run(create_app(auth=auth), host=args.host, port=args.port, log_level="info")
     return 0
 
 

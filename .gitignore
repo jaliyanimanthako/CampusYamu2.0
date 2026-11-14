@@ -27,3 +27,6 @@ outputs/*
 data/cache/career_paths_cache.json
 *_evidence*.json
 *_web_data.json
+
+# Local chat memory (students' chats; production uses Supabase)
+data/memory/

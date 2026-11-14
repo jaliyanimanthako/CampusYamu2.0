@@ -8,6 +8,7 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 from campusyamu.api import create_app
+from campusyamu.api.auth import SupabaseAuth
 
 FORM = {"stream": "Physical Science",
         "al": [{"subject": "Combined Mathematics", "grade": "A"}, {"subject": "Physics", "grade": "B"},
@@ -23,7 +24,7 @@ class RealServiceTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.env = mock.patch.dict(os.environ, {"CAMPUSYAMU_API_KEY": ""})
+        cls.env = mock.patch.dict(os.environ, {"SUPABASE_URL": ""})
         cls.env.start()
         cls.client = TestClient(create_app())
         cls.client.__enter__()
@@ -101,38 +102,61 @@ class FakeWeb:
         return {"course": course, "available": True, "missing_keys": [], "outlook": None,
                 "job": {"course": course, "state": "running", "started": 1.0, "message": "starting…"}}
 
-    def start_career(self, body):
+    def start_career(self, body, user=None):
         self.threads.add(threading.get_ident())
         return 202, {"message": "started", **self.career(body["course"])}
 
-    def ask(self, body):
+    def ask(self, body, user=None):
         self.threads.add(threading.get_ident())
-        self.last_ask = body
+        self.last_ask, self.last_user = body, user
         return 200, {"answer": "Yes.", "status": "answered", "notes": [], "model": "m", "career_research": False,
                      "sources": [{"id": "h1", "kind": "handbook", "title": "p. 12"}], "career": self.career("Law")}
 
-    def run(self, form):
+    def run(self, form, user=None):
         return 200, {"report": {}, "used_llm": False}
+
+    def me(self, user):
+        return {"user_id": user, "usage": {"chat": {"used": 1, "limit": 60}}}
+
+    def chats(self, user):
+        return [{"uni_code": "023G", "course_code": "023", "course_name": "Architecture", "university": "Moratuwa",
+                 "messages": 2, "created_at": "2026-11-14T10:00:00+00:00", "updated_at": "2026-11-14T10:01:00+00:00"}]
+
+    def chat_history(self, user, uni_code, before, limit):
+        self.history_args = (user, uni_code, before, limit)
+        if uni_code != "023G":
+            return 404, {"errors": [f"No chat for {uni_code}"]}
+        return 200, {"uni_code": "023G", "course_code": "023", "course_name": "Architecture", "university": "Moratuwa",
+                     "messages": [{"seq": 1, "role": "user", "content": "q", "sources": [],
+                                   "created_at": "2026-11-14T10:00:00+00:00"}], "has_more": False}
+
+    def results(self, user):
+        return 200, {"form": {"stream": "Arts"}, "report": {"bands": {}}, "used_llm": False,
+                     "saved_at": "2026-11-14T10:00:00+00:00"}
+
+    def delete_chat(self, user, uni_code):
+        return 200, {"deleted": uni_code}
 
 
 class FakeServiceTests(unittest.TestCase):
     def setUp(self) -> None:
         self.web = FakeWeb()
-        self.app = create_app(lambda: self.web)
+        self.app = create_app(lambda: self.web, auth=SupabaseAuth(url=""))      # sign-in off
 
     def test_chat_passes_the_whole_course_row(self) -> None:
         body = {"question": "Is there a hostel?", "course": {"course_code": "001A", "course_name": "Law",
                                                              "university": "Colombo"},
                 "history": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello"}]}
-        with mock.patch.dict(os.environ, {"CAMPUSYAMU_API_KEY": ""}), TestClient(self.app) as client:
+        with TestClient(self.app) as client:
             r = client.post("/v1/chat", json=body)
         self.assertEqual(r.status_code, 200, r.text)
         self.assertEqual(r.json()["career"]["job"]["state"], "running")
         self.assertEqual(self.web.last_ask["course"]["university"], "Colombo")
         self.assertEqual(self.web.last_ask["student"], {})
+        self.assertIsNone(self.web.last_user)                       # sign-in off: no memory
 
     def test_research_is_202_and_every_call_uses_one_thread(self) -> None:
-        with mock.patch.dict(os.environ, {"CAMPUSYAMU_API_KEY": ""}), TestClient(self.app) as client:
+        with TestClient(self.app) as client:
             self.assertEqual(client.post("/v1/career-outlook/research", json={"course": "Law"}).status_code, 202)
             self.assertEqual(client.get("/v1/career-outlook", params={"course": "Law"}).status_code, 200)
             client.post("/v1/chat", json={"question": "q", "course": {"course_code": "1"}})
@@ -140,14 +164,52 @@ class FakeServiceTests(unittest.TestCase):
         self.assertNotIn(threading.get_ident(), self.web.threads)
         self.assertTrue(self.web.closed)
 
-    def test_api_key(self) -> None:
-        with mock.patch.dict(os.environ, {"CAMPUSYAMU_API_KEY": "secret"}), TestClient(self.app) as client:
+    def test_sign_in_is_required_except_for_health(self) -> None:
+        import time
+
+        import jwt
+
+        url, secret = "https://proj.supabase.co", "test-secret-that-is-long-enough-for-hs256"
+        app = create_app(lambda: self.web, auth=SupabaseAuth(url=url, jwt_secret=secret))
+
+        def token(**over):
+            claims = {"sub": "user-1", "aud": "authenticated", "role": "authenticated",
+                      "iss": f"{url}/auth/v1", "exp": int(time.time()) + 600, **over}
+            return {"Authorization": "Bearer " + jwt.encode(claims, secret, algorithm="HS256")}
+
+        with TestClient(app) as client:
             self.assertEqual(client.get("/v1/health").status_code, 200)
             r = client.get("/v1/options")
             self.assertEqual(r.status_code, 401)
-            self.assertEqual(r.json(), {"errors": ["Missing or invalid X-API-Key"]})
-            self.assertEqual(client.get("/v1/options", headers={"X-API-Key": "wrong"}).status_code, 401)
-            self.assertEqual(client.get("/v1/options", headers={"X-API-Key": "secret"}).status_code, 200)
+            self.assertIn("Sign in first", r.json()["errors"][0])
+            self.assertEqual(client.get("/v1/options", headers={"Authorization": "Bearer junk"}).status_code, 401)
+            expired = client.get("/v1/options", headers=token(exp=int(time.time()) - 600))
+            self.assertEqual((expired.status_code, expired.json()), (401, {"errors": [
+                "Sign-in expired: refresh the session and try again"]}))
+            self.assertEqual(client.get("/v1/options", headers=token(role="anon")).status_code, 401)
+            self.assertEqual(client.get("/v1/options", headers=token()).status_code, 200)
+            r = client.post("/v1/chat", json={"question": "q", "course": {"course_code": "1"}}, headers=token())
+            self.assertEqual(r.status_code, 200, r.text)
+            self.assertEqual(self.web.last_user, "user-1")            # the chat gets the student's id
+            self.assertEqual(client.get("/v1/me/chats").status_code, 401)
+            self.assertEqual(client.get("/v1/me", headers=token()).json()["user_id"], "user-1")
+            self.assertEqual(client.get("/v1/me/chats", headers=token()).json()[0]["uni_code"], "023G")
+            r = client.get("/v1/me/chats/023G", params={"before": 5, "limit": 10}, headers=token())
+            self.assertEqual((r.status_code, r.json()["messages"][0]["content"]), (200, "q"))
+            self.assertEqual(self.web.history_args, ("user-1", "023G", 5, 10))
+            self.assertEqual(client.get("/v1/me/chats/999X", headers=token()).status_code, 404)
+            self.assertEqual(client.get("/v1/me/chats/023G", params={"limit": 500}, headers=token()).status_code, 422)
+            self.assertEqual(client.delete("/v1/me/chats/023G", headers=token()).json(), {"deleted": "023G"})
+            self.assertEqual(client.get("/v1/me/results", headers=token()).json()["form"], {"stream": "Arts"})
+            r = client.post("/v1/chat", json={"question": "q", "uni_code": "023G"}, headers=token())
+            self.assertEqual((r.status_code, self.web.last_ask["uni_code"], self.web.last_ask["course"]),
+                             (200, "023G", None))                # the service looks the course up
+
+    def test_account_endpoints_need_sign_in_on(self) -> None:
+        with TestClient(self.app) as client:                          # sign-in off on this server
+            r = client.get("/v1/me/chats")
+        self.assertEqual(r.status_code, 400)
+        self.assertIn("Sign-in is off", r.json()["errors"][0])
 
     def test_cors_preflight(self) -> None:
         with mock.patch.dict(os.environ, {"API_CORS_ORIGINS": "https://app.example"}):

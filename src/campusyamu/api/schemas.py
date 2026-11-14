@@ -24,7 +24,8 @@ class RecommendationRequest(BaseModel):
                              examples=["Gangawata Korale"])
     preferences: str = Field("", max_length=2000, description="Free-text interests",
                              examples=["engineering, design"])
-    use_llm: bool = Field(False, description="Use OpenAI to read the preferences (slower; needs `llm_available`)")
+    use_llm: bool = Field(False, description="Use AI to read the preferences (engine: `preference_engine`; "
+                                             "needs `llm_available` or `preference_ai_available`)")
     suggestions: int = Field(20, ge=5, le=50, description="Entries per suggestion list")
 
 
@@ -35,7 +36,7 @@ class RecommendationResponse(BaseModel):
 
 class ChatTurn(BaseModel):
     role: Literal["user", "assistant"]
-    content: str
+    content: str = Field(max_length=4000)
 
 
 class ChatCourse(BaseModel):
@@ -48,10 +49,14 @@ class ChatCourse(BaseModel):
 
 class ChatRequest(BaseModel):
     question: str = Field(min_length=1, max_length=1000, examples=["What are the career prospects?"])
-    course: ChatCourse
+    course: ChatCourse | None = Field(None, description="The course row from the report. Signed in, `uni_code` "
+                                                        "is enough: the server takes the row from the saved results")
+    uni_code: str | None = Field(None, description="Signed in: the course's UNI code from the saved results",
+                                 examples=["008G"])
     student: dict[str, Any] = Field(default_factory=dict,
                                     description="stream, al_results, z_score, admission_district, home, interests")
-    history: list[ChatTurn] = Field(default_factory=list, description="Earlier turns of this course's chat")
+    history: list[ChatTurn] = Field(default_factory=list, max_length=40,
+                                    description="Earlier turns of this course's chat (at most 40)")
 
 
 class CareerOutlookSummary(BaseModel):
@@ -95,6 +100,11 @@ class ChatSource(BaseModel):
     links: list[Any] | None = None
 
 
+class Usage(BaseModel):
+    used: int = Field(description="Calls today (Sri Lanka time)")
+    limit: int = Field(description="Daily limit; 0 = no limit")
+
+
 class ChatResponse(BaseModel):
     answer: str
     status: Literal["answered", "partly_answered", "not_in_sources"]
@@ -103,6 +113,50 @@ class ChatResponse(BaseModel):
     notes: list[str]
     model: str
     career: CareerStatus | None = Field(None, description="Career research status for this course")
+    usage: Usage | None = Field(None, description="Chat questions used today (signed in only)")
+
+
+class Me(BaseModel):
+    user_id: str
+    usage: dict[str, Usage] = Field(description="Today's use of the paid calls: chat, ai_recommendations, research")
+
+
+class ChatSummary(BaseModel):
+    uni_code: str
+    course_code: str
+    course_name: str
+    university: str
+    messages: int
+    created_at: str
+    updated_at: str = Field(description="Last message")
+
+
+class StoredMessage(BaseModel):
+    seq: int = Field(description="1, 2, 3 ... within the chat; pass the smallest as `before` to page back")
+    role: Literal["user", "assistant"]
+    content: str
+    sources: list[Any] = Field(description="For answers: the sources shown with it")
+    created_at: str
+
+
+class ChatHistory(BaseModel):
+    uni_code: str
+    course_code: str
+    course_name: str
+    university: str
+    messages: list[StoredMessage] = Field(description="Oldest first")
+    has_more: bool = Field(description="Older messages exist: ask again with before=<first seq>")
+
+
+class SavedResults(BaseModel):
+    form: dict[str, Any] = Field(description="The body sent to POST /v1/recommendations (to fill the form again)")
+    report: dict[str, Any] = Field(description="The report it returned (show it again)")
+    used_llm: bool
+    saved_at: str
+
+
+class Deleted(BaseModel):
+    deleted: str
 
 
 class StreamHint(BaseModel):
@@ -120,7 +174,9 @@ class Options(BaseModel):
     ol_grades: list[str]
     districts: list[str]
     ds_divisions: dict[str, list[str]]
-    llm_available: bool
+    llm_available: bool = Field(description="OpenAI configured: course chat and AI feedback work")
+    preference_engine: str = Field("openai", description="AI that reads interests: openai | gemini_decision")
+    preference_ai_available: bool = Field(False, description="That engine has its key: `use_llm` works")
 
 
 class Health(BaseModel):

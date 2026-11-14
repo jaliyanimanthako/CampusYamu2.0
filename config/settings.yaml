@@ -17,6 +17,12 @@ what_if:                       # order-3 sensitivity analysis
   close_gap: 0.15              # score points between neighbours for a near tie
 
 preferences:
+  engine: gemini_decision              # AI that reads the interests ("Use AI"): openai | gemini_decision
+                               #   openai: gpt-4o-mini writes every mark (20-40 s); needs OPENAI_API_KEY
+                               #   gemini_decision: gemini-decision-1 scores them (fast); needs GEMINI_API_KEY
+                               #   PREFERENCE_ENGINE in .env wins. Either one falls back to keyword matching.
+  decision_second_category_min: 0.25   # gemini_decision: keep a 2nd category from this probability
+  decision_named_course_min: 0.6       # gemini_decision: treat a programme as named from this probability
   min_mark: 5                  # list a course under an interest from this match mark
   rank_weights: [1.0, 0.9, 0.8, 0.7]   # 1st, 2nd, 3rd, 4th interest; later ones use last_weight
   last_weight: 0.6
@@ -25,12 +31,37 @@ preferences:
 
 models:                        # env var that overrides -> default
   preference: gpt-4o-mini      # PREFERENCE_MODEL, then OPENAI_MODEL
+  preference_decision: gemini-decision-1   # PREFERENCE_DECISION_MODEL (engine gemini_decision)
   feedback: gpt-4o-mini        # FEEDBACK_MODEL, then OPENAI_MODEL
   chat: gpt-4o-mini            # CHAT_MODEL, then OPENAI_MODEL
+  website: gpt-4o-mini         # WEBSITE_MODEL, then OPENAI_MODEL (reads university pages)
+  memory: gpt-4o-mini          # MEMORY_MODEL, then OPENAI_MODEL (chat memory: rewrite, summary, facts)
 
 chat:
+  website:                     # university website research for the course chat (sources W, D); web/course_research.py
+    enabled: true              # false: the chat's research does careers only and ignores W / D
+    max_pages: 5               # pages kept per offering (one search, Tavily or Firecrawl)
+    cache_days: 30             # data/cache/university_pages/<uni_code>.json
+    passages: 4                # best-fitting passages given to the chat per question
+    passage_chars: 900
+    max_specialisations: 10    # 2nd hop: one search per specialisation ("Civil Engineering University of Moratuwa")
   search_hits: 4               # extra handbook passages per question (needs Neo4j)
-  history_turns: 8
+  history_turns: 8             # only without a signed-in student: earlier turns the client sends
+
+limits:                        # paid calls per signed-in student per day (api/limits.py); 0 = no limit
+  timezone: Asia/Colombo       # when the day resets
+  chat: 60                     # course chat questions
+  ai_recommendations: 10       # recommendations with use_llm
+  research: 3                  # web research runs (careers + university website + specialisations)
+
+memory:                        # course chat memory per signed-in student (campusyamu.memory)
+  recent_tokens: 2000          # newest turns sent word for word, newest first, until this many (estimated) tokens
+  keep_messages: 8             # newest messages never folded into the summary
+  summarize_every: 8           # fold older messages into the running summary once this many are waiting
+  facts_every: 5               # look for student facts after this many questions (at once on "remember", "my parents"...)
+  max_facts: 30                # per student; the oldest go first
+  rewrite_questions: true      # rewrite follow-ups into standalone questions for the handbook search
+  db: data/memory/chat_memory.db   # SQLite file, used when SUPABASE_DB_URL is not set
 
 career:
   region: Sri Lanka

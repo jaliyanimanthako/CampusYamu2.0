@@ -15,10 +15,23 @@ Context for each question (numbered sources the answer must cite):
          when it has been researched: career paths, a cited 5-year SWOT,
          local vs overseas, further study, with its evidence list (E001 ...
          -> title and URL). Cached per course (career_outlook.py).
+* W      what the university's official website says about this course
+         (university_pages.py): the applicant profile the LLM wrote from the
+         pages (overview, faculty, modules, specialisations, training, ...),
+         each fact with its page link;
+* D      a card per specialisation from its department's page, with links.
+         W and D come from the course research (course_research.py), started
+         in the chat when the student asks for research, cached per offering;
+         the chat only reads the cache, it never fetches while answering.
 
 One OpenAI Responses call per question (strict JSON). The model may only cite
-the sources given; unknown ids are dropped. Nothing is stored server side:
-the browser sends the conversation history with each question.
+the sources given; unknown ids are dropped.
+
+Memory: with a user_id (a signed-in student) the server keeps the chat
+(campusyamu.memory): the student's facts, this chat's running summary and the
+newest turns go into the prompt, a follow-up is rewritten to stand alone for the
+handbook search, and the turn is saved. Without a user_id the caller sends the
+earlier turns as `history` (the last chat.history_turns are used).
 """
 
 from __future__ import annotations
@@ -33,7 +46,11 @@ from campusyamu.core import settings
 from campusyamu.agents.course_details import HandbookCourseIndex
 from campusyamu.core.openai_client import call_structured
 
+from campusyamu.memory import ChatMemory
+
 from .career_outlook import CareerOutlookStore
+from .university_pages import UniversityPages
+from campusyamu.prompts.course_chat import COURSE_CHAT_SYSTEM as SYSTEM_PROMPT
 
 DEFAULT_MODEL = "gpt-4o-mini"
 MAX_QUESTION = 1000
@@ -53,40 +70,64 @@ REPORT_FIELDS = (
     "preference_marks", "order3_position", "order3_note", "parts",
 )
 
-SYSTEM_PROMPT = """You answer a Sri Lankan A/L student's questions about ONE state-university course they can
-apply for, using only the numbered sources given:
-- S1, S2 ...: the course's own section of the UGC 2024/2025 handbook.
-- R: the student's own computed facts for this course (Z-score band, last cut-off, margin, travel time,
-  O/L status, ranking position). Bands describe last year's cut-offs only: strong = at or above,
-  competitive = close, reach = a little below, unlikely = well below. They are not admission chances.
-- H1, H2 ...: other handbook passages found by search (may be about general rules or other courses).
-- C (only if present): web research on careers for this course in Sri Lanka (career paths, a 5-year SWOT,
-  local vs overseas work, further study), dated, with evidence ids (E001 ...) whose titles and URLs are listed.
-  Use it for jobs, demand, salaries, further study and future outlook. Say it comes from web research on that
-  date and may change; mention the evidence title or site when useful.
-- If C is absent and the student asks about careers, say there is no career research for this course yet and
-  offer it: "I can look this up on the web (takes about 2-3 minutes) - just ask me to research it."
-- start_career_research: true ONLY when the student explicitly asks you to research / search / look up careers
-  or jobs for this course on the web, or clearly accepts your offer to do so (e.g. "yes, research it"). Otherwise
-  false. Always false when C is present. When true, tell them the research has started and they can keep asking.
-Rules:
-- Answer in simple English, briefly (2-6 sentences or a short list). Cite sources inline like [S1] or [R].
-- Use only the sources. If they do not answer the question, say the handbook does not say, and suggest
-  contacting the university or UGC. Do not guess dates, fees, rankings or career facts.
-- Never promise admission. Do not invent numbers.
-- If an H passage is about a different course, do not apply it to this course."""
-
 
 def _trim(value: Any, limit: int = 600) -> Any:
     text = json.dumps(value, ensure_ascii=False, default=str)
     return value if len(text) <= limit else text[:limit] + "…"
 
 
+def website_sources(record: dict[str, Any] | None, course: dict[str, Any]) -> list[dict[str, Any]]:
+    """W (the website profile) and D (the specialisation cards) from the cached course research."""
+
+    if not record:
+        return []
+    out = []
+    domain = (record.get("domains") or ["university website"])[0]
+    university = course.get("university") or record.get("university")
+    profile = record.get("profile") or {}
+    if profile.get("facts"):
+        pages = profile.get("pages") or {}
+        lines = [f"{f['field'].replace('_', ' ')}: {f['detail']} ({', '.join(f['sources'])})" for f in profile["facts"]]
+        if profile.get("missing"):
+            lines.append("not on the website: " + ", ".join(m.replace("_", " ") for m in profile["missing"]))
+        if not profile.get("about_this_course"):
+            lines.insert(0, "(none of the pages is clearly about this course; these may be faculty facts)")
+        lines.append("pages: " + "; ".join(f"{pid} = {p['url']}" for pid, p in pages.items()))
+        out.append({"id": "W", "kind": "university_website",
+                    "title": f"{university} website: {course.get('course_name') or record.get('course_name')}",
+                    "citation": f"{domain} (official website), read {str(profile.get('generated_at', ''))[:10]}",
+                    "text": "\n".join(lines)[:MAX_SECTION_CHARS],
+                    "links": [{"id": pid, "title": p["title"], "url": p["url"]} for pid, p in pages.items()]})
+    section = record.get("specialisations") or {}
+    results = section.get("results") or []
+    if any(r.get("card") for r in results):
+        lines, links = [], []
+        for r in results:
+            card = r.get("card")
+            if card:
+                parts = [card["overview"]] + [f"{k}: {card[k]}" for k in ("modules", "facilities", "careers")
+                                              if card.get(k)]
+                lines.append(f"{r['name']}: " + " | ".join(parts) + f" (page {card['url']})")
+                links.append({"id": r["name"], "title": f"{r['name']}: {card['title']}", "url": card["url"]})
+            else:
+                lines.append(f"{r['name']}: no department page found on the official website")
+        names_from = {"handbook": "the UGC handbook", "website": "the university website"}.get(
+            section.get("source"), "the research")
+        out.append({"id": "D", "kind": "specialisations",
+                    "title": f"Specialisations at {university} (names from {names_from})",
+                    "citation": f"{domain} department pages, read {str(section.get('generated_at', ''))[:10]}",
+                    "text": "\n".join(lines)[:MAX_SECTION_CHARS], "links": links})
+    return out
+
+
 class CourseChat:
     def __init__(self, handbook: HandbookCourseIndex | None = None, model: str | None = None,
-                 use_search: bool = True, outlooks: CareerOutlookStore | None = None) -> None:
+                 use_search: bool = True, outlooks: CareerOutlookStore | None = None,
+                 websites: UniversityPages | None = None, memory: ChatMemory | None = None) -> None:
         self.handbook = handbook or HandbookCourseIndex()
+        self.memory = memory
         self.outlooks = outlooks or CareerOutlookStore()
+        self.websites = websites
         self.model = model or settings.model("chat", "CHAT_MODEL", DEFAULT_MODEL)
         self.use_search = use_search
         self._retriever = None
@@ -131,9 +172,13 @@ class CourseChat:
     def close(self) -> None:
         if self._driver is not None:
             self._driver.close()
+        if self.memory is not None:
+            self.memory.close()
 
     # --- one question ------------------------------------------------------------------
     def sources(self, course: dict[str, Any], question: str) -> tuple[list[dict[str, Any]], list[str]]:
+        """The numbered sources; `question` is only used for the handbook search (H)."""
+
         notes: list[str] = []
         code = str(course.get("course_code") or "")
         blocks = self.handbook.blocks_for(code)
@@ -166,6 +211,8 @@ class CourseChat:
                             "text": f"{text}\n\nEvidence:\n{evidence}",
                             "links": [{"id": e.get("evidence_id"), "title": e.get("title"), "url": e.get("url")}
                                       for e in outlook.get("evidence_index", []) if e.get("url")]})
+        if self.websites is not None and self.websites.enabled:      # chat.website.enabled in settings.yaml
+            sources += website_sources(self.websites.store.get(str(course.get("uni_code") or "")), course)
         retriever = self.retriever()
         if retriever is None:
             notes.append(self._search_error or "handbook search unavailable")
@@ -182,16 +229,22 @@ class CourseChat:
         return sources, notes
 
     def request_payload(self, question: str, course: dict[str, Any], student: dict[str, Any],
-                        history: list[dict[str, str]], sources: list[dict[str, Any]]) -> dict[str, Any]:
+                        history: list[dict[str, str]], sources: list[dict[str, Any]],
+                        memory: dict[str, Any] | None = None, trim_history: bool = True) -> dict[str, Any]:
+        """trim_history=False: the turns come from memory, already cut to its token budget."""
+
         turns = []
-        for turn in history[-MAX_HISTORY_TURNS:]:
+        for turn in history[-MAX_HISTORY_TURNS:] if trim_history else history:
             if turn.get("role") in ("user", "assistant") and str(turn.get("content", "")).strip():
-                turns.append({"role": turn["role"], "content": str(turn["content"])[:MAX_HISTORY_CHARS]})
+                content = str(turn["content"])
+                turns.append({"role": turn["role"], "content": content[:MAX_HISTORY_CHARS] if trim_history else content})
         context = {
             "course": f"{course.get('course_name')} ({course.get('uni_code')}) — {course.get('university')}",
             "student": {k: _trim(v) for k, v in student.items()},
             "sources": [{k: s[k] for k in ("id", "title", "citation", "text")} for s in sources],
         }
+        if memory:
+            context["memory"] = memory
         schema = {
             "type": "object", "additionalProperties": False,
             "required": ["answer", "sources_used", "status", "start_career_research"],
@@ -217,22 +270,49 @@ class CourseChat:
         return call_structured(payload, key, 90, "CampusYamu-CourseChat/0.1")
 
     def ask(self, question: str, course: dict[str, Any], student: dict[str, Any] | None = None,
-            history: list[dict[str, str]] | None = None) -> dict[str, Any]:
+            history: list[dict[str, str]] | None = None, user_id: str | None = None) -> dict[str, Any]:
+        """Answer one question. With a user_id (and memory configured) the earlier turns come from memory
+        and `history` is ignored; the turn is saved afterwards."""
+
         question = " ".join(str(question or "").split())[:MAX_QUESTION]
         if not question:
             raise ValueError("empty question")
-        sources, notes = self.sources(course, question)
-        raw = self._call(self.request_payload(question, course, student or {}, history or [], sources))
+        recall, search_question, notes = None, question, []
+        uni_code = str(course.get("uni_code") or "")
+        if user_id and self.memory is not None and uni_code:
+            try:
+                recall = self.memory.recall(user_id, uni_code)
+                history = recall.turns
+                search_question = self.memory.standalone_question(question, recall, course)
+            except Exception as exc:                    # answer without memory rather than fail
+                recall = None
+                notes.append(f"chat memory unavailable ({str(exc)[:120]})")
+        sources, source_notes = self.sources(course, search_question)
+        notes += source_notes
+        raw = self._call(self.request_payload(question, course, student or {}, history or [], sources,
+                                              memory=recall.context() if recall else None,
+                                              trim_history=recall is None))
         known = {s["id"] for s in sources}
         used = [s for s in raw.get("sources_used", []) if s in known]
-        return {
+        result = {
             "answer": str(raw.get("answer", "")).strip() or "Sorry, I could not answer that.",
             "status": raw.get("status") if raw.get("status") in ("answered", "partly_answered", "not_in_sources")
             else "answered",
             "sources": [{k: s[k] for k in ("id", "kind", "title", "citation", "links") if k in s}
                         for s in sources if s["id"] in used],
             "career_research": any(s["kind"] == "career_outlook" for s in sources),
-            "start_career_research": bool(raw.get("start_career_research"))
-            and not any(s["kind"] == "career_outlook" for s in sources),
+            "website_research": any(s["kind"] == "university_website" for s in sources),
+            # research runs only when the student asks, and only while something is still missing
+            "start_career_research": bool(raw.get("start_career_research")) and not (
+                any(s["kind"] == "career_outlook" for s in sources)
+                and (any(s["kind"] == "university_website" for s in sources)
+                     or not (self.websites is not None and self.websites.enabled))),
             "notes": notes, "model": self.model,
+            "search_question": search_question,
         }
+        if recall is not None:
+            try:
+                self.memory.save_turn(user_id, course, question, result["answer"], result["sources"])
+            except Exception as exc:
+                notes.append(f"this turn was not saved to memory ({str(exc)[:120]})")
+        return result

@@ -31,6 +31,30 @@ class WebPageServerTests(unittest.TestCase):
             self.assertIn(path, html)
         self.assertNotIn('"/api/', html)
 
+    def test_config_js_has_only_the_public_values(self) -> None:
+        import json
+        import os
+        from unittest import mock
+
+        env = {"SUPABASE_URL": "https://proj.supabase.co", "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_x",
+               "SUPABASE_SECRET_KEY": "sb_secret_never", "SUPABASE_DB_URL": "postgresql://never",
+               "OPENAI_API_KEY": "sk-never"}
+        with mock.patch.dict(os.environ, env), urllib.request.urlopen(self.base + "/config.js") as res:
+            body = res.read().decode("utf-8")
+        self.assertTrue(body.startswith("window.CAMPUSYAMU_CONFIG = "))
+        config = json.loads(body.split("=", 1)[1].strip().rstrip(";"))
+        self.assertEqual(config, {"supabaseUrl": "https://proj.supabase.co", "supabaseKey": "sb_publishable_x",
+                                  "apiBaseUrl": None})
+        self.assertNotIn("never", body)
+
+    def test_page_signs_in_and_sends_the_token(self) -> None:
+        with urllib.request.urlopen(self.base + "/") as res:
+            html = res.read().decode("utf-8")
+        self.assertIn('<script src="/config.js"></script>', html)
+        self.assertIn("signInWithPassword", html)
+        self.assertIn("Authorization = `Bearer ${data.session.access_token}`", html)
+        self.assertNotIn("X-API-Key", html)
+
     def test_old_api_routes_are_gone(self) -> None:
         for path in ("/api/options", "/api/career?course=Law"):
             with self.assertRaises(urllib.error.HTTPError) as ctx:

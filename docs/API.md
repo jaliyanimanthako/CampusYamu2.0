@@ -109,7 +109,7 @@ unlock the AI features:
 | Course chat (`/v1/chat`) | `OPENAI_API_KEY` | `/v1/chat` returns `400` |
 | Better chat answers (handbook search) | `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD` | chat still works, from the course's own handbook section only |
 | Career research | `OPENAI_API_KEY`, `OPENAI_MODEL`, and `TAVILY_API_KEY` or `FIRECRAWL_API_KEY` | `/v1/career-outlook` reports `available: false` |
-| Lock the API with a key | `CAMPUSYAMU_API_KEY` | no key is required (fine for local development) |
+| Student sign-in (Supabase Auth) and chat memory | `SUPABASE_URL`, `SUPABASE_DB_URL` (`SUPABASE_JWT_SECRET` only for legacy projects) | the API is open and the chat has no memory (local development only) |
 | Allow a browser app on another origin | `API_CORS_ORIGINS` | every origin is allowed (`*`) |
 
 Ask the backend owner for keys. Never commit `.env`.
@@ -195,7 +195,7 @@ Production uses HTTPS, so release builds need none of this.
 | Header | When |
 |---|---|
 | `Content-Type: application/json` | every POST |
-| `X-API-Key: <key>` | every request except `/v1/health`, **if** the server sets `CAMPUSYAMU_API_KEY`. Sending it when it isn't required is harmless, so always send it if you have one |
+| `Authorization: Bearer <access token>` | every request except `/v1/health`, when the server has sign-in on (`SUPABASE_URL`). The token is the signed-in student's Supabase access token: sign in with the Supabase SDK (project URL + publishable key from the backend owner) and send `session.access_token`. The SDK refreshes it; on `401`, refresh the session and retry once, or send the student back to sign-in |
 
 ### 3.4 Timeouts
 
@@ -243,7 +243,10 @@ App start ──▶ GET /v1/options ──▶ Results form ──▶ POST /v1/re
 
 **Step 1. App start: load the form values.**
 Call `GET /v1/options` once and cache the result for the session. Don't hard-code subject or
-district lists: they come from the handbook data and can change.
+district lists: they come from the handbook data and can change. Then call
+[`GET /v1/me/results`](#612-get-v1meresults): if the student has searched before (on any device), it
+returns the form they sent and the report, so you can fill the form and go straight to the results.
+`404` means no search yet.
 
 **Step 2. Results form.** Build it from the options:
 
@@ -261,21 +264,28 @@ district lists: they come from the handbook data and can change.
 
 **Step 3. Get recommendations.**
 `POST /v1/recommendations`. Show a loading state (a few seconds, or 20–40 s with AI). Keep the
-whole `report` in memory, because steps 4–6 use it.
+whole `report` in memory, because steps 4–6 use it. The server also saves it as the student's latest
+search (replacing the one before), so it comes back after a restart via `GET /v1/me/results`.
 
 **Step 4. Course list.** Show `report.bands` as sections in this order: `strong`,
 `competitive`, `reach`, `unlikely`, `no_history`. Optionally add tabs for the three ranked lists
 in `report.rankings` (`zscore`, `preference`, `distance`). Each list has a `title` and a
 `feedback.summary` you can show as-is.
 
-**Step 5. Course chat.** When a course is tapped, open a chat for that course. Send:
+**Step 5. Course chat.** When a course is tapped, open a chat for that course. Signed in, the simplest
+request is `{"uni_code": "008G", "question": "..."}`: the server takes the course row and the student's
+facts from their saved search. Or send them yourself:
 - `course`: the **whole course row** from `report.bands`, unchanged. If the course also appears
   in `report.rankings.distance.suggestions`, add `order3_position` (its `position`), `parts`, and
   `order3_note` (`report.rankings.distance.feedback.course_notes[uni_code].note`). These are
   optional but improve answers about ranking.
 - `student`: built from `report.profile` and `report.origin` (see [6.5](#65-post-v1chat)).
-- `history`: the earlier turns *of this course's chat*. The server keeps no chat state, so
-  your app stores it. Keep one history per course.
+- `history`: not needed when the student is signed in: **the server keeps every course chat** (one per
+  student per course) and remembers it. When the chat screen opens, show the saved messages from
+  [`GET /v1/me/chats/{uni_code}`](#610-get-v1mechatsuni_code). Only a server with sign-in off (local
+  development) needs the earlier turns in `history`.
+- After each answer, `usage` says how many chat questions the student has used today; show it near
+  the input if you like. Past the daily limit the API returns `429` with a message to show.
 
 **Step 6. Career research.** If a chat reply has `career.job.state == "running"`, or after
 you call `POST /v1/career-outlook/research`, poll `GET /v1/career-outlook?course=<course_name>`
@@ -291,14 +301,28 @@ Base path: `/v1`. All bodies are JSON.
 | # | Method | Path | Auth | Typical time |
 |---|---|---|---|---|
 | 6.1 | GET | `/v1/health` | none | instant |
-| 6.2 | GET | `/v1/options` | key* | instant |
-| 6.3 | GET | `/v1/courses` | key* | instant |
-| 6.4 | POST | `/v1/recommendations` | key* | 1–5 s; 20–40 s with `use_llm` |
-| 6.5 | POST | `/v1/chat` | key* | 5–20 s |
-| 6.6 | GET | `/v1/career-outlook` | key* | instant |
-| 6.7 | POST | `/v1/career-outlook/research` | key* | instant (the job then runs 3–10 min) |
+| 6.2 | GET | `/v1/options` | sign-in* | instant |
+| 6.3 | GET | `/v1/courses` | sign-in* | instant |
+| 6.4 | POST | `/v1/recommendations` | sign-in* | 1–5 s; 20–40 s with `use_llm` |
+| 6.5 | POST | `/v1/chat` | sign-in* | 5–20 s |
+| 6.6 | GET | `/v1/career-outlook` | sign-in* | instant |
+| 6.7 | POST | `/v1/career-outlook/research` | sign-in* | instant (the job then runs 3–10 min) |
+| 6.8 | GET | `/v1/me` | sign-in | instant |
+| 6.9 | GET | `/v1/me/chats` | sign-in | instant |
+| 6.10 | GET | `/v1/me/chats/{uni_code}` | sign-in | instant |
+| 6.11 | DELETE | `/v1/me/chats/{uni_code}` | sign-in | instant |
+| 6.12 | GET | `/v1/me/results` | sign-in | instant |
 
-\* only when the server sets `CAMPUSYAMU_API_KEY`.
+\* `Authorization: Bearer <token>` of a signed-in student, when the server has sign-in on (`SUPABASE_URL`).
+The `/v1/me` endpoints always need sign-in (`400` on a server without it).
+
+**Sign-in and sign-up** happen in the Supabase SDK, not in this API: `signUp({email, password})` and
+`signInWithPassword({email, password})` (more methods, such as phone codes or Google, can be switched on in
+Supabase later). Ask the backend owner for the project URL and the publishable key.
+
+**Daily limits** per student on the paid calls (Sri Lanka days; numbers in `config/settings.yaml`
+`limits`): chat questions, recommendations with `use_llm`, and research runs. Only successful calls
+count. Past a limit the API answers `429` with a message to show; `GET /v1/me` gives today's counts.
 
 ### 6.1 `GET /v1/health`
 
@@ -545,9 +569,10 @@ Answers one question about one course. Needs `llm_available: true`.
 | Field | Required | How to fill it |
 |---|---|---|
 | `question` | yes | The student's message, 1–1000 characters |
-| `course` | yes | The course row from `report.bands`. Must include `course_code`. Send the whole row: every field is used as context |
+| `course` | one of the two | The course row from `report.bands`. Must include `course_code`. Send the whole row: every field is used as context |
+| `uni_code` | one of the two | Signed in only: the course's UNI code from the student's saved search (6.12). The server fills in `course` and, when `student` is missing, `student` |
 | `student` | no | `stream`, `al_results`, `z_score`, `admission_district` from `report.profile`; `home` as `"<origin.ds_division> (<origin.district>)"`; `interests` from `report.preferences.text` |
-| `history` | no | Earlier turns of **this course's** chat, oldest first, `role` = `user` or `assistant`. Leave out failed or error messages. The server uses the last 8 turns |
+| `history` | no | Earlier turns of **this course's** chat, oldest first, `role` = `user` or `assistant`. Leave out failed or error messages. At most 40 turns of up to 4,000 characters each (otherwise 422); the server uses the last 8 |
 
 **Response `200`**
 
@@ -574,6 +599,7 @@ Answers one question about one course. Needs `llm_available: true`.
 | `status` | `answered`, `partly_answered`, or `not_in_sources` (the handbook doesn't cover it: you might show a hint) |
 | `sources` | Citations actually used. Show them under the answer: `citation`, plus `title`, plus `links` as tappable URLs |
 | `career_research` | A cached career outlook was used for this answer |
+| `website_research` | The university website research (sources `W` / `D`) was used for this answer |
 | `notes` | Small status messages for the user (e.g. "handbook search unavailable") |
 | `career` | Career-research status for this course, same shape as [6.6](#66-get-v1career-outlook). If `career.job.state` is `"running"`, start polling |
 
@@ -585,9 +611,10 @@ Source kinds:
 | `student_report` | The student's own results for this course |
 | `handbook_search` | Another handbook passage found by search (general rules, applications, ...) |
 | `career_outlook` | The cached web career research (has `links`) |
+| `university_website` | What the university's official website says about the course: overview, faculty, modules, specialisations, training, … (has `links` to the pages) |
+| `specialisations` | One card per specialisation from its department's page (has `links`) |
 
-If the student asks for career research in the chat ("research careers for this course"), the
-server starts the background job itself and `career.job.state` becomes `"running"`.
+If the student asks for research in the chat ("research this course", "look up its modules", "research careers"), the server starts it in the background: career trends (web + Reddit), the university's official website, and its specialisations, all in parallel, for this course at this university. `career.job.state` becomes `"running"` and `career.job.scope` is `"course"`; poll [6.6](#66-get-v1career-outlook) as for career research. When it is done, later answers use the new `W` and `D` sources. Send the whole course row as `course` (with `uni_code` and `university`) so the right university is researched.
 
 **Errors:** `400` if the server has no OpenAI key or `course.course_code` is missing. `502` if
 OpenAI failed: show "try again".
@@ -642,6 +669,66 @@ so only call it when the student taps an explicit button.
 | `202` | Started. Poll [6.6](#66-get-v1career-outlook) | same as 6.6, plus `message: "started"` |
 | `409` | Another course is being researched (one at a time). Try again later | same as 6.6, plus `message` explaining |
 | `400` | Unknown course, or research keys missing on the server | `{"errors": [...]}` |
+| `429` | The student's daily research limit is reached | `{"errors": [...]}` |
+
+### 6.8 `GET /v1/me`
+
+The signed-in student and today's use of the paid calls.
+
+```json
+{"user_id": "3f2a9c1e-...", "usage": {"chat": {"used": 12, "limit": 60},
+ "ai_recommendations": {"used": 1, "limit": 10}, "research": {"used": 0, "limit": 3}}}
+```
+
+`limit: 0` means no limit.
+
+### 6.9 `GET /v1/me/chats`
+
+The student's course chats, most recent first (for a "My chats" screen).
+
+```json
+[{"uni_code": "023G", "course_code": "023", "course_name": "Architecture",
+  "university": "University of Moratuwa", "messages": 14,
+  "created_at": "2026-11-14T06:20:00+00:00", "updated_at": "2026-11-14T07:02:11+00:00"}]
+```
+
+### 6.10 `GET /v1/me/chats/{uni_code}`
+
+One course chat's saved messages, **oldest first**: show them when the chat screen opens.
+Query: `limit` (default 50, at most 200) and `before` (a `seq`) to page back.
+
+```json
+{"uni_code": "023G", "course_code": "023", "course_name": "Architecture", "university": "University of Moratuwa",
+ "messages": [
+   {"seq": 13, "role": "user", "content": "Is there an aptitude test?", "sources": [],
+    "created_at": "2026-11-14T07:02:01+00:00"},
+   {"seq": 14, "role": "assistant", "content": "Yes, ... [S1]", "sources": [{"id": "S1", "kind": "course_section", "...": "..."}],
+    "created_at": "2026-11-14T07:02:11+00:00"}],
+ "has_more": true}
+```
+
+`has_more: true` means older messages exist: call again with `before=<the first message's seq>`.
+`404` when the student has no chat for that course yet (show the empty chat).
+
+### 6.11 `DELETE /v1/me/chats/{uni_code}`
+
+Deletes one course chat for good (messages and its summary). What CampusYamu learned about the
+student (their facts) stays. Ask the student to confirm first. Returns `{"deleted": "023G"}`, or `404`.
+
+### 6.12 `GET /v1/me/results`
+
+The student's latest search, saved by `POST /v1/recommendations` (one per student; a new search replaces
+it). Use it at app start to fill the form and show the results again, on any device.
+
+```json
+{"form": {"stream": "Physical Science", "al": [...], "cgt": 40, "z_score": 1.56, "admission_district": "Kandy",
+          "ds_division": "Gangawata Korale", "ol": [...], "preferences": "engineering, design",
+          "use_llm": false, "suggestions": 20},
+ "report": {"profile": {...}, "origin": {...}, "bands": {...}, "rankings": {...}, "...": "..."},
+ "used_llm": false, "saved_at": "2026-11-14T06:20:00+00:00"}
+```
+
+`form` is exactly the body of 6.4; `report` is exactly its `report`. `404` before the first search.
 
 ---
 
@@ -656,9 +743,10 @@ Every error has the same body, so you only need one error handler:
 | Status | Meaning | What the app should do |
 |---|---|---|
 | `400` | Valid request that can't be served (bad combination, unknown course, feature not configured) | Show `errors` to the user |
-| `401` | `X-API-Key` missing or wrong | Configuration bug: check the key |
-| `404` | Wrong path | Bug: check the URL |
+| `401` | Not signed in, or the sign-in expired | Refresh the Supabase session and retry once; otherwise show the sign-in screen |
+| `404` | Wrong path, or no saved chat for that course (6.10, 6.11) | For chats: show an empty chat. Otherwise a bug: check the URL |
 | `409` | Career research already running for another course | Show the message, and retry later |
+| `429` | Daily limit reached (chat, AI search or research) | Show `errors`; the limit resets at midnight Sri Lanka time |
 | `422` | Body doesn't match the schema. Messages look like `"cgt: Field required"` or `"al.0.grade: ..."` | Bug in the client, or missing form validation |
 | `500` | Server error | Show "Something went wrong", and retry |
 | `502` | OpenAI failed or timed out | Show "Couldn't answer right now, try again" |
@@ -672,7 +760,10 @@ Every error has the same body, so you only need one error handler:
 
 ```ts
 const BASE_URL = "http://127.0.0.1:8780";   // from config
-const API_KEY = "";                          // from config, if the server needs one
+// Supabase client for sign-in (project URL + publishable key from the backend owner):
+//   import { createClient } from "@supabase/supabase-js";
+//   const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+//   await supabase.auth.signInWithPassword({ email, password });
 
 export class ApiError extends Error {
   constructor(public status: number, public errors: string[]) { super(errors.join(" ")); }
@@ -681,11 +772,12 @@ export class ApiError extends Error {
 async function api<T>(path: string, init: RequestInit = {}, timeoutMs = 90_000): Promise<T> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  const token = (await supabase.auth.getSession()).data.session?.access_token;   // supabase-js client
   try {
     const res = await fetch(BASE_URL + path, {
       ...init,
       signal: ctrl.signal,
-      headers: { "Content-Type": "application/json", ...(API_KEY && { "X-API-Key": API_KEY }), ...init.headers },
+      headers: { "Content-Type": "application/json", ...(token && { Authorization: `Bearer ${token}` }), ...init.headers },
     });
     const body = await res.json().catch(() => ({}));
     if (!res.ok) throw new ApiError(res.status, body.errors ?? [`Request failed (${res.status})`]);
@@ -751,14 +843,17 @@ class ApiError implements Exception {
 }
 
 class CampusYamuApi {
-  CampusYamuApi(this.baseUrl, {this.apiKey});
+  CampusYamuApi(this.baseUrl);
   final String baseUrl;            // e.g. http://10.0.2.2:8780 on the Android emulator
-  final String? apiKey;
 
-  Map<String, String> get _headers => {
-        'Content-Type': 'application/json',
-        if (apiKey != null && apiKey!.isNotEmpty) 'X-API-Key': apiKey!,
-      };
+  // supabase_flutter keeps the session fresh; the token is the signed-in student's
+  Map<String, String> get _headers {
+    final token = Supabase.instance.client.auth.currentSession?.accessToken;
+    return {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+  }
 
   Future<Map<String, dynamic>> _send(Future<http.Response> req) async {
     final res = await req.timeout(const Duration(seconds: 90));
@@ -813,7 +908,7 @@ curl -X POST $BASE/v1/recommendations -H 'Content-Type: application/json' -d '{
   "al":[{"subject":"Combined Mathematics","grade":"A"},{"subject":"Physics","grade":"B"},{"subject":"Chemistry","grade":"C"}],
   "cgt":40,"z_score":1.56,"admission_district":"Kandy","ds_division":"Gangawata Korale"}'
 curl "$BASE/v1/career-outlook?course=Law"
-# with an API key: add  -H 'X-API-Key: <key>'
+# with sign-in on: add  -H "Authorization: Bearer $TOKEN"  (a signed-in student's Supabase access token)
 ```
 
 ---
@@ -828,7 +923,9 @@ curl "$BASE/v1/career-outlook?course=Law"
   research 3–10 minutes in the background, one course at a time across the whole server.
 - **Cache on the client:** `/v1/options` per app session, and the `report` for as long as the
   form inputs don't change. Re-run recommendations only when the student edits the form.
-- **Chat history:** the server only uses the last 8 turns. Sending more is allowed but wasted.
+- **Chat history:** signed in, the server keeps it; don't send `history`. Without sign-in it uses the last
+  8 turns (at most 40 accepted).
+- **Daily limits:** see [6](#6-endpoint-reference). `429` when reached.
 - **Cost:** `use_llm`, `/v1/chat` and career research use paid APIs. Don't call them
   automatically, in loops, or on every keystroke. Trigger them from explicit user actions.
 
@@ -845,10 +942,9 @@ Checklist for the backend owner (share it with whoever deploys):
    }
    ```
    Set the proxy's upstream read timeout to 120 s or more (chat and AI recommendations are slow).
-2. **API key.** Set `CAMPUSYAMU_API_KEY` to a long random value (`openssl rand -hex 32`) and give it
-   to the app builds. A key shipped inside a mobile app can be extracted, so treat it as a gate
-   against casual use, not as real security. Before a large public launch, add rate limiting or
-   user accounts.
+2. **Sign-in.** Set `SUPABASE_URL` (and `SUPABASE_DB_URL` for chat memory). Every endpoint except
+   `/v1/health` then needs a signed-in student's token. Without `SUPABASE_URL` the API is open: never
+   deploy it that way.
 3. **CORS.** Set `API_CORS_ORIGINS=https://www.example.com` (comma-separated for several) so only
    your web app's origin can call the API from a browser. Native apps aren't affected.
 4. **Bind address.** In Docker, the API listens on `0.0.0.0:8780` inside the container. Expose it
@@ -868,7 +964,7 @@ Checklist for the backend owner (share it with whoever deploys):
 | `422 "cgt: Field required"` | `cgt` is required. Send the Common General Test mark |
 | `400 "Choose three different A/L subjects"` | Two `al` entries have the same subject |
 | `400 "The course chat needs OPENAI_API_KEY in .env"` | Server has no OpenAI key. Check `llm_available` and hide chat when it's false |
-| `401 Missing or invalid X-API-Key` | Server has `CAMPUSYAMU_API_KEY` set. Send the header with the exact value |
+| `401 Sign in first` / `Sign-in expired` | Send `Authorization: Bearer <session.access_token>`; refresh the Supabase session when it expires |
 | Android Emulator can't connect to `127.0.0.1` | Use `http://10.0.2.2:8780` |
 | Phone can't connect | Start with `--host 0.0.0.0`, use the computer's LAN IP, same Wi-Fi, allow port 8780 in the firewall, and allow cleartext HTTP in debug (3.2) |
 | `CLEARTEXT communication not permitted` (Android) / ATS error (iOS) | See 3.2 |
