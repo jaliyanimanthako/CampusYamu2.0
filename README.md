@@ -14,7 +14,8 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for how it fits together.
 ```bash
 make install            # uv sync
 cp .env.example .env    # add OPENAI_API_KEY (optional: NEO4J_*, TAVILY_API_KEY …)
-make web                # http://127.0.0.1:8770
+make api                # the API (FastAPI): http://127.0.0.1:8780/docs  (web page + mobile app use it)
+make web                # the web page: http://127.0.0.1:8770  (needs `make api` running in another terminal)
 ```
 
 Without an OpenAI key everything still runs: interests use keyword matching,
@@ -51,7 +52,8 @@ docker compose --profile neo4j up --build -d    # + Neo4j for handbook search in
 │   ├── agents/            course_finder, zscore, travel_time, course_details,
 │   │                      preference, ranking, career_trends
 │   ├── pipeline/          LangGraph student pipeline + CLI
-│   └── web/               web app, course chat, career-outlook cache
+│   ├── api/               FastAPI service (/v1): the backend for the web page and the mobile app
+│   └── web/               web page (static), course chat, career-outlook cache
 ├── data/
 │   ├── raw/               handbook, UGC tables, travel CSVs, Z-score DB
 │   ├── reference/         owner-curated decisions and mappings
@@ -82,6 +84,7 @@ docker compose --profile neo4j up --build -d    # + Neo4j for handbook search in
 | --- | --- |
 | Run tests | `make test` |
 | Web app | `make web` |
+| Public API (FastAPI, see [docs/API.md](docs/API.md)) | `make api` |
 | Rebuild the knowledge graph (no API calls) | `make kg` |
 | Load graph + travel data into Neo4j | `make neo4j-push` |
 | Handbook search index | `make search-chunk search-embed search-load` (embed is paid, cents) |
@@ -90,6 +93,7 @@ docker compose --profile neo4j up --build -d    # + Neo4j for handbook search in
 
 ## Agents in detail
 
+* [Public API](docs/API.md) — endpoints, request/response shapes, flow for app clients
 * [Z-score agent](docs/zscore_agent.md)
 * [Career-trends agent](docs/career_trends_agent.md) — web evidence, research agent, cited future SWOT
 

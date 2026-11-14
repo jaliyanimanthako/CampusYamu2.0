@@ -39,3 +39,8 @@ career:
 web:
   host: 127.0.0.1
   port: 8770
+
+api:                           # FastAPI service for the mobile app and other clients (make api)
+  host: 127.0.0.1
+  port: 8780
+  cors_origins: ["*"]         # browser origins allowed to call it; API_CORS_ORIGINS in .env wins

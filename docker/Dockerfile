@@ -24,5 +24,5 @@ RUN uv sync --frozen
 COPY config ./config
 COPY data ./data
 
-EXPOSE 8770
+EXPOSE 8770 8780
 CMD ["uv", "run", "--no-sync", "python", "-m", "campusyamu.web", "--host", "0.0.0.0", "--port", "8770"]

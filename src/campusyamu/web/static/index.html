@@ -177,6 +177,21 @@
 </aside>
 
 <script>
+// ---- API settings ------------------------------------------------------------------------------
+// The page talks to the CampusYamu API (`make api`, docs/API.md), the same /v1 endpoints the
+// mobile app uses. Default: the API on port 8780 of the host that served this page.
+// For production set e.g. API_BASE_URL = "https://api.example.com".
+const API_BASE_URL = `${location.protocol}//${location.hostname}:8780`;
+const API_KEY = "";                 // only if the API sets CAMPUSYAMU_API_KEY (sent as X-API-Key)
+
+function api(path, body) {
+  const headers = API_KEY ? { "X-API-Key": API_KEY } : {};
+  if (body === undefined) return fetch(API_BASE_URL + path, { headers });
+  return fetch(API_BASE_URL + path, { method: "POST", headers: { ...headers, "Content-Type": "application/json" },
+                                       body: JSON.stringify(body) });
+}
+// -------------------------------------------------------------------------------------------------
+
 const $ = (id) => document.getElementById(id);
 const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const time = (m) => m == null ? "—" : (m >= 60 ? `${Math.floor(Math.round(m) / 60)}h${String(Math.round(m) % 60).padStart(2, "0")}` : `${Math.round(m)}m`);
@@ -191,7 +206,9 @@ function fillSelect(el, values, placeholder, selected) {
 }
 
 async function init() {
-  OPTIONS = await (await fetch("/api/options")).json();
+  const res = await api("/v1/options");
+  if (!res.ok) throw new Error(((await res.json().catch(() => ({}))).errors || [`HTTP ${res.status}`]).join(" "));
+  OPTIONS = await res.json();
   fillSelect($("stream"), OPTIONS.streams, "Choose stream", "Physical Science");
   const defaults = [["Combined Mathematics", "A"], ["Physics", "B"], ["Chemistry", "C"]];
   $("al").innerHTML = defaults.map((_, i) => `<div class="row"><select class="al-subject" aria-label="A/L subject ${i + 1}"></select>
@@ -250,15 +267,14 @@ function collect() {
     stream: $("stream").value,
     al: [...document.querySelectorAll("#al .row")].map((r) => ({
       subject: r.querySelector(".al-subject").value, grade: r.querySelector(".al-grade").value })),
-    cgt: $("cgt").value,
-    z_score: $("z").value,
+    cgt: Number($("cgt").value),
+    z_score: $("z").value === "" ? null : Number($("z").value),
     admission_district: $("admission").value,
-    home_district: $("homeDistrict").value,
     ds_division: $("ds").value,
     ol: [...document.querySelectorAll(".ol-grade")].map((el) => ({ subject: el.dataset.subject, grade: el.value })),
     preferences: $("prefs").value,
     use_llm: $("llm").checked,
-    suggestions: $("n").value,
+    suggestions: Math.min(50, Math.max(5, Number($("n").value) || 20)),
   };
 }
 
@@ -268,8 +284,7 @@ $("form").addEventListener("submit", async (event) => {
   go.disabled = true;
   go.innerHTML = `<span class="spinner"></span>Running${$("llm").checked && $("prefs").value.trim() ? " (AI calls take ~20–40 s)" : ""}…`;
   try {
-    const res = await fetch("/api/run", { method: "POST", headers: { "Content-Type": "application/json" },
-                                           body: JSON.stringify(collect()) });
+    const res = await api("/v1/recommendations", collect());
     const data = await res.json();
     if (!res.ok) { showErrors(data.errors || [`Request failed (${res.status})`]); return; }
     REPORT = data.report;
@@ -366,7 +381,11 @@ async function loadCareer(announce = false) {
   if (!course) return;
   clearTimeout(CAREER_POLL);
   let info;
-  try { info = await (await fetch(`/api/career?course=${encodeURIComponent(course.course_name)}`)).json(); }
+  try {
+    const res = await api(`/v1/career-outlook?course=${encodeURIComponent(course.course_name)}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    info = await res.json();
+  }
   catch { $("careerBar").textContent = "Career research status unavailable."; return; }
   if (CHAT_UNI !== uni) return;
   const job = info.job, bar = $("careerBar");
@@ -449,8 +468,7 @@ async function sendQuestion(question) {
   renderChat();
   $("chatSend").disabled = true;
   try {
-    const res = await fetch("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ course: courseFacts(uni), student: studentFacts(), question, history }) });
+    const res = await api("/v1/chat", { course: courseFacts(uni), student: studentFacts(), question, history });
     const data = await res.json();
     msgs.pop();
     if (!res.ok) msgs.push({ role: "assistant", content: (data.errors || ["Request failed"]).join(" "), error: true });

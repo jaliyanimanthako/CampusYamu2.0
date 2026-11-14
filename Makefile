@@ -5,10 +5,11 @@ UV ?= uv
 RUN = $(UV) run
 KG = campusyamu.knowledge_graph
 PORT ?= 8770
+API_PORT ?= 8780
 COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
-.PHONY: help install install-rerank test web student kg kg-refresh kg-viewer kg-chat neo4j-push \
+.PHONY: help install install-rerank test web api student kg kg-refresh kg-viewer kg-chat neo4j-push \
         search-chunk search-embed search-load travel-db career clean docker-build docker-up docker-down docker-logs
 
 help:
@@ -16,7 +17,8 @@ help:
 	@echo "  make install          install the package and dependencies (uv sync)"
 	@echo "  make install-rerank   also install the local cross-encoder reranker (large)"
 	@echo "Run"
-	@echo "  make web              web app on http://127.0.0.1:$(PORT)"
+	@echo "  make api              the API on http://127.0.0.1:$(API_PORT)/docs (used by the web page and the mobile app)"
+	@echo "  make web              web page on http://127.0.0.1:$(PORT) (run make api too)"
 	@echo "  make student          student pipeline in the terminal (asks the questions)"
 	@echo "  make test             run the test suite"
 	@echo "Knowledge graph (handbook -> rules -> graph)"
@@ -48,6 +50,9 @@ test:
 
 web:
 	$(RUN) python -m campusyamu.web --port $(PORT)
+
+api:
+	$(RUN) python -m campusyamu.api --port $(API_PORT)
 
 student:
 	$(RUN) python -m campusyamu.pipeline

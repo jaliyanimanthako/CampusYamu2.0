@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from campusyamu.web.server import WebApp
+from campusyamu.api.service import AdvisorService
 
 FORM = {"stream": "Physical Science",
         "al": [{"subject": "Combined Mathematics", "grade": "A"}, {"subject": "Physics", "grade": "B"},
@@ -14,10 +14,10 @@ FORM = {"stream": "Physical Science",
         "preferences": "engineering, design", "use_llm": False, "suggestions": "8"}
 
 
-class WebAppTests(unittest.TestCase):
+class AdvisorServiceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.web = WebApp()
+        cls.web = AdvisorService()
 
     @classmethod
     def tearDownClass(cls) -> None:

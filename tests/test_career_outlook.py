@@ -90,8 +90,8 @@ class StartOnRequestTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        from campusyamu.web.server import WebApp
-        cls.web = WebApp()
+        from campusyamu.api.service import AdvisorService
+        cls.web = AdvisorService()
         cls.web.options["llm_available"] = True
 
     @classmethod
@@ -112,7 +112,7 @@ class StartOnRequestTests(unittest.TestCase):
         return data
 
     def test_no_research_unless_asked(self) -> None:
-        import campusyamu.web.server as server
+        import campusyamu.api.service as server
         original = server.missing_keys
         server.missing_keys = lambda: []
         try:

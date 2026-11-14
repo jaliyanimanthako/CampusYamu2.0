@@ -268,7 +268,7 @@ def build_pipeline(finder: CourseFinder | None = None, zscore: ZScoreAgent | Non
                 out.append({**row, "details_block": handbook.block_for_offering(
                     code, row.get("university"), row.get("site"))})
             bands[band] = out
-        return {"report": {**report, "bands": bands, "campusyamu.agents.course_details": details}}
+        return {"report": {**report, "bands": bands, "course_details": details}}
 
     def rank_suggestions(state: PipelineState) -> dict[str, Any]:
         report = state["report"]
@@ -320,7 +320,7 @@ def build_pipeline(finder: CourseFinder | None = None, zscore: ZScoreAgent | Non
     graph.add_node("score_preferences", score_preferences)
     graph.add_node("analyze_course", analyze_course)
     graph.add_node("assemble", assemble)
-    graph.add_node("campusyamu.agents.course_details", course_details)
+    graph.add_node("course_details", course_details)
     graph.add_node("rank_suggestions", rank_suggestions)
     graph.add_node("explain_rankings", explain_rankings)
     graph.add_edge(START, "validate_profile")
@@ -328,8 +328,8 @@ def build_pipeline(finder: CourseFinder | None = None, zscore: ZScoreAgent | Non
     graph.add_conditional_edges("find_courses", fan_out, ["analyze_course", "score_preferences", "assemble"])
     graph.add_edge("analyze_course", "assemble")
     graph.add_edge("score_preferences", "assemble")
-    graph.add_edge("assemble", "campusyamu.agents.course_details")
-    graph.add_edge("campusyamu.agents.course_details", "rank_suggestions")
+    graph.add_edge("assemble", "course_details")
+    graph.add_edge("course_details", "rank_suggestions")
     graph.add_edge("rank_suggestions", "explain_rankings")
     graph.add_edge("explain_rankings", END)
     return graph.compile()

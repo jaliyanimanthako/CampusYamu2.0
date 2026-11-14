@@ -1,6 +1,6 @@
 # CampusYamu — local / single-host deployment
 #
-#   docker compose up --build -d                    web app only  -> http://127.0.0.1:8770
+#   docker compose up --build -d                    web app -> http://127.0.0.1:8770, API -> http://127.0.0.1:8780/docs
 #   docker compose --profile neo4j up --build -d    + Neo4j for the handbook search in the course chat
 #   docker compose logs -f web | docker compose down
 #
@@ -23,6 +23,24 @@ services:
     volumes:
       - ./config:/app/config:ro          # edit settings.yaml without rebuilding
       - ./data/cache:/app/data/cache      # career research survives restarts
+      - ./outputs:/app/outputs
+    restart: unless-stopped
+
+  api:
+    image: campusyamu-web                 # same image as the web app, different command
+    depends_on:
+      - web                               # web builds the image
+    env_file:
+      - .env
+    environment:
+      CAMPUSYAMU_HOME: /app
+      NEO4J_URI: ${NEO4J_URI_DOCKER:-neo4j://host.docker.internal:7687}
+    command: ["uv", "run", "--no-sync", "python", "-m", "campusyamu.api", "--host", "0.0.0.0", "--port", "8780"]
+    ports:
+      - "8780:8780"
+    volumes:
+      - ./config:/app/config:ro
+      - ./data/cache:/app/data/cache
       - ./outputs:/app/outputs
     restart: unless-stopped
 

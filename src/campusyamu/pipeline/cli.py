@@ -217,7 +217,7 @@ def render(state: dict[str, Any], limit: int | None, sort: str = "travel", view:
         "Step 2 (Z-score): " + ", ".join(f"{counts['band_' + b]} {b.replace('_', ' ')}" for b in BAND_ORDER),
     ]
     if view in ("all", "rankings"):
-        lines += render_rankings(report.get("rankings") or {}, report.get("campusyamu.agents.course_details"))
+        lines += render_rankings(report.get("rankings") or {}, report.get("course_details"))
     if view == "rankings":
         return "\n".join(lines)
     lines += render_preferences(report.get("preferences") or {"method": "none"}, limit)

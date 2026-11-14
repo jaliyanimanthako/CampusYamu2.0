@@ -1,0 +1,533 @@
+{
+ "course": "Law",
+ "region": "Sri Lanka",
+ "generated_at": "2026-11-13T09:40:22.800046+00:00",
+ "status": "success",
+ "model": "gpt-4o-mini",
+ "web_source": "TavilyClient",
+ "horizon_years": 5,
+ "collection": {
+  "retained_after_deduplication": 29,
+  "trusted_sources": 7,
+  "career_paths": [
+   "attorney-at-law",
+   "legal officer",
+   "compliance officer",
+   "policy advisor",
+   "corporate lawyer",
+   "barrister",
+   "solicitor",
+   "legal technologist"
+  ],
+  "emerging_areas": [
+   "ai governance in law",
+   "data privacy law",
+   "climate litigation",
+   "environmental, social, and governance (esg) compliance",
+   "cybersecurity law"
+  ]
+ },
+ "analysis": {
+  "course": "Law",
+  "status": "success",
+  "analysis_context": {
+   "analysis_year": 2026,
+   "expected_entry_year": 2031,
+   "horizon_years": 5,
+   "evidence_collected_at": "2026-11-13T09:38:15.654195+00:00",
+   "confidence_ratings_lowered": 1,
+   "specificity_problems_found": 2,
+   "revised": true,
+   "generic_items_dropped": 1,
+   "advice_or_advert_sentences_removed": 0,
+   "remaining_problems": []
+  },
+  "evidence_synthesis": [
+   {
+    "theme": "Demand for Legal Professionals",
+    "key_details": [
+     "Current openings indicate a strong demand for roles such as Legal Officer and Compliance Officer in Sri Lanka (E001, E008).",
+     "Entry-level positions require qualifications as an Attorney-at-Law, essential for gaining foundational legal knowledge (E003, E019).",
+     "Job postings highlight a range of positions in both private and public sectors (E002, E011)."
+    ],
+    "takeaway": "There is notable demand for legal graduates in Sri Lanka, especially for those qualified as Attorneys-at-Law, reflecting diverse career opportunities across various sectors.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E001",
+     "E008",
+     "E003",
+     "E002",
+     "E019"
+    ]
+   },
+   {
+    "theme": "Emerging Specialisations",
+    "key_details": [
+     "AI-driven legal platforms like Darzey signify a shift toward technology in legal practices (E021, E022).",
+     "Recent developments in climate litigation highlight the growing importance of legal accountability for environmental issues (E024).",
+     "Data privacy laws are becoming more prominent as businesses navigate digital landscapes, creating new legal roles (E017, E026)."
+    ],
+    "takeaway": "The legal field is evolving to include emerging areas such as AI governance, climate litigation, and data privacy law, suggesting new career paths for future graduates.",
+    "agreement": "mixed",
+    "evidence_refs": [
+     "E021",
+     "E024",
+     "E022",
+     "E017",
+     "E026"
+    ]
+   },
+   {
+    "theme": "Career Progression",
+    "key_details": [
+     "Most graduates begin as Junior Legal Officers or Assistants, with opportunities to advance to Senior roles like Corporate Counsel (E013, E003).",
+     "Building a professional network and gaining internship experience are crucial for advancing in the competitive legal landscape (E010, E019).",
+     "Postgraduate degrees like an LL.M. can significantly improve job prospects and allow for specialisation (E006)."
+    ],
+    "takeaway": "Graduates typically start in entry-level positions, and effectively leveraging networking and further education can enhance career advancement in law, particularly in a competitive environment.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E013",
+     "E003",
+     "E010",
+     "E019",
+     "E006"
+    ]
+   },
+   {
+    "theme": "Challenges in Employment",
+    "key_details": [
+     "There is intense competition for entry-level jobs, often requiring prior internship experiences and appropriate networking (E010, E019).",
+     "Initial pay levels for new graduates can be lower than anticipated, reflecting a competitive job market (E013, E002).",
+     "Reports indicate that the early years of legal employment can be particularly challenging in terms of stress and work-life balance (E010, E019)."
+    ],
+    "takeaway": "Despite high demand for legal professionals, candidates may face considerable challenges related to competition, pay variability, and stress during initial employment phases.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E010",
+     "E019",
+     "E013",
+     "E002"
+    ]
+   }
+  ],
+  "course_introduction": {
+   "overview": "Law programs in Sri Lanka provide students with essential understanding of legal frameworks, including contract law, human rights, and compliance. Students learn to navigate complex legal principles essential for various roles in the legal sector.",
+   "career_paths": [
+    {
+     "role": "Attorney-at-Law",
+     "what_you_do": "Represent clients in legal matters in court and provide legal counsel."
+    },
+    {
+     "role": "Legal Officer",
+     "what_you_do": "Provide legal advice and manage compliance for organizations."
+    },
+    {
+     "role": "Compliance Officer",
+     "what_you_do": "Ensure organizations follow legal standards and regulations."
+    },
+    {
+     "role": "Corporate Lawyer",
+     "what_you_do": "Specialize in legal issues related to business transactions."
+    },
+    {
+     "role": "Policy Advisor",
+     "what_you_do": "Advise on legal implications of policy decisions."
+    },
+    {
+     "role": "Barrister/Solicitor",
+     "what_you_do": "Represent clients in higher courts and prepare legal documents."
+    }
+   ],
+   "evidence_refs": [
+    "E001",
+    "E019",
+    "E006"
+   ]
+  },
+  "future_swot": {
+   "strengths": [
+    {
+     "course_specifics": [
+      "LL.B. degree qualifies graduates as Attorneys-at-Law.",
+      "High demand for positions, including Legal and Compliance Officers."
+     ],
+     "finding": "Graduates from law programs possess essential legal knowledge that aligns with local job market demands, facilitating entry into a variety of roles.",
+     "evidence_refs": [
+      "E001",
+      "E019"
+     ],
+     "reasoning_type": "direct_evidence",
+     "confidence": "high"
+    },
+    {
+     "course_specifics": [
+      "Emerging fields like climate litigation and AI governance are gaining traction.",
+      "Networking opportunities within the legal community enhance career prospects."
+     ],
+     "finding": "The law curriculum equips students to enter in-demand fields, paving the way for innovative legal careers as the market evolves.",
+     "evidence_refs": [
+      "E021",
+      "E024"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    }
+   ],
+   "weaknesses": [
+    {
+     "course_specifics": [
+      "Initial years in the legal profession may involve substantial stress and long hours.",
+      "Pay discrepancies exist between levels of experience."
+     ],
+     "finding": "The legal field can be challenging, with high stress levels and inconsistent pay during the early years, potentially discouraging candidates from pursuing careers in law.",
+     "evidence_refs": [
+      "E002",
+      "E010"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    }
+   ],
+   "opportunities": [
+    {
+     "course_specifics": [
+      "Postgraduate options like an LL.M. enhance career prospects.",
+      "The emergence of legal fields like data privacy and climate litigation can create new job roles."
+     ],
+     "finding": "Pursuing further studies, such as an LL.M., can significantly enhance career pathways, especially as specialisations in emerging legal fields become more sought after.",
+     "evidence_refs": [
+      "E006",
+      "E021"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    },
+    {
+     "course_specifics": [
+      "Technology advancements bolster AI integration in legal practice.",
+      "Platforms like Darzey are reshaping job opportunities within the legal landscape."
+     ],
+     "finding": "The rise of technology and legal platforms offers fresh employment prospects for law graduates, potentially fostering innovative practices.",
+     "evidence_refs": [
+      "E021",
+      "E022"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    }
+   ],
+   "threats": [
+    {
+     "course_specifics": [
+      "Automation may reduce job availability in traditional legal roles.",
+      "Growing graduate numbers intensify competition for legal positions."
+     ],
+     "finding": "The threat posed by automation could reshape the legal job landscape, potentially leading to fewer opportunities for new professionals as operational efficiency improves.",
+     "evidence_refs": [
+      "E021",
+      "E022"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    },
+    {
+     "course_specifics": [
+      "Economic uncertainties can hinder job opportunities and stability in legal firms.",
+      "Adjustments in legal regulations may impact practical work areas."
+     ],
+     "finding": "Economic volatility could jeopardize job security in legal practices, influencing hiring strategies and the nature of available positions for recent graduates.",
+     "evidence_refs": [
+      "E002",
+      "E012"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    }
+   ]
+  },
+  "local_vs_overseas": {
+   "label": "local_stronger",
+   "explanation": "Current opportunities for legal graduates in Sri Lanka appear to be more favorable compared to many overseas markets, indicating a steady demand for legal professionals across various sectors.",
+   "evidence_refs": [
+    "E001",
+    "E019"
+   ]
+  },
+  "further_study": {
+   "role": "helpful",
+   "explanation": "Pursuing postgraduate studies, such as an LL.M., is beneficial for enhancing career possibilities and specializing in emergent legal fields, requiring additional investment in time and finances.",
+   "evidence_refs": [
+    "E006",
+    "E019"
+   ]
+  },
+  "niche_specialisations": [
+   {
+    "area": "AI in Legal Profession",
+    "why_it_matters": "The legal sector in Sri Lanka is integrating AI technologies like the Darzey platform to improve legal services and access.",
+    "evidence_refs": [
+     "E021",
+     "E022"
+    ]
+   },
+   {
+    "area": "Climate Litigation",
+    "why_it_matters": "Growing legal accountability for climate change is underscored by prominent cases, reflecting the urgent need for legal action on environmental issues.",
+    "evidence_refs": [
+     "E024",
+     "E026"
+    ]
+   }
+  ],
+  "overall_outlook": {
+   "label": "positive",
+   "summary": "Prospects for law graduates in Sri Lanka are encouraging as they approach the job market in 2031, with strong demand for legal roles and emerging fields like AI governance and climate litigation. Nonetheless, challenges such as initial employment stress levels and salary inconsistencies could pose difficulties. Success will depend on adaptability to evolving legal landscapes.",
+   "evidence_refs": [
+    "E001",
+    "E019",
+    "E024"
+   ],
+   "confidence": "medium"
+  },
+  "limitations": [
+   "The analysis lacks comprehensive data on international job prospects for legal graduates, limiting the understanding of potential global career landscapes.",
+   "Community discussions reflect individual experiences but may not provide an accurate depiction of the overall job market for legal professionals in Sri Lanka.",
+   "The influence of prospective regulatory changes on emerging legal specialties has not been thoroughly evaluated in the gathered evidence."
+  ]
+ },
+ "evidence_index": [
+  {
+   "evidence_id": "E001",
+   "title": "topjobs | Vacancy Browse",
+   "url": "https://www.topjobs.lk/applicant/vacancybyfunctionalarea.jsp?FA=LEL",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "local_live_jobs"
+  },
+  {
+   "evidence_id": "E002",
+   "title": "Informality, Job Quality, and Welfare, in Sri Lanka",
+   "url": "https://documents1.worldbank.org/curated/en/341681597688560604/pdf/Informality-Job-Quality-and-Welfare-in-Sri-Lanka.pdf",
+   "source_tier": "global_official",
+   "trusted": true,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E003",
+   "title": "Legal Officer Career Guide in Sri Lanka",
+   "url": "https://edu.studyway.lk/careers/legal-officer",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E004",
+   "title": "Legal Occupations",
+   "url": "https://www.bls.gov/ooh/legal",
+   "source_tier": "global_official",
+   "trusted": true,
+   "query_category": "global_outlook"
+  },
+  {
+   "evidence_id": "E005",
+   "title": "FortuneX | Corporate Lawyer & Legal Advisor in Sri Lanka",
+   "url": "https://fortunexlaw.com/about-us",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "international_pathways"
+  },
+  {
+   "evidence_id": "E006",
+   "title": "LL.M. 2025/26 (Master of Laws by Coursework) | Faculty of Law",
+   "url": "https://law.cmb.ac.lk/ll-m",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "further_study"
+  },
+  {
+   "evidence_id": "E007",
+   "title": "Laying the foundations for our shared future: How ten years ...",
+   "url": "https://climatelitigationnetwork.org/wp-content/uploads/Laying-the-foundations-for-our-shared-future-Climate-Litigation-Network-ONLINE.pdf",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E008",
+   "title": "VACANCIES",
+   "url": "https://www.moj.gov.lk/images/OMP/Docs/VACANCY-ADVERTISEMENT-ENGLISH.pdf",
+   "source_tier": "local_official",
+   "trusted": true,
+   "query_category": "field_sources"
+  },
+  {
+   "evidence_id": "E009",
+   "title": "Law Career Opportunities in UK for Sri Lankan Graduates",
+   "url": "https://courseoptions.com/uk/guides/law-career-uk-sri-lanka",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "career_paths"
+  },
+  {
+   "evidence_id": "E010",
+   "title": "Is becoming a lawyer in Sri Lanka actually worth it in 2026?",
+   "url": "https://www.reddit.com/r/srilanka/comments/1qmp6sp/is_becoming_a_lawyer_in_sri_lanka_actually_worth/",
+   "source_tier": "community_discussion",
+   "trusted": false,
+   "query_category": "community_signals"
+  },
+  {
+   "evidence_id": "E011",
+   "title": "Now Hiring: 75 Vacancy Sri Lanka Jobs",
+   "url": "https://www.indeed.com/q-vacancy-sri-lanka-jobs.html",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_live_jobs"
+  },
+  {
+   "evidence_id": "E012",
+   "title": "What Are the Key Employment Laws in Sri Lanka? A Complete Employer Guide",
+   "url": "https://asanify.com/global-employer-of-record/sri-lanka/employment-laws",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E013",
+   "title": "Corporate Legal Officer Salary & Jobs in Sri Lanka (2026)",
+   "url": "https://www.paths.lk/career-paths/corporate-legal-officer",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E014",
+   "title": "Law Career Outlook (With Employment Prospects and ...",
+   "url": "https://www.indeed.com/career-advice/finding-a-job/law-career-outlook",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "global_outlook"
+  },
+  {
+   "evidence_id": "E015",
+   "title": "Remote Lawyer Jobs in Sri Lanka",
+   "url": "https://jobgether.com/remote-jobs/sri-lanka/lawyer",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "international_pathways"
+  },
+  {
+   "evidence_id": "E016",
+   "title": "Law College",
+   "url": "https://www.sllc.ac.lk",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "further_study"
+  },
+  {
+   "evidence_id": "E017",
+   "title": "Fastest-growing legal practice areas shaping the profession",
+   "url": "https://nationaljurist.com/fastest-growing-legal-practice-areas-shaping-the-profession",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E018",
+   "title": "Careers",
+   "url": "https://www.moj.gov.lk/index.php/en/careers",
+   "source_tier": "local_official",
+   "trusted": true,
+   "query_category": "field_sources"
+  },
+  {
+   "evidence_id": "E019",
+   "title": "Law Degree in Sri Lanka: The LLB Route to Becoming a ...",
+   "url": "https://uplift.lk/articles/law-degree-sri-lanka-llb-route",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "career_paths"
+  },
+  {
+   "evidence_id": "E020",
+   "title": "Guide for Foreign Fully Funded Higher Studies Opportunities (Masters/PhDs) for Sri Lankan Students",
+   "url": "https://www.reddit.com/r/srilanka/comments/1vfn38m/guide_for_foreign_fully_funded_higher_studies/",
+   "source_tier": "community_discussion",
+   "trusted": false,
+   "query_category": "community_signals"
+  },
+  {
+   "evidence_id": "E021",
+   "title": "Artificial Intelligence, the Legal Profession and Access to ...",
+   "url": "https://arts.pdn.ac.lk/law/plj-articles/AI-the-Legal-Profession-Access-to-Justice-N-Premalal-B-Widanagama.pdf",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E022",
+   "title": "Darzey Launches Legal AI Platform for Sri Lankan Lawyers",
+   "url": "https://www.linkedin.com/posts/abdur-rahman-34ab93243_srilanka-legaltech-lawyers-activity-7494244045716680704-3oCk",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E023",
+   "title": "Chambers and Partners | Researching Outstanding Lawyers Globally | chambers.com",
+   "url": "https://practiceguides.chambers.com/practice-guides/trade-marks-copyright-2026/sri-lanka/trends-and-developments",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E024",
+   "title": "Sri Lanka: Supreme Court poised to hear country's first climate lawsuit",
+   "url": "https://www.the-wave.net/sri-lanka-supreme-court-poised-to-hear-countrys-first-climate-lawsuit",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E025",
+   "title": "[PDF] Nationally Determined Contributions 3.0 (2026 – 2035) Sri Lanka",
+   "url": "https://unfccc.int/sites/default/files/2025-09/Sri%20Lankas%20Nationally%20Determined%20Contributions%203.0%20%282026-2035%29%20submitted%2022.09.2025%20%281%29.pdf",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E026",
+   "title": "Sustainable Response to Climate Change:Review on the Legal Framework of Sri Lanka with Reference to its Role at International and Regional Levels",
+   "url": "https://ideas.repec.org/p/sek/iacpro/1003178.html",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E027",
+   "title": "Comparing Contract Law in Australia and Sri Lanka",
+   "url": "https://prezi.com/p/nfasbx5zoiwm/comparing-contract-law-in-australia-and-sri-lanka",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E028",
+   "title": "Law of Contracts (Basics)",
+   "url": "https://www3.jmc.lk/d/6/65f533afbfdcc8cc7cb1049bbe17103d.pdf",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E029",
+   "title": "LAW OF CONTRACT",
+   "url": "https://www.casrilanka.com/casl/images/stories/EDBA/4%20contract%20law%208-12-2019%20notes.pdf",
+   "source_tier": "local_professional_body",
+   "trusted": true,
+   "query_category": "local_market"
+  }
+ ]
+}

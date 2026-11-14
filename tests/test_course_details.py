@@ -64,14 +64,14 @@ class PipelineDetailsTests(unittest.TestCase):
         finally:
             finder.close()
         rows = [r for band in report["bands"].values() for r in band]
-        details = report["campusyamu.agents.course_details"]
+        details = report["course_details"]
         self.assertTrue(all(details[r["course_code"]]["blocks"] for r in rows))
         jaffna = next(r for r in rows if r["uni_code"] == "068E")
         block = details["068"]["blocks"][jaffna["details_block"]]
         self.assertIn("University of Jaffna", block["title"])
         first = report["rankings"]["distance"]["suggestions"][0]
         self.assertIn(first["course_code"], details)
-        self.assertIn("campusyamu.agents.course_details", set(app.get_graph().nodes))
+        self.assertIn("course_details", set(app.get_graph().nodes))
 
 
 if __name__ == "__main__":

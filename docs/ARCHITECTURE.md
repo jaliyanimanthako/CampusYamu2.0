@@ -9,7 +9,7 @@ explanations.
 
 ## Student pipeline (LangGraph)
 
-`src/campusyamu/pipeline/graph.py` — one run per student, used by the CLI and the web app.
+`src/campusyamu/pipeline/graph.py` — one run per student, used by the CLI and the API.
 
 ```mermaid
 flowchart TD
@@ -97,9 +97,15 @@ re-registered (`make kg`).
 All calls use the OpenAI Responses API with `store: false`. Keys live in `.env`;
 models default from `config/settings.yaml` and can be overridden per role.
 
-## Web app
+## API and web page
 
-`python -m campusyamu.web` (port 8770): `GET /api/options`, `POST /api/run`
-(the pipeline), `POST /api/ask` (course chat), `GET /api/career`,
-`POST /api/career/research` (background job, started only from a chat request).
-One request at a time; career research runs in a background thread.
+`python -m campusyamu.api` (port 8780) is the only backend: a FastAPI service
+(`src/campusyamu/api/`) with `GET /v1/options`, `GET /v1/courses`,
+`POST /v1/recommendations` (the pipeline), `POST /v1/chat` (course chat),
+`GET /v1/career-outlook` and `POST /v1/career-outlook/research` (background job).
+`api/service.py` (`AdvisorService`) holds the logic; `api/app.py` runs every call on
+one worker thread (the pipeline's SQLite connections are bound to it) and career
+research in a background thread. Full client guide: [API.md](API.md).
+
+`python -m campusyamu.web` (port 8770) only serves the page
+(`web/static/index.html`); the page calls the API at `API_BASE_URL`, like the mobile app.
