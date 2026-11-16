@@ -27,3 +27,15 @@ outputs/*
 data/cache/career_paths_cache.json
 *_evidence*.json
 *_web_data.json
+
+# Frontend (Node / Vite / TypeScript)
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+

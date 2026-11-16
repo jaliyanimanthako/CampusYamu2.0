@@ -11,3 +11,5 @@ docs
 *.egg-info
 .DS_Store
 data/raw/handbook/student_handbook_english.pdf
+frontend/node_modules
+frontend/dist

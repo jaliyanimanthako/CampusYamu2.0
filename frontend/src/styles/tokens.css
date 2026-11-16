@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+
+  /* Color Palette — Light (Default, Cool Off-White Canvas + Crisp White Cards + Blue Accent) */
+  --bg-canvas: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F1F5F9;
+  --bg-hover: #F1F5F9;
+
+  --border-default: #E2E8F0;
+  --border-strong: #CBD5E1;
+
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+
+  --blue-primary: #1D4ED8;
+  --blue-hover: #1E40AF;
+  --blue-tint: #EFF6FF;
+  --blue-border: #BFDBFE;
+
+  /* Semantic Band Colors */
+  --band-strong-bg: #ECFDF5;
+  --band-strong-text: #059669;
+  --band-strong-border: #A7F3D0;
+
+  --band-competitive-bg: #EFF6FF;
+  --band-competitive-text: #1D4ED8;
+  --band-competitive-border: #BFDBFE;
+
+  --band-reach-bg: #FFFBEB;
+  --band-reach-text: #D97706;
+  --band-reach-border: #FDE68A;
+
+  --band-unlikely-bg: #F1F5F9;
+  --band-unlikely-text: #64748B;
+  --band-unlikely-border: #E2E8F0;
+
+  --error-text: #B91C1C;
+  --error-bg: #FEF2F2;
+  --error-border: #FECACA;
+
+  /* Typography */
+  --font-sans: "Inter", "Noto Sans Sinhala", "Noto Sans Tamil", "Nirmala UI", "Iskoola Pota", "Latha", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Shape & Elevation */
+  --radius-card: 8px;
+  --radius-control: 6px;
+  --radius-pill: 9999px;
+  --shadow-drawer: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+
+html.dark {
+  color-scheme: dark;
+
+  --bg-canvas: #0B1120;
+  --bg-surface: #111827;
+  --bg-subtle: #1E293B;
+  --bg-hover: #1E293B;
+
+  --border-default: #1F2937;
+  --border-strong: #334155;
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+
+  --blue-primary: #3B82F6;
+  --blue-hover: #2563EB;
+  --blue-tint: #172554;
+  --blue-border: #1E40AF;
+
+  --band-strong-bg: #064E3B;
+  --band-strong-text: #6EE7B7;
+  --band-strong-border: #065F46;
+
+  --band-competitive-bg: #172554;
+  --band-competitive-text: #93C5FD;
+  --band-competitive-border: #1E40AF;
+
+  --band-reach-bg: #451A03;
+  --band-reach-text: #FCD34D;
+  --band-reach-border: #78350F;
+
+  --band-unlikely-bg: #1E293B;
+  --band-unlikely-text: #94A3B8;
+  --band-unlikely-border: #334155;
+
+  --error-text: #FCA5A5;
+  --error-bg: #450A0A;
+  --error-border: #991B1B;
+
+  --shadow-drawer: 0 4px 20px rgba(0, 0, 0, 0.45);
+}
+
+@layer base {
+  html,
+  body {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+  }
+}
+
+/* Dark theme token mappings */
+html.dark .bg-\[\#FFFFFF\] { background-color: var(--bg-surface); }
+html.dark .bg-\[\#F8FAFC\] { background-color: var(--bg-canvas); }
+html.dark .bg-\[\#F1F5F9\] { background-color: var(--bg-subtle); }
+html.dark .hover\:bg-\[\#F8FAFC\]:hover { background-color: var(--bg-subtle); }
+html.dark .hover\:bg-\[\#F1F5F9\]:hover { background-color: var(--bg-hover); }
+html.dark .bg-\[\#EFF6FF\] { background-color: var(--blue-tint); }
+html.dark .hover\:bg-\[\#EFF6FF\]:hover { background-color: var(--blue-tint); }
+html.dark .bg-\[\#1D4ED8\] { background-color: var(--blue-primary); }
+html.dark .hover\:bg-\[\#1E40AF\]:hover { background-color: var(--blue-hover); }
+html.dark .bg-\[\#E2E8F0\] { background-color: var(--border-default); }
+html.dark .bg-\[\#FEF2F2\] { background-color: var(--error-bg); }
+html.dark .disabled\:bg-\[\#F8FAFC\]:disabled { background-color: var(--bg-subtle); }
+
+html.dark .border-\[\#E2E8F0\] { border-color: var(--border-default); }
+html.dark .divide-\[\#E2E8F0\] > :not(:last-child) { border-color: var(--border-default); }
+html.dark .border-\[\#CBD5E1\] { border-color: var(--border-strong); }
+html.dark .hover\:border-\[\#CBD5E1\]:hover { border-color: var(--border-strong); }
+html.dark .border-\[\#BFDBFE\] { border-color: var(--blue-border); }
+html.dark .hover\:border-\[\#BFDBFE\]:hover { border-color: var(--blue-border); }
+html.dark .border-\[\#1D4ED8\] { border-color: var(--blue-primary); }
+html.dark .border-\[\#FECACA\] { border-color: var(--error-border); }
+
+html.dark .text-\[\#0F172A\] { color: var(--text-primary); }
+html.dark .hover\:text-\[\#0F172A\]:hover { color: var(--text-primary); }
+html.dark .text-\[\#475569\] { color: var(--text-secondary); }
+html.dark .text-\[\#64748B\] { color: var(--text-muted); }
+html.dark .placeholder\:text-\[\#64748B\]::placeholder { color: var(--text-muted); }
+html.dark .text-\[\#1D4ED8\] { color: #60A5FA; }
+html.dark .hover\:text-\[\#1D4ED8\]:hover { color: #93C5FD; }
+html.dark .hover\:text-\[\#1E40AF\]:hover { color: #93C5FD; }
+html.dark .text-\[\#B91C1C\] { color: var(--error-text); }
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

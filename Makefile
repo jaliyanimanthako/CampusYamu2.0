@@ -9,7 +9,7 @@ API_PORT ?= 8780
 COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
-.PHONY: help install install-rerank test web api student kg kg-refresh kg-viewer kg-chat neo4j-push \
+.PHONY: help install install-rerank frontend-install frontend-build test web api student kg kg-refresh kg-viewer kg-chat neo4j-push \
         search-chunk search-embed search-load travel-db career clean docker-build docker-up docker-down docker-logs
 
 help:
@@ -44,6 +44,12 @@ install:
 
 install-rerank:
 	$(UV) sync --extra rerank
+
+frontend-install:
+	cd frontend && npm ci
+
+frontend-build:
+	cd frontend && npm run build
 
 test:
 	$(RUN) python -m unittest discover -s tests
