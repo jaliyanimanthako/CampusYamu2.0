@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ui-mockup",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["ui-mockup/server.js"],
+      "port": 5173
+    }
+  ]
+}
