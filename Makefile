@@ -49,7 +49,7 @@ frontend-install:
 	cd frontend && npm ci
 
 frontend-build:
-	cd frontend && (test -d node_modules || npm ci) && npm run build
+	cd frontend && (test -x node_modules/.bin/tsc || npm ci) && npm run build
 
 test:
 	$(RUN) python -m unittest discover -s tests
