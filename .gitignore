@@ -39,3 +39,11 @@ yarn-error.log*
 pnpm-debug.log*
 
 
+# Local databases (chat memory, SQLite files) — never commit
+data/memory/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3

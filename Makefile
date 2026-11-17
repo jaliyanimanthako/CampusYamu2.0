@@ -18,7 +18,7 @@ help:
 	@echo "  make install-rerank   also install the local cross-encoder reranker (large)"
 	@echo "Run"
 	@echo "  make api              the API on http://127.0.0.1:$(API_PORT)/docs (used by the web page and the mobile app)"
-	@echo "  make web              web page on http://127.0.0.1:$(PORT) (run make api too)"
+	@echo "  make web              build the React frontend, then serve it on http://127.0.0.1:$(PORT) (run make api too)"
 	@echo "  make student          student pipeline in the terminal (asks the questions)"
 	@echo "  make test             run the test suite"
 	@echo "Knowledge graph (handbook -> rules -> graph)"
@@ -49,12 +49,12 @@ frontend-install:
 	cd frontend && npm ci
 
 frontend-build:
-	cd frontend && npm run build
+	cd frontend && (test -d node_modules || npm ci) && npm run build
 
 test:
 	$(RUN) python -m unittest discover -s tests
 
-web:
+web: frontend-build
 	$(RUN) python -m campusyamu.web --port $(PORT)
 
 api:
