@@ -1,5 +1,5 @@
 // CampusYamu UI mockup. Vanilla JS, talks to the /v1 API (mock or live via server.js).
-// Visual style follows jaliyanimantha.com: Notion-like, line-art figures, one purple accent.
+// Visual style: friendly app look in navy, royal blue, lavender and mustard, with flat illustrations.
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -41,7 +41,7 @@ const BANDS = [
   { id: "unlikely", label: "Unlikely", desc: "Well below recent cut-offs" },
   { id: "no_history", label: "No history", desc: "No past cut-offs to compare" },
 ];
-const BAND_COLOR = { strong: "var(--purple)", competitive: "var(--purple-2)", reach: "var(--purple-3)", unlikely: "color-mix(in srgb, var(--ink) 22%, var(--paper))", no_history: "var(--line)" };
+const BAND_COLOR = { strong: "var(--blue)", competitive: "var(--lav)", reach: "var(--mustard)", unlikely: "color-mix(in srgb, var(--ink) 22%, var(--bg))", no_history: "var(--line)" };
 
 // ---------------------------------------------------------------- api
 async function api(path, opts = {}) {
@@ -74,7 +74,8 @@ function toast(msg) {
 const I = {
   search: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
   back: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
-  ne: '<svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg>',
+  ne: '<svg class="arr" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  spark: '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.1 6.4 6.4 2.1-6.4 2.1L12 19.5l-2.1-6.4L3.5 11l6.4-2.1z"/></svg>',
   down: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>',
   send: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>',
   check: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
@@ -100,6 +101,7 @@ const fig = (name, label, { optional = false } = {}) => {
 // which course-area figure a course gets
 function area(name) {
   const n = name.toLowerCase();
+  if (/tourism|hospitality/.test(n)) return "management"; // before "health" (e.g. Health Tourism)
   if (/medicine|dental|nursing|pharm|health|veterinary|medical|physiotherapy|radiograph|laboratory/.test(n)) return "medicine";
   if (/computer|information|software|data science|ict|artificial/.test(n)) return "it";
   if (/engineer|technology|quantity|architect|design|surveying|town/.test(n)) return "engineering";
@@ -140,8 +142,8 @@ function reveal(root = document) {
 function moveInk(tabs) {
   const ink = $(".ink", tabs), active = $("button.active", tabs);
   if (!ink || !active) return;
-  ink.style.width = active.offsetWidth - 24 + "px";
-  ink.style.transform = `translateX(${active.offsetLeft + 12}px)`;
+  ink.style.width = active.offsetWidth + "px";
+  ink.style.transform = `translateX(${active.offsetLeft}px)`;
 }
 
 function markdown(md) {
@@ -173,10 +175,10 @@ function shell(active, inner) {
     <main class="page view-enter">${inner}</main>
   </div>
   <nav class="tabbar" aria-label="Sections">
-    <a href="#/form" class="${active === "form" ? "active" : ""}">${I.edit}<span>Results</span></a>
-    <a href="#/results" class="${active === "results" ? "active" : ""}">${I.grid}<span>Courses</span></a>
-    <a href="#/rankings" class="${active === "rankings" ? "active" : ""}">${I.list}<span>Order</span></a>
-    <a href="#/me" class="${active === "me" ? "active" : ""}">${I.chat}<span>Chats</span></a>
+    <a href="#/form" class="${active === "form" ? "active" : ""}"><span class="ic">${I.edit}</span><span>Results</span></a>
+    <a href="#/results" class="${active === "results" ? "active" : ""}"><span class="ic">${I.grid}</span><span>Courses</span></a>
+    <a href="#/rankings" class="${active === "rankings" ? "active" : ""}"><span class="ic">${I.list}</span><span>Order</span></a>
+    <a href="#/me" class="${active === "me" ? "active" : ""}"><span class="ic">${I.chat}</span><span>Chats</span></a>
   </nav>`;
 }
 const headline = (plain, accent) => `${esc(plain)} <span class="accent">${esc(accent)}</span>`;
@@ -189,11 +191,10 @@ views.signin = async () => {
   <div class="wrap"><section class="auth view-enter">
     <a class="brand"><i></i>CampusYamu</a>
     <div class="card split">
-      <span class="node on"></span>
       <div class="side">
-        <span class="chip" style="align-self:flex-start">UGC Handbook 2024/25</span>
-        <h1 style="margin-top:18px">Find your<br><span class="accent">course.</span></h1>
-        <div class="slash"><span>A/L results</span><span class="sep">/</span><span class="accent">university selection</span></div>
+        <span class="label">UGC Handbook 2024/25</span>
+        <h1 style="margin-top:14px">Find your<br><span class="accent">course.</span></h1>
+        <p class="sub">Enter your A/L results and see every course you can apply for, how likely you are to get in, and how far it is from home.</p>
         <form id="signin" novalidate>
           <div class="field"><label for="email">Email</label><input class="input" id="email" type="email" autocomplete="email" placeholder="you@example.com" value="student@example.com"></div>
           <div class="field"><label for="pw">Password</label><input class="input" id="pw" type="password" autocomplete="current-password" placeholder="••••••••" value="mockpassword"></div>
@@ -236,7 +237,7 @@ views.form = async () => {
         <div class="streams">${o.streams.map((st) => `<button type="button" class="stream" data-stream="${esc(st)}" aria-pressed="${f.stream === st}">${esc(st)}</button>`).join("")}</div></div>
       <div>${f.al.map(([sub, g], i) => `
         <div class="subject">
-          <div class="field"><span class="flabel"><span class="mono" style="color:var(--purple)">${pad2(i + 1)}</span>&nbsp; A/L subject</span>
+          <div class="field"><span class="flabel"><span class="mono">${pad2(i + 1)}</span>&nbsp; A/L subject</span>
             <select class="select" data-al="${i}">${o.al_subjects.map((x) => `<option ${x === sub ? "selected" : ""}>${esc(x)}</option>`).join("")}</select></div>
           ${grades("al" + i, o.al_grades, g)}
         </div>`).join("")}</div>`,
@@ -319,8 +320,8 @@ views.form = async () => {
       const p = has ? Math.max(0, Math.min(1, (z + 1) / 4)) : 0;
       const C = Math.PI * 34;
       zbox.innerHTML = `
-        <svg width="92" height="56" viewBox="0 0 92 56" style="flex:none"><path d="M12 50 A34 34 0 0 1 80 50" fill="none" stroke="var(--lavender)" stroke-width="7" stroke-linecap="round"/>
-          <path d="M12 50 A34 34 0 0 1 80 50" fill="none" stroke="var(--purple)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - p)}" style="transition:stroke-dashoffset .7s var(--ease-spring)"/></svg>
+        <svg width="92" height="56" viewBox="0 0 92 56" style="flex:none"><path d="M12 50 A34 34 0 0 1 80 50" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+          <path d="M12 50 A34 34 0 0 1 80 50" fill="none" stroke="var(--blue)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - p)}" style="transition:stroke-dashoffset .7s var(--ease-spring)"/></svg>
         <div><div class="big num">${has ? z.toFixed(4) : "—"}</div>
           <div class="hint" style="margin-top:6px">${!has ? "No Z-score: every course will show as “no history”." : z >= 2 ? "Top of the range: most courses are open to you." : z >= 1.2 ? "A strong score for most science and management courses." : z >= 0.5 ? "Good for many courses; medicine and engineering will be a reach." : "Focus on courses with lower cut-offs and on your interests."}</div></div>`;
     };
@@ -360,8 +361,7 @@ views.analysing = async () => {
   app.innerHTML = shell("", `
     <section class="analysing">
       <div class="card split">
-        <span class="node on"></span>
-        <div class="side">
+                <div class="side">
           <span class="pill live" style="align-self:flex-start"><span class="dot"></span>Analysing</span>
           <div class="counter num"><span id="cnt">0</span></div>
           <div class="muted">courses checked</div>
@@ -393,7 +393,7 @@ views.analysing = async () => {
   state.pendingRun = null;
   if (error) { toast(error.message); location.hash = "#/form"; return; }
   state.report = result.report;
-  $(".pill.live").innerHTML = `<span class="dot" style="background:var(--purple);animation:none"></span>Done`;
+  $(".pill.live").innerHTML = `<span class="dot" style="background:var(--blue);animation:none"></span>Done`;
   setStatus("Opening your courses…");
   await sleep(REDUCED ? 0 : 600);
   location.hash = "#/results";
@@ -452,7 +452,7 @@ views.results = async () => {
       <div class="card stat lead reveal" style="--i:1"><span class="mono">Strong chance</span><div class="value"><span data-count="${c.band_strong || 0}">0</span><small>of ${banded}</small></div></div>
       <div class="card stat reveal" style="--i:2"><span class="mono">Competitive or reach</span><div class="value"><span data-count="${(c.band_competitive || 0) + (c.band_reach || 0)}">0</span></div></div>
       <div class="card stat reveal" style="--i:3"><span class="mono">Within 45 min by car</span><div class="value"><span data-count="${near}">0</span></div></div>
-      <div class="card stat reveal" style="--i:4"><span class="mono">With conditions</span><div class="value"><span data-count="${c.with_conditions || 0}">0</span></div></div>
+      <div class="card stat warm reveal" style="--i:4"><span class="mono">With conditions</span><div class="value"><span data-count="${c.with_conditions || 0}">0</span></div></div>
     </section>
 
     <section class="card dist reveal">
@@ -552,9 +552,9 @@ views.rankings = async () => {
           <div class="tags" style="margin-top:3px"><span>${esc(sug.university)}</span><span>${fmtMin(sug.car_min)}</span><span>${BANDS.find((b) => b.id === sug.band)?.label}</span></div>
           ${state.ranking === "distance" && notes[sug.uni_code] ? `<div class="note">${esc(notes[sug.uni_code].note)}</div>` : ""}</div>
         ${parts ? `<div class="parts"><div class="parts-bar">
-            <i data-w="${Math.abs(parts.interest) / tot}" style="background:var(--purple)" title="Interest ${parts.interest}"></i>
-            <i data-w="${Math.abs(parts.cutoff) / tot}" style="background:var(--purple-3)" title="Demand ${parts.cutoff}"></i>
-            <i data-w="${Math.abs(parts.distance) / tot}" style="background:var(--line)" title="Distance ${parts.distance}"></i></div>
+            <i data-w="${Math.abs(parts.interest) / tot}" style="background:var(--blue)" title="Interest ${parts.interest}"></i>
+            <i data-w="${Math.abs(parts.cutoff) / tot}" style="background:var(--lav)" title="Demand ${parts.cutoff}"></i>
+            <i data-w="${Math.abs(parts.distance) / tot}" style="background:var(--mustard)" title="Distance ${parts.distance}"></i></div>
           <div class="parts-legend"><span>Interest</span><span>Demand</span><span>Distance</span></div></div>`
         : `<div class="parts"><div class="margin-row"><span>Last cut-off</span><b class="num">${sug.latest_cutoff?.toFixed(4) ?? "—"}</b></div></div>`}
       </article>`;
@@ -587,19 +587,19 @@ function cutoffChart(r, z) {
   const ticks = []; for (let t = Math.ceil(lo * 4) / 4; t <= hi; t += 0.25) ticks.push(t);
   const bandL = X(r.predicted_cutoff - r.uncertainty), bandR = X(r.predicted_cutoff + r.uncertainty), mid = (bandL + bandR) / 2;
   return `<svg viewBox="0 0 700 150" role="img" aria-label="Your Z-score compared with the estimated cut-off">
-    ${ticks.map((t) => `<line x1="${X(t)}" x2="${X(t)}" y1="40" y2="104" stroke="var(--line-soft)"/><text x="${X(t)}" y="124" text-anchor="middle" font-size="10.5" fill="var(--faint)" font-family="ui-monospace, Menlo, monospace">${t.toFixed(2)}</text>`).join("")}
+    ${ticks.map((t) => `<line x1="${X(t)}" x2="${X(t)}" y1="40" y2="104" stroke="var(--line-soft)"/><text x="${X(t)}" y="124" text-anchor="middle" font-size="10.5" fill="var(--faint)" font-family="inherit">${t.toFixed(2)}</text>`).join("")}
     <line x1="30" x2="670" y1="72" y2="72" stroke="var(--line)"/>
-    <rect x="${mid}" width="0" y="58" height="28" rx="6" fill="var(--lavender)">
+    <rect x="${mid}" width="0" y="58" height="28" rx="14" fill="var(--lilac)">
       <animate attributeName="x" from="${mid}" to="${bandL}" dur=".9s" begin=".2s" fill="freeze" calcMode="spline" keySplines=".2 .8 .2 1"/>
       <animate attributeName="width" from="0" to="${bandR - bandL}" dur=".9s" begin=".2s" fill="freeze" calcMode="spline" keySplines=".2 .8 .2 1"/></rect>
     ${r.latest_cutoff != null ? `<circle cx="${X(r.latest_cutoff)}" cy="72" r="5.5" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.3"/>
-      <text x="${X(r.latest_cutoff)}" y="48" text-anchor="middle" font-size="11" fill="var(--muted)">Last year</text>` : ""}
-    <circle cx="${X(r.predicted_cutoff)}" cy="72" r="5" fill="var(--purple-2)"/>
-    <text x="${X(r.predicted_cutoff)}" y="143" text-anchor="middle" font-size="11" fill="var(--purple)">Estimate ${r.predicted_cutoff.toFixed(3)} ± ${r.uncertainty.toFixed(3)}</text>
+      <text x="${X(r.latest_cutoff)}" y="99" text-anchor="middle" font-size="11" fill="var(--muted)">Last year</text>` : ""}
+    <circle cx="${X(r.predicted_cutoff)}" cy="72" r="5" fill="var(--lav)"/>
+    <text x="${X(r.predicted_cutoff)}" y="143" text-anchor="middle" font-size="11" font-weight="600" fill="var(--blue-ink)">Estimate ${r.predicted_cutoff.toFixed(3)} ± ${r.uncertainty.toFixed(3)}</text>
     <g style="transform:translateX(${X(z) - 30}px);transition:transform 1.4s var(--ease) .4s">
-      <line x1="30" x2="30" y1="24" y2="100" stroke="var(--purple)" stroke-width="2" stroke-linecap="round"/>
-      <rect x="3" y="4" width="54" height="20" rx="4" fill="var(--purple)"/>
-      <text x="30" y="18" text-anchor="middle" font-size="11" fill="#fff" font-weight="600">You ${z.toFixed(2)}</text></g>
+      <line x1="30" x2="30" y1="24" y2="100" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"/>
+      <rect x="-2" y="2" width="64" height="24" rx="12" fill="var(--blue)"/>
+      <text x="30" y="18" text-anchor="middle" font-size="11.5" fill="#fff" font-weight="700">You ${z.toFixed(2)}</text></g>
   </svg>`;
 }
 const renderAnswer = (text) => esc(text).replace(/\[([A-Z]\d*)\]/g, '<span class="cite">$1</span>');
@@ -621,10 +621,9 @@ views.course = async (uni) => {
   app.innerHTML = shell("results", `
     <button class="back" id="back">${I.back} Back</button>
     <section class="card split detail-hero reveal band-${r.band}">
-      <span class="node ${r.band === "strong" ? "on" : ""}"></span>
-      <div class="side">
+            <div class="side">
         <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <span class="chip">${band.label} chance</span>
+          <span class="chip ${r.band === "strong" ? "blue" : ""}">${band.label} chance</span>
           <span class="chip plain">${esc(r.uni_code)}</span>
           ${r.aptitude_test ? `<span class="chip ink">Aptitude test</span>` : ""}
           ${r.same_district ? `<span class="chip ink">Your district</span>` : ""}
@@ -657,6 +656,7 @@ views.course = async (uni) => {
 
       <aside class="card chat reveal" style="--i:1">
         <div class="chat-head">
+          <span class="bot-av">${I.spark}</span>
           <div style="min-width:0"><b style="font-weight:550">Ask about this course</b><div class="faint" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Answers from the handbook and your results</div></div>
           <button class="icon-btn" id="clear" title="Clear this chat" style="margin-left:auto">${I.trash}</button></div>
         <div class="chat-body" id="body"></div>
@@ -684,8 +684,8 @@ views.course = async (uni) => {
     if (!slot || !job) return;
     if (job.state === "running") {
       const p = (job.step + 1) / (job.steps || 6), C = 2 * Math.PI * 9;
-      slot.innerHTML = `<div class="research"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="var(--lavender)" stroke-width="2.5"/>
-        <circle cx="12" cy="12" r="9" fill="none" stroke="var(--purple)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - p)}" transform="rotate(-90 12 12)" style="transition:stroke-dashoffset .6s var(--ease)"/></svg>
+      slot.innerHTML = `<div class="research"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="var(--lilac)" stroke-width="2.5"/>
+        <circle cx="12" cy="12" r="9" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - p)}" transform="rotate(-90 12 12)" style="transition:stroke-dashoffset .6s var(--ease)"/></svg>
         <div><b style="font-weight:550">Researching careers</b><div style="font-size:12.5px"><span style="display:inline-block;animation:statusIn .4s var(--ease)">${esc(job.message)}…</span></div></div></div>`;
       if (!polling) {
         polling = true;
@@ -775,7 +775,7 @@ views.me = async () => {
     <h2 class="reveal" style="margin-bottom:20px">${headline("Your course", "chats.")}</h2>
     ${list.length ? `<div class="chat-list">${list.map((c, i) => `
       <a class="chat-item reveal" style="--i:${i}" href="#/course/${esc(c.uni_code)}">
-        <span class="mono" style="color:var(--purple)">${pad2(i + 1)}</span>
+        <span class="mono">${pad2(i + 1)}</span>
         <div style="min-width:0;flex:1"><b style="font-weight:550">${esc(c.course_name)}</b> <span class="faint">· ${esc(c.university)}</span>
           <div class="faint" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.last || "")}</div></div>
         <span class="chip plain">${c.messages} messages</span></a>`).join("")}</div>`

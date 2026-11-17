@@ -1,8 +1,9 @@
 # CampusYamu UI mockup
 
-A clickable mockup of the student app on top of the `/v1` API. Notion-style, following
-jaliyanimantha.com: warm paper `#FEFDF9`, ink `#202020`, purple `#7952B3`, lavender `#E9DCFF`,
-DM Sans, line-art figures. Flat colours only. Plain Node.js, no dependencies.
+A clickable mockup of the student app on top of the `/v1` API. Friendly app style matching
+the illustrations: navy `#14185C`, royal blue `#4F6FE8`, lavender `#C9B8F5`, mustard `#F2B84B`
+(highlights only) on `#FAF9FF`, with `#ECE4FD` figure panels. Plus Jakarta Sans, rounded white
+cards, pill chips, a navy bottom bar on phones. Flat colours only. Plain Node.js, no dependencies.
 
 ```bash
 cd ui-mockup
