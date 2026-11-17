@@ -1,1 +1,1 @@
-"""Shared infrastructure: project paths, settings, OpenAI client."""
+"""Shared infrastructure: project paths, settings, language-model client (llm: OpenAI or Gemini)."""

@@ -2,7 +2,7 @@
 
 * ``TemplateFeedback`` writes it from the what-if facts with fixed sentences
   (offline, deterministic; the fallback and what the tests use).
-* ``LLMFeedback`` sends the same facts to OpenAI once (strict JSON schema) and
+* ``LLMFeedback`` sends the same facts to the llm.provider model once (strict JSON schema) and
   gets back friendlier wording. It may only refer to the courses it was given;
   unknown codes are dropped, and any course it skips gets the template note.
 * ``FeedbackWriter`` picks the LLM when a key is set, else the template.
@@ -11,17 +11,15 @@
 from __future__ import annotations
 
 import json
-import os
 from typing import Any
 
 from campusyamu.core import settings
 
-from campusyamu.core.openai_client import call_structured
+from campusyamu.core import llm
 
 from .sensitivity import PROFILE_LABELS
 from campusyamu.prompts.feedback import FEEDBACK_SYSTEM as SYSTEM_PROMPT
 
-DEFAULT_MODEL = "gpt-4o-mini"
 MAX_NOTE_CHARS = 320
 WHAT_IF = [p for p in PROFILE_LABELS if p != "balanced"]
 STRENGTH_TEXT = {"interest": "it fits your interests", "cutoff": "it is a high-demand course (high cut-off)",
@@ -122,10 +120,8 @@ class LLMFeedback:
     method = "llm"
 
     def __init__(self, model: str | None = None, api_key: str | None = None, timeout: int = 90) -> None:
-        self.model = model or settings.model("feedback", DEFAULT_MODEL)
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        if not self.api_key:
-            raise RuntimeError("OPENAI_API_KEY is not set")
+        self.model = model or settings.model("feedback")
+        self.api_key = api_key or llm.require_key()
         self.timeout = timeout
         self.template = TemplateFeedback()
 
@@ -167,7 +163,7 @@ class LLMFeedback:
                                     "schema": schema}}}
 
     def _call(self, payload: dict[str, Any]) -> dict[str, Any]:
-        return call_structured(payload, self.api_key, self.timeout, "CampusYamu-RankingFeedback/0.1")
+        return llm.call_structured(payload, self.api_key, self.timeout, "CampusYamu-RankingFeedback/0.1")
 
     def write(self, analysis: dict[str, Any], context: dict[str, Any]) -> dict[str, Any]:
         return self.parse(self._call(self.request_payload(analysis, context)), analysis, context)

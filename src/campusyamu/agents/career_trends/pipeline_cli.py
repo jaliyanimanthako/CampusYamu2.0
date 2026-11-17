@@ -9,13 +9,13 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence
 
-from campusyamu.core import settings
+from campusyamu.core import llm, settings
 
 from . import analysis_cli, cli
 from .environment import load_environment
 from .future_analytics import FutureCareerAnalyticsAgent
 from .models import WebResearchRequest
-from .harness import OpenAIToolModel
+from .harness import ToolModel
 from .pipeline import CareerTrendsPipeline
 from .providers import (
     WEB_PROVIDERS,
@@ -98,7 +98,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     # Check every key up front so no credits are spent on a run that cannot finish.
     search_key = {"tavily": "TAVILY_API_KEY", "firecrawl": "FIRECRAWL_API_KEY"}[provider]
-    for key in (search_key, "OPENAI_API_KEY"):
+    for key in (search_key, llm.key_name()):
         if not os.getenv(key):
             parser.error(f"{key} is missing from the environment or .env file")
 
@@ -109,7 +109,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not args.no_agent:
         harness = ResearchHarness(
             web_crawler,
-            OpenAIToolModel(),
+            ToolModel(),
             max_iterations=args.agent_iterations,
             max_searches=args.agent_searches,
         )

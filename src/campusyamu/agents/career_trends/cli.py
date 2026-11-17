@@ -110,7 +110,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "off (--no-reddit)" if args.no_reddit else "off (APIFY_API_TOKEN not set)"
         )
         careers = "on" if discovery else (
-            "off (--no-discovery)" if args.no_discovery else "off (OpenAI not configured)"
+            "off (--no-discovery)" if args.no_discovery else "off (no language-model key)"
         )
         print(
             f"Web search: {provider} | Reddit: {reddit} | Career discovery: {careers}",

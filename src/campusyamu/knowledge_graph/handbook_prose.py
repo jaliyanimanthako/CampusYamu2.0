@@ -9,8 +9,6 @@ import re
 import sys
 import tempfile
 import time
-import urllib.error
-import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Protocol, Sequence
@@ -1506,25 +1504,23 @@ def validate_proposal(
 DEVELOPER_PROMPT = rule_extraction_prompt(AL_SUBJECTS, EXPECTED_IGNORE_REASON)
 
 
-class OpenAIHandbookExtractionClient:
-    """Minimal Responses API client for strict handbook-rule proposals."""
+class HandbookExtractionClient:
+    """Minimal Responses-format client for strict handbook-rule proposals (llm.provider: OpenAI or Gemini)."""
 
     def __init__(
         self,
         *,
         api_key: str | None = None,
         model: str | None = None,
-        base_url: str = "https://api.openai.com/v1",
         timeout_seconds: int = 180,
         max_output_tokens: int = 8_000,
     ) -> None:
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        from campusyamu.core import settings
+        from campusyamu.core import llm, settings
 
-        self.model = model or settings.model("handbook_extraction")     # models.handbook_extraction
+        self.api_key = api_key or llm.api_key()
+        self.model = model or settings.model("handbook_extraction")     # models.<provider>.handbook_extraction
         if not self.api_key:
-            raise HandbookProseError("Set OPENAI_API_KEY before using --propose")
-        self.base_url = base_url.rstrip("/")
+            raise HandbookProseError(f"Set {llm.key_name()} before using --propose")
         self.timeout_seconds = timeout_seconds
         self.max_output_tokens = max_output_tokens
 
@@ -1596,33 +1592,23 @@ class OpenAIHandbookExtractionClient:
                 }
             },
         }
-        http_request = urllib.request.Request(
-            self.base_url + "/responses",
-            data=json.dumps(payload).encode("utf-8"),
-            headers={
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json",
-                "User-Agent": "CampusYamu-HandbookExtractor/0.1",
-            },
-            method="POST",
-        )
+        from campusyamu.core import llm
+
         try:
-            with urllib.request.urlopen(
-                http_request, timeout=self.timeout_seconds
-            ) as response:
-                body = json.loads(response.read().decode("utf-8"))
-        except urllib.error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")
-            raise HandbookProseError(f"OpenAI HTTP {exc.code}: {detail}") from exc
-        except urllib.error.URLError as exc:
-            raise HandbookProseError(f"OpenAI request failed: {exc.reason}") from exc
+            body = llm.post_responses(payload, api_key=self.api_key, timeout=self.timeout_seconds,
+                                      user_agent="CampusYamu-HandbookExtractor/0.1")
+        except RuntimeError as exc:
+            raise HandbookProseError(str(exc)) from exc
         return _structured_response(body)
 
 
 def _structured_response(response: dict[str, Any]) -> dict[str, Any]:
+    from campusyamu.core.llm import label
+
+    who = label()
     if response.get("status") != "completed":
         detail = response.get("incomplete_details") or response.get("error")
-        raise HandbookProseError(f"OpenAI response did not complete: {detail}")
+        raise HandbookProseError(f"{who} response did not complete: {detail}")
     for item in response.get("output", []):
         if not isinstance(item, dict) or item.get("type") != "message":
             continue
@@ -1631,19 +1617,19 @@ def _structured_response(response: dict[str, Any]) -> dict[str, Any]:
                 continue
             if content.get("type") == "refusal":
                 raise HandbookProseError(
-                    f"OpenAI refused extraction: {content.get('refusal')}"
+                    f"{who} refused extraction: {content.get('refusal')}"
                 )
             if content.get("type") == "output_text":
                 try:
                     value = json.loads(str(content.get("text", "")))
                 except json.JSONDecodeError as exc:
                     raise HandbookProseError(
-                        "OpenAI returned invalid structured JSON"
+                        f"{who} returned invalid structured JSON"
                     ) from exc
                 if not isinstance(value, dict):
-                    raise HandbookProseError("OpenAI returned a non-object proposal")
+                    raise HandbookProseError(f"{who} returned a non-object proposal")
                 return value
-    raise HandbookProseError("OpenAI response contained no structured output")
+    raise HandbookProseError(f"{who} response contained no structured output")
 
 
 def _focused_retry_request(
@@ -3598,7 +3584,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         help="Maximum number of extraction requests to send to the API.",
     )
-    parser.add_argument("--model", help="Override models.handbook_extraction in config/settings.yaml")
+    parser.add_argument("--model", help="Override models.<provider>.handbook_extraction in config/settings.yaml")
     parser.add_argument("--env-file", type=Path)
     parser.add_argument(
         "--quiet",
@@ -3808,12 +3794,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             _load_env(args.env_file)
             needs_model = any(deterministic_proposal(item) is None for item in selected)
             client: RuleExtractionModel = (
-                OpenAIHandbookExtractionClient(model=args.model)
+                HandbookExtractionClient(model=args.model)
                 if needs_model
                 else _DeterministicOnlyModel()
             )
             verifier = (
-                OpenAIHandbookExtractionClient(model=args.verifier_model)
+                HandbookExtractionClient(model=args.verifier_model)
                 if args.verifier_model and needs_model
                 else None
             )

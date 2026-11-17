@@ -1,17 +1,16 @@
-"""Model: one tool-calling turn at a time, via the OpenAI Responses API."""
+"""Model: one tool-calling turn at a time, in the Responses API format (llm.provider: OpenAI or Gemini)."""
 
 from __future__ import annotations
 
-import os
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 
 from campusyamu.core import settings
 
-from ..openai_client import OpenAIResponsesClient
+from ..openai_client import ResponsesClient
 
 
-DEFAULT_AGENT_MODEL = "gpt-4o-mini"
+DEFAULT_AGENT_MODEL = None          # None: the provider's default (settings.model)
 
 
 @dataclass(frozen=True)
@@ -38,8 +37,8 @@ class ToolCallingModel(Protocol):
     ) -> ModelTurn: ...
 
 
-class OpenAIToolModel:
-    """A cheap model for the loop: models.career_agent in settings.yaml."""
+class ToolModel:
+    """A cheap model for the loop: models.<provider>.career_agent in settings.yaml."""
 
     def __init__(
         self,
@@ -50,7 +49,7 @@ class OpenAIToolModel:
         timeout_seconds: int = 120,
     ) -> None:
         self.model = model or settings.model("career_agent", DEFAULT_AGENT_MODEL)
-        self._client = OpenAIResponsesClient(
+        self._client = ResponsesClient(
             api_key,
             self.model,
             timeout_seconds=timeout_seconds,
@@ -102,3 +101,6 @@ def parse_turn(response: dict[str, Any]) -> ModelTurn:
                     texts.append(str(content.get("text") or ""))
     turn.text = "\n".join(texts).strip()
     return turn
+
+
+OpenAIToolModel = ToolModel          # the old name

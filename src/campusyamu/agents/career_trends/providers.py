@@ -33,17 +33,19 @@ def build_web_crawler(provider: str | None = None) -> WebSearchCrawler:
 
 
 def build_career_discovery(crawler: WebSearchCrawler) -> CareerDiscovery | None:
-    """Web-search career discovery; needs an OpenAI model to read the pages.
+    """Web-search career discovery; needs the llm.provider model to read the pages.
 
     models.career_discovery in settings.yaml may name a cheaper model for this
     simple extraction step.
     """
 
-    if not os.getenv("OPENAI_API_KEY"):
-        return None
-    from .openai_client import OpenAIResponsesClient
+    from campusyamu.core import llm
 
-    model = OpenAIResponsesClient(model=settings.model("career_discovery"))
+    if not llm.available():
+        return None
+    from .openai_client import ResponsesClient
+
+    model = ResponsesClient(model=settings.model("career_discovery"))
     return CareerDiscovery(crawler, model)
 
 

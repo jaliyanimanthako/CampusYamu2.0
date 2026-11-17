@@ -86,6 +86,10 @@ const I = {
   list: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h1M4 12h1M4 18h1"/></svg>',
 };
 
+// the logo: a Y that is a fork in the road, with the AI sparkle on the branch to take
+const LOGO = `<svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><rect x="4" y="4" width="92" height="92" rx="26" fill="#4F6FE8"/><path d="M50 80 V54 M50 54 L31 30 M50 54 L64 37" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path class="spark" d="M72 15 L75.5 25.5 L86 29 L75.5 32.5 L72 43 L68.5 32.5 L58 29 L68.5 25.5 Z" fill="#F2B84B"/></svg>`;
+const brand = (href) => `<a class="brand" ${href ? `href="${href}"` : ""} aria-label="CampusYamu">${LOGO}<span>campus<b>yamu</b></span></a>`;
+
 // ---------------------------------------------------------------- figures
 // Drop illustrations into public/figures/ as <name>.webp, .png or .svg (see figures/README.md).
 // The server lists what exists (/figures.json), so only real files are requested. Missing
@@ -165,7 +169,7 @@ function shell(active, inner) {
   return `
   <div class="wrap">
     <header class="topbar"><div class="nav-inner">
-      <a class="brand" href="#/results"><i></i>CampusYamu</a>
+      ${brand("#/results")}
       <nav class="nav">${link("#/form", "form", "My results")}${link("#/results", "results", "Courses")}${link("#/rankings", "rankings", "Ranked order")}${link("#/me", "me", "Chats")}</nav>
       <div class="nav-right">
         ${u ? `<span class="usage" title="Chat questions used today"><span class="bar"><i style="width:${(u.used / u.limit) * 100}%"></i></span><span class="num">${u.used}/${u.limit} today</span></span>` : ""}
@@ -189,7 +193,7 @@ const views = {};
 views.signin = async () => {
   app.innerHTML = `
   <div class="wrap"><section class="auth view-enter">
-    <a class="brand"><i></i>CampusYamu</a>
+    ${brand()}
     <div class="card split">
       <div class="side">
         <span class="label">UGC Handbook 2024/25</span>

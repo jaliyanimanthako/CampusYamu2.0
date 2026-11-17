@@ -1,5 +1,6 @@
 # CampusYamu — common tasks.  `make help` lists them.
-# Targets marked (paid) call OpenAI or web-search APIs with the keys in .env.
+# Targets marked (paid) call the language model (llm.provider in config/settings.yaml: OpenAI or Gemini)
+# or web-search APIs, with the keys in .env.
 
 UV ?= uv
 RUN = $(UV) run
@@ -9,7 +10,7 @@ API_PORT ?= 8780
 COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
-.PHONY: help install install-rerank test web api student kg kg-refresh kg-viewer kg-chat neo4j-push \
+.PHONY: llm-check help install install-rerank test web api student kg kg-refresh kg-viewer kg-chat neo4j-push \
         search-chunk search-embed search-load travel-db career research clean docker-build docker-up docker-down docker-logs
 
 help:
@@ -21,6 +22,7 @@ help:
 	@echo "  make web              web page on http://127.0.0.1:$(PORT) (run make api too)"
 	@echo "  make student          student pipeline in the terminal (asks the questions)"
 	@echo "  make test             run the test suite"
+	@echo "  make llm-check        three tiny calls to the llm.provider model: JSON, tool call, embedding (paid, ~free)"
 	@echo "Knowledge graph (handbook -> rules -> graph)"
 	@echo "  make kg               validate sources and rebuild the graph (no API calls)"
 	@echo "  make kg-refresh       re-check owner interpretations against the rules (no API calls)"
@@ -29,7 +31,7 @@ help:
 	@echo "  make neo4j-push       load the graph + travel data into Neo4j (needs NEO4J_* in .env)"
 	@echo "Handbook search (Neo4j vector + BM25)"
 	@echo "  make search-chunk     parent/child chunks from the handbook"
-	@echo "  make search-embed     embed the chunks (paid, cents; cached)"
+	@echo "  make search-embed     embed the chunks for llm.provider (paid, cents; cached; PROVIDER=all for both)"
 	@echo "  make search-load      load chunks + embeddings into Neo4j"
 	@echo "Data"
 	@echo "  make travel-db        rebuild data/processed/travel/travel_times.db from the CSVs"
@@ -48,6 +50,9 @@ install-rerank:
 
 test:
 	$(RUN) python -m unittest discover -s tests
+
+llm-check:
+	$(RUN) python -m campusyamu.core.llm --check
 
 web:
 	$(RUN) python -m campusyamu.web --port $(PORT)
@@ -80,7 +85,7 @@ search-chunk:
 	$(RUN) python -m campusyamu.handbook_search chunk
 
 search-embed:
-	$(RUN) python -m campusyamu.handbook_search embed
+	$(RUN) python -m campusyamu.handbook_search embed $(if $(PROVIDER),--provider $(PROVIDER))
 
 search-load:
 	$(RUN) python -m campusyamu.handbook_search load

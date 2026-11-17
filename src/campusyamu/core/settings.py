@@ -23,11 +23,11 @@ DEFAULT_FILE = CONFIG_DIR / "settings.yaml"
 
 # .env variables that used to choose models or settings; they are ignored now
 LEGACY_ENV = {
-    "OPENAI_MODEL": "models.*", "PREFERENCE_MODEL": "models.preference", "FEEDBACK_MODEL": "models.feedback",
-    "CHAT_MODEL": "models.chat", "WEBSITE_MODEL": "models.website", "MEMORY_MODEL": "models.memory",
+    "OPENAI_MODEL": "models.openai.*", "PREFERENCE_MODEL": "models.<provider>.preference", "FEEDBACK_MODEL": "models.<provider>.feedback",
+    "CHAT_MODEL": "models.<provider>.chat", "WEBSITE_MODEL": "models.<provider>.website", "MEMORY_MODEL": "models.<provider>.memory",
     "PREFERENCE_DECISION_MODEL": "models.preference_decision", "GUARDRAIL_MODEL": "models.guardrail",
-    "HANDBOOK_EXTRACTION_MODEL": "models.handbook_extraction", "AGENT_MODEL": "models.career_agent",
-    "DISCOVERY_MODEL": "models.career_discovery", "PREFERENCE_ENGINE": "preferences.engine",
+    "HANDBOOK_EXTRACTION_MODEL": "models.<provider>.handbook_extraction", "AGENT_MODEL": "models.<provider>.career_agent",
+    "DISCOVERY_MODEL": "models.<provider>.career_discovery", "PREFERENCE_ENGINE": "preferences.engine",
     "SEARCH_PROVIDER": "career.search_provider", "TAVILY_SEARCH_DEPTH": "career.tavily_search_depth",
     "APIFY_REDDIT_ACTOR": "career.reddit_actor",
 }
@@ -58,11 +58,23 @@ def get(key: str, default: Any = None) -> Any:
     return node
 
 
-def model(role: str, default: str = "gpt-4o-mini") -> str:
-    """The model for one role: models.<role> in settings.yaml, else the default."""
+def model(role: str, default: str | None = None, provider: str | None = None) -> str:
+    """The model for one role.
+
+    models.<provider>.<role> for the provider in llm.provider (openai | gemini), else a top-level
+    models.<role> (roles tied to one service, e.g. the Gemini Decision guardrail), else the default,
+    else the provider's default model. `provider` asks about one provider instead of the configured one.
+    """
+
+    from . import llm
 
     warn_legacy_env()
-    return str(get(f"models.{role}", default) or default)
+    name = provider or llm.provider()
+    for key in (f"models.{name}.{role}", f"models.{role}"):
+        value = get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return default or llm.DEFAULT_MODELS[name]
 
 
 def warn_legacy_env() -> None:

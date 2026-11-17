@@ -85,7 +85,9 @@ def missing_keys() -> list[str]:
     except ValueError as exc:
         return [str(exc)]
     search_key = {"tavily": "TAVILY_API_KEY", "firecrawl": "FIRECRAWL_API_KEY"}.get(provider, "TAVILY_API_KEY")
-    return [k for k in (search_key, "OPENAI_API_KEY") if not os.getenv(k)]
+    from campusyamu.core import llm
+
+    return [k for k in (search_key, llm.key_name()) if not os.getenv(k)]
 
 
 def run_research(course: str, on_progress: Callable[[dict[str, Any]], None] | None = None,
@@ -93,7 +95,7 @@ def run_research(course: str, on_progress: Callable[[dict[str, Any]], None] | No
     """The same pipeline as `campusyamu.agents.career_trends.pipeline_cli`, for one course."""
 
     from campusyamu.agents.career_trends.future_analytics import FutureCareerAnalyticsAgent
-    from campusyamu.agents.career_trends.harness import OpenAIToolModel
+    from campusyamu.agents.career_trends.harness import ToolModel
     from campusyamu.agents.career_trends.models import WebResearchRequest
     from campusyamu.agents.career_trends.pipeline import CareerTrendsPipeline
     from campusyamu.agents.career_trends.providers import (build_career_discovery, build_community_crawler,
@@ -106,7 +108,7 @@ def run_research(course: str, on_progress: Callable[[dict[str, Any]], None] | No
         CareerWebResearchAgent(web_crawler, community_crawler=build_community_crawler() if reddit else None,
                                career_discovery=build_career_discovery(web_crawler)),
         FutureCareerAnalyticsAgent(),
-        ResearchHarness(web_crawler, OpenAIToolModel()) if agent else None,
+        ResearchHarness(web_crawler, ToolModel()) if agent else None,
     )
     request = WebResearchRequest(courses=(course,), region=REGION)
     return pipeline.run(request, horizon_years=settings.get("career.horizon_years", 5), on_progress=on_progress)

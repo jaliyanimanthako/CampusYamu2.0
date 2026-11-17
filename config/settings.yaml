@@ -1,7 +1,15 @@
 # CampusYamu settings: tunable numbers and defaults, kept out of the code.
-# Secrets (API keys, Neo4j password) live only in .env. Model names here are
-# defaults; the environment variable named next to each one wins when set.
+# Secrets (API keys, Neo4j password) live only in .env; every model and choice lives here.
 # Changing a value takes effect on the next run (restart the web app).
+
+llm:                           # the language model behind every AI call except Gemini Decision
+  provider: gemini             # openai | gemini. Key in .env: OPENAI_API_KEY | GEMINI_API_KEY.
+                               #   Picks models.<provider>.* below and the handbook-search vectors.
+  gemini:
+    thinking: low              # Gemini 3+: minimal | low | medium | high; a number = thinking budget
+                               #   (Gemini 2.5 models, 0 = off); empty = the model's own default
+    extra_output_tokens: 4096  # added to each call's output cap: Gemini counts thinking tokens there
+    embedding_dimensions: 1536 # handbook-search vectors from models.gemini.embedding (128-3072)
 
 ranking:
   suggestions: 20              # entries per suggestion list
@@ -17,10 +25,10 @@ what_if:                       # order-3 sensitivity analysis
   close_gap: 0.15              # score points between neighbours for a near tie
 
 preferences:
-  engine: gemini_decision              # AI that reads the interests ("Use AI"): openai | gemini_decision
-                               #   openai: gpt-4o-mini writes every mark (20-40 s); needs OPENAI_API_KEY
+  engine: gemini_decision              # AI that reads the interests ("Use AI"): llm | gemini_decision
+                               #   llm: the llm.provider model (models.<provider>.preference) writes every mark
                                #   gemini_decision: gemini-decision-1 scores them (fast); needs GEMINI_API_KEY
-                               #   PREFERENCE_ENGINE in .env wins. Either one falls back to keyword matching.
+                               #   ("openai" still means llm.) Either one falls back to keyword matching.
   decision_second_category_min: 0.25   # gemini_decision: keep a 2nd category from this probability
   decision_named_course_min: 0.6       # gemini_decision: treat a programme as named from this probability
   min_mark: 5                  # list a course under an interest from this match mark
@@ -29,19 +37,34 @@ preferences:
   poor_fit: -5                 # preference score at or below this = far from every interest
   second_category_weight: 0.85 # offline marks: an interest's second category counts this much
 
-models:                        # every model the app uses (set here only, not in .env); OpenAI unless noted
-  preference: gpt-4o-mini      # reads the interests (preferences.engine: openai)
-  preference_decision: gemini-decision-1   # reads the interests (engine gemini_decision); Gemini, GEMINI_API_KEY
-  feedback: gpt-4o-mini        # advice on the ranked lists
-  chat: gpt-4o-mini            # course chat answers
-  memory: gpt-4o-mini          # chat memory: follow-up rewrite, summaries, student facts
-  guardrail: gemini-decision-1 # course chat scope check; Gemini, GEMINI_API_KEY
-  website: gpt-4o-mini         # course research: reads the university pages
-  career_analysis: gpt-4o-mini # career research: the cited future SWOT and career extraction
-  career_discovery: gpt-4o-mini   # career research: job titles from web pages (can be a cheaper model)
-  career_agent: gpt-4o-mini    # career research: the tool-calling research agent
-  handbook_extraction: gpt-4o-mini   # offline handbook rule extraction (paid runs, not the API)
-  kg_chat: gpt-4o-mini         # graph-viewer chatbot (make kg-chat, not the API)
+models:                        # every model the app uses (set here only, not in .env)
+  openai:                      # used when llm.provider is openai (OPENAI_API_KEY)
+    preference: gpt-4o-mini    # reads the interests (preferences.engine: llm)
+    feedback: gpt-4o-mini      # advice on the ranked lists
+    chat: gpt-4o-mini          # course chat answers
+    memory: gpt-4o-mini        # chat memory: follow-up rewrite, summaries, student facts
+    website: gpt-4o-mini       # course research: reads the university pages
+    career_analysis: gpt-4o-mini   # career research: the cited future SWOT and career extraction
+    career_discovery: gpt-4o-mini  # career research: job titles from web pages (can be a cheaper model)
+    career_agent: gpt-4o-mini  # career research: the tool-calling research agent
+    handbook_extraction: gpt-4o-mini   # offline handbook rule extraction (paid runs, not the API)
+    kg_chat: gpt-4o-mini       # graph-viewer chatbot (make kg-chat, not the API)
+    embedding: text-embedding-3-small  # handbook search vectors (make search-embed)
+  gemini:                      # used when llm.provider is gemini (GEMINI_API_KEY); same roles
+    preference: gemini-3.5-flash
+    feedback: gemini-3.5-flash
+    chat: gemini-3.5-flash
+    memory: gemini-3.5-flash
+    website: gemini-3.5-flash
+    career_analysis: gemini-3.5-flash
+    career_discovery: gemini-3.5-flash-lite
+    career_agent: gemini-3.5-flash
+    handbook_extraction: gemini-3.5-flash
+    kg_chat: gemini-3.5-flash
+    embedding: gemini-embedding-001
+  # Gemini Decision (GEMINI_API_KEY), whatever llm.provider is:
+  preference_decision: gemini-decision-1   # reads the interests (preferences.engine: gemini_decision)
+  guardrail: gemini-decision-1 # course chat scope check
 
 chat:
   website:                     # university website research for the course chat (sources W, D); web/course_research.py

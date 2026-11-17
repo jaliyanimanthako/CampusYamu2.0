@@ -35,8 +35,8 @@ CampusYamu helps Sri Lankan A/L students choose state-university courses, using 
  Mobile app ─┐
              ├──HTTP/JSON──▶  CampusYamu API (FastAPI, port 8780)
  Web app ────┘                   ├─ course finder + Z-score analysis (local data, no internet needed)
-                                 ├─ course chat ───────▶ OpenAI (+ Neo4j handbook search, optional)
-                                 └─ career research ───▶ OpenAI + Tavily/Firecrawl web search
+                                 ├─ course chat ───────▶ Gemini / OpenAI (+ Neo4j handbook search, optional)
+                                 └─ career research ───▶ Gemini / OpenAI + Tavily/Firecrawl web search
 ```
 
 The API is its own service. The project's web page (`make web`, port 8770) is a client of it,
@@ -105,10 +105,10 @@ unlock the AI features:
 | Feature | Keys needed in `.env` | Without them |
 |---|---|---|
 | Recommendations | none | always works |
-| AI reading of free-text interests (`use_llm`) | `OPENAI_API_KEY` | keyword matching is used instead |
-| Course chat (`/v1/chat`) | `OPENAI_API_KEY` | `/v1/chat` returns `400` |
+| AI reading of free-text interests (`use_llm`) | `GEMINI_API_KEY` or `OPENAI_API_KEY` (whichever `llm.provider` names) | keyword matching is used instead |
+| Course chat (`/v1/chat`) | `GEMINI_API_KEY` or `OPENAI_API_KEY` (whichever `llm.provider` names) | `/v1/chat` returns `400` |
 | Better chat answers (handbook search) | `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD` | chat still works, from the course's own handbook section only |
-| Career research | `OPENAI_API_KEY`, and `TAVILY_API_KEY` or `FIRECRAWL_API_KEY` | `/v1/career-outlook` reports `available: false` |
+| Career research | `GEMINI_API_KEY` or `OPENAI_API_KEY` (whichever `llm.provider` names), and `TAVILY_API_KEY` or `FIRECRAWL_API_KEY` | `/v1/career-outlook` reports `available: false` |
 | Student sign-in (Supabase Auth) and chat memory | `SUPABASE_URL`, `SUPABASE_DB_URL` (`SUPABASE_JWT_SECRET` only for legacy projects) | the API is open and the chat has no memory (local development only) |
 | Allow a browser app on another origin | `API_CORS_ORIGINS` | every origin is allowed (`*`) |
 
@@ -144,7 +144,7 @@ curl http://127.0.0.1:8780/v1/health
 # {"ok":true,"version":"0.4.0","llm_available":true}
 ```
 
-`llm_available` is `true` only when `OPENAI_API_KEY` is set. Then open
+`llm_available` is `true` only when the `llm.provider` key is set. Then open
 http://127.0.0.1:8780/docs, expand **POST /v1/recommendations**, click **Try it out**, paste the
 example from [6.4](#64-post-v1recommendations), and click **Execute**.
 
@@ -336,7 +336,7 @@ Use this to check the server is up and whether AI features are on.
 |---|---|---|
 | `ok` | bool | Server finished starting up |
 | `version` | string | Backend version |
-| `llm_available` | bool | OpenAI is configured: `use_llm` and `/v1/chat` will work |
+| `llm_available` | bool | The language model (`llm.provider`) has its key: `use_llm` and `/v1/chat` will work |
 
 ### 6.2 `GET /v1/options`
 
@@ -436,7 +436,7 @@ Runs the full analysis for one student.
 ```
 
 `used_llm` tells you whether AI was actually used. It is false if you asked for it but the server
-has no OpenAI key.
+has no language-model key.
 
 **The `report` object**
 
@@ -616,8 +616,8 @@ Source kinds:
 
 If the student asks for research in the chat ("research this course", "look up its modules", "research careers"), the server starts it in the background: career trends (web + Reddit), the university's official website, and its specialisations, all in parallel, for this course at this university. `career.job.state` becomes `"running"` and `career.job.scope` is `"course"`; poll [6.6](#66-get-v1career-outlook) as for career research. When it is done, later answers use the new `W` and `D` sources. Send the whole course row as `course` (with `uni_code` and `university`) so the right university is researched.
 
-**Errors:** `400` if the server has no OpenAI key or `course.course_code` is missing. `502` if
-OpenAI failed: show "try again".
+**Errors:** `400` if the server has no language-model key or `course.course_code` is missing. `502` if
+the model call failed: show "try again".
 
 ### 6.6 `GET /v1/career-outlook`
 
@@ -963,7 +963,7 @@ Checklist for the backend owner (share it with whoever deploys):
 | Everything is in `no_history` | No `z_score` was sent |
 | `422 "cgt: Field required"` | `cgt` is required. Send the Common General Test mark |
 | `400 "Choose three different A/L subjects"` | Two `al` entries have the same subject |
-| `400 "The course chat needs OPENAI_API_KEY in .env"` | Server has no OpenAI key. Check `llm_available` and hide chat when it's false |
+| `400 "The course chat needs OPENAI_API_KEY in .env"` | Server has no language-model key. Check `llm_available` and hide chat when it's false |
 | `401 Sign in first` / `Sign-in expired` | Send `Authorization: Bearer <session.access_token>`; refresh the Supabase session when it expires |
 | Android Emulator can't connect to `127.0.0.1` | Use `http://10.0.2.2:8780` |
 | Phone can't connect | Start with `--host 0.0.0.0`, use the computer's LAN IP, same Wi-Fi, allow port 8780 in the firewall, and allow cleartext HTTP in debug (3.2) |

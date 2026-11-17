@@ -175,8 +175,9 @@ class Options(BaseModel):
     ol_grades: list[str]
     districts: list[str]
     ds_divisions: dict[str, list[str]]
-    llm_available: bool = Field(description="OpenAI configured: course chat and AI feedback work")
-    preference_engine: str = Field("openai", description="AI that reads interests: openai | gemini_decision")
+    llm_available: bool = Field(description="llm.provider key set: course chat and AI feedback work")
+    llm_provider: str = Field("openai", description="Language model behind the chat and feedback: openai | gemini")
+    preference_engine: str = Field("llm", description="AI that reads interests: llm (the llm.provider model) | gemini_decision")
     preference_ai_available: bool = Field(False, description="That engine has its key: `use_llm` works")
 
 

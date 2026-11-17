@@ -129,7 +129,10 @@ class EngineSwitchTests(unittest.TestCase):
 
         empty = lambda key, default=None: default                       # no settings.yaml value
         with mock.patch.object(module.settings, "get", empty):
-            self.assertEqual(preference_engine(), "openai")             # built-in default
+            self.assertEqual(preference_engine(), "llm")                # built-in default
+        old = lambda key, default=None: "openai" if key == "preferences.engine" else default
+        with mock.patch.object(module.settings, "get", old):
+            self.assertEqual(preference_engine(), "llm")                # the old name still works
         yaml = lambda key, default=None: "Gemini_Decision" if key == "preferences.engine" else default
         with mock.patch.object(module.settings, "get", yaml):
             with mock.patch.dict(os.environ, {"PREFERENCE_ENGINE": "openai"}):
@@ -151,7 +154,9 @@ class EngineSwitchTests(unittest.TestCase):
             self.assertEqual(GeminiDecisionInterpreter(TAGS).model, "gemini-decision-1")
             from campusyamu.core import settings
 
-            self.assertEqual(settings.model("chat"), settings.get("models.chat"))     # OPENAI_MODEL ignored
+            from campusyamu.core import llm
+
+            self.assertEqual(settings.model("chat"), settings.get(f"models.{llm.provider()}.chat"))  # OPENAI_MODEL ignored
 
     def test_missing_key_or_unknown_engine_falls_back_to_keywords(self) -> None:
         with mock.patch.dict(os.environ, {"GEMINI_API_KEY": ""}):

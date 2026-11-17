@@ -27,7 +27,7 @@ from .firecrawl import WebSearchCrawler
 from .harness import (
     AgentLoop,
     ContextManager,
-    OpenAIToolModel,
+    ToolModel,
     Tool,
     ToolCall,
     ToolCallingModel,
@@ -470,7 +470,7 @@ class ResearchHarness:
             if on_progress:
                 on_progress({**event, "course": name})
 
-        model = self.model or OpenAIToolModel()
+        model = self.model or ToolModel()
         state = ResearchState(course)
         guardrails = ResearchGuardrails(state, self.max_searches)
         loop = AgentLoop(

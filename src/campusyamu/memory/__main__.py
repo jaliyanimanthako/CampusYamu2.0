@@ -1,6 +1,6 @@
 """Try and inspect the course chat memory from the terminal.
 
-    uv run python -m campusyamu.memory chat --user demo --uni-code 008G     # chat with memory (OpenAI, paid)
+    uv run python -m campusyamu.memory chat --user demo --uni-code 008G     # chat with memory (llm.provider, paid)
     uv run python -m campusyamu.memory show --user demo [--uni-code 008G]   # facts, chats, summary, messages
     uv run python -m campusyamu.memory forget --user demo [--uni-code 008G] # delete one chat, or everything
 
@@ -95,7 +95,7 @@ def chat(user: str, uni_code: str) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m campusyamu.memory", description=__doc__.split("\n")[0])
     sub = parser.add_subparsers(dest="command", required=True)
-    for name, text in (("chat", "chat about one course with memory (OpenAI, paid)"),
+    for name, text in (("chat", "chat about one course with memory (llm.provider, paid)"),
                        ("show", "print what is remembered"), ("forget", "delete one chat, or everything")):
         p = sub.add_parser(name, help=text)
         p.add_argument("--user", required=True, help="student id (a Supabase user id when SUPABASE_DB_URL is set)")
@@ -103,7 +103,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     from campusyamu.knowledge_graph.handbook_prose import _load_env
 
-    _load_env(None)                                     # .env: OPENAI_API_KEY, SUPABASE_DB_URL
+    _load_env(None)                                     # .env: OPENAI_API_KEY / GEMINI_API_KEY, SUPABASE_DB_URL
 
     if args.command == "chat":
         chat(args.user, args.uni_code)

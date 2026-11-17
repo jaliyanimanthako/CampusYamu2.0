@@ -6,9 +6,13 @@
     (passage)-[:NEXT_PASSAGE]->(passage)                               # reading order
 
 Indexes:
-    handbook_chunk_embedding  vector index (cosine) on HandbookChunk.embedding
-    handbook_chunk_text       full-text (Lucene, BM25 scoring, English analyzer)
-                              on HandbookChunk.embed_text
+    handbook_chunk_embedding_openai  vector index (cosine) on HandbookChunk.embedding_openai
+    handbook_chunk_embedding_gemini  vector index (cosine) on HandbookChunk.embedding_gemini
+    handbook_chunk_text              full-text (Lucene, BM25 scoring, English analyzer)
+                                     on HandbookChunk.embed_text
+
+Both providers' vectors are loaded when the embedding cache has them; searches use the
+llm.provider one (settings.yaml), so switching provider needs no reload.
 
 Loading replaces every ``CampusDocs`` node and never touches the KG
 (``CampusKG``) nodes; the KG export re-creates the IN_SECTION links after a
@@ -24,7 +28,16 @@ from typing import Any, Sequence
 from .embeddings import vector_for
 
 DOCS_LABEL = "CampusDocs"
-VECTOR_INDEX = "handbook_chunk_embedding"
+LEGACY_VECTOR_INDEX = "handbook_chunk_embedding"          # before there was one index per provider
+PROVIDERS = ("openai", "gemini")
+
+
+def vector_index(provider: str) -> str:
+    return f"handbook_chunk_embedding_{provider}"
+
+
+def vector_property(provider: str) -> str:
+    return f"embedding_{provider}"
 TEXT_INDEX = "handbook_chunk_text"
 BATCH = 100
 LINK_SECTIONS = (
@@ -63,9 +76,14 @@ def lucene_query(text: str) -> str:
 
 
 class HandbookStore:
-    def __init__(self, driver, database: str | None = None) -> None:
+    def __init__(self, driver, database: str | None = None, provider: str | None = None) -> None:
         self.driver = driver
         self.database = database or os.environ.get("NEO4J_DATABASE") or None
+        if provider is None:
+            from campusyamu.core import llm
+
+            provider = llm.provider()
+        self.provider = provider                    # whose vectors vector_search uses
         self._search_clause: bool | None = None     # None = not tried yet
 
     def _run(self, cypher: str, **params: Any) -> list[dict[str, Any]]:
@@ -73,18 +91,26 @@ class HandbookStore:
         return [dict(r) for r in records]
 
     # --- loading ----------------------------------------------------------------
-    def load(self, chunks: dict, cache: dict, model: str) -> dict[str, int]:
-        children = []
-        missing = 0
-        for child in chunks["children"]:
-            vector = vector_for(cache, model, child["embed_text"])
-            if vector is None:
-                missing += 1
+    def load(self, chunks: dict, cache: dict, cache_ids: dict[str, str]) -> dict[str, Any]:
+        """Replace the CampusDocs nodes. `cache_ids`: provider -> embedding cache id; every provider
+        whose vectors cover all chunks gets its own property and vector index, the rest are skipped."""
+
+        children = [dict(child) for child in chunks["children"]]
+        dimensions: dict[str, int] = {}
+        skipped: dict[str, int] = {}
+        for provider, cache_id in cache_ids.items():
+            vectors = [vector_for(cache, cache_id, child["embed_text"]) for child in children]
+            missing = sum(v is None for v in vectors)
+            if missing or not vectors:
+                skipped[provider] = missing
                 continue
-            children.append({**child, "embedding": vector})
-        if missing:
-            raise SystemExit(f"{missing} chunks have no {model} embedding; run the embed step first")
-        dimensions = len(children[0]["embedding"]) if children else 0
+            for child, vector in zip(children, vectors):
+                child[vector_property(provider)] = vector
+            dimensions[provider] = len(vectors[0])
+        if not dimensions:
+            raise SystemExit("No complete embedding set in the cache ("
+                             + ", ".join(f"{p}: {n} chunks missing" for p, n in skipped.items())
+                             + "); run the embed step first")
         parents = chunks["parents"]
 
         self._run(f"MATCH (n:{DOCS_LABEL}) DETACH DELETE n")
@@ -110,13 +136,15 @@ class HandbookStore:
         self._run(LINK_SECTIONS)
 
         # indexes are rebuilt so a different embedding model (dimensions) never clashes
-        self._run(f"DROP INDEX {VECTOR_INDEX} IF EXISTS")
-        self._run(f"DROP INDEX {TEXT_INDEX} IF EXISTS")
-        self._run(
-            f"CREATE VECTOR INDEX {VECTOR_INDEX} FOR (c:HandbookChunk) ON c.embedding "
-            "OPTIONS {indexConfig: {`vector.dimensions`: $dims, `vector.similarity_function`: 'cosine'}}",
-            dims=dimensions,
-        )
+        for name in (LEGACY_VECTOR_INDEX, *(vector_index(p) for p in PROVIDERS), TEXT_INDEX):
+            self._run(f"DROP INDEX {name} IF EXISTS")
+        for provider, dims in dimensions.items():
+            self._run(
+                f"CREATE VECTOR INDEX {vector_index(provider)} FOR (c:HandbookChunk) "
+                f"ON c.{vector_property(provider)} "
+                "OPTIONS {indexConfig: {`vector.dimensions`: $dims, `vector.similarity_function`: 'cosine'}}",
+                dims=dims,
+            )
         self._run(
             f"CREATE FULLTEXT INDEX {TEXT_INDEX} FOR (c:HandbookChunk) ON EACH [c.embed_text] "
             "OPTIONS {indexConfig: {`fulltext.analyzer`: 'english'}}"
@@ -128,7 +156,7 @@ class HandbookStore:
             "OPTIONAL MATCH (:HandbookPassage)-[r:IN_SECTION]->() "
             "RETURN passages, chunks, count(r) AS linked_to_kg"
         )[0]
-        return {**counts, "dimensions": dimensions}
+        return {**counts, "dimensions": dimensions, "skipped": skipped}
 
     # --- searching ----------------------------------------------------------------
     def vector_search(self, vector: Sequence[float], k: int) -> list[dict[str, Any]]:
@@ -137,7 +165,7 @@ class HandbookStore:
             try:
                 rows = self._run(
                     "MATCH (c:HandbookChunk) "
-                    f"SEARCH c IN (VECTOR INDEX {VECTOR_INDEX} FOR $vector LIMIT $k) SCORE AS score "
+                    f"SEARCH c IN (VECTOR INDEX {vector_index(self.provider)} FOR $vector LIMIT $k) SCORE AS score "
                     "RETURN c.id AS id, score ORDER BY score DESC",
                     **params,
                 )
@@ -148,7 +176,7 @@ class HandbookStore:
                     raise
                 self._search_clause = False
         return self._run(
-            f"CALL db.index.vector.queryNodes('{VECTOR_INDEX}', $k, $vector) YIELD node, score "
+            f"CALL db.index.vector.queryNodes('{vector_index(self.provider)}', $k, $vector) YIELD node, score "
             "RETURN node.id AS id, score",
             **params,
         )

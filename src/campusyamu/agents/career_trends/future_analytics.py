@@ -13,7 +13,7 @@ from .analytics_evidence import (
     validate_evidence_refs,
 )
 from .analytics_schema import FUTURE_SWOT_SCHEMA
-from .openai_client import OpenAIResponsesClient, StructuredAnalyticsModel
+from .openai_client import ResponsesClient, StructuredAnalyticsModel
 from campusyamu.prompts.career import FUTURE_ANALYSIS as DEVELOPER_PROMPT
 from campusyamu.prompts.career import FUTURE_REVISION as REVISION_PROMPT
 
@@ -32,7 +32,7 @@ class FutureCareerAnalyticsAgent:
         max_documents_per_course: int = 50,
         max_total_content_chars: int = 80_000,
     ) -> None:
-        self.model_client = model_client or OpenAIResponsesClient()
+        self.model_client = model_client or ResponsesClient()
         self.max_workers = max_workers
         self.max_documents_per_course = max_documents_per_course
         self.max_total_content_chars = max_total_content_chars

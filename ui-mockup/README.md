@@ -22,5 +22,11 @@ handbook block, chat with citations and career-research progress) → account (d
 - `public/styles.css`: the design tokens (`:root`) and components.
 - `public/app.js`: the screens; every call uses the real `/v1` request and response shapes.
 - `public/figures/`: drop illustrations here; names and slots are in its README.
+- `public/brand/`: the logo. A "Y" that is a fork in the road (Yamu, "let's go"; choosing a
+  course) with a mustard AI sparkle on the branch to take. `logo-mark.svg` (icon, also the
+  favicon), `logo.svg` (icon + wordmark), `logo-mono.svg` (white, for dark backgrounds),
+  `app-icon.svg` / `app-icon-512.png` / `apple-touch-icon.png` (full-bleed square icons).
+  The wordmark in the SVGs is live text in Plus Jakarta Sans ExtraBold; convert it to outlines
+  in a design tool before using the files outside the app.
 
 Sign-in is faked here. The real app signs in with Supabase and sends `Authorization: Bearer <token>`.

@@ -20,7 +20,6 @@ Token counts are estimates (about 4 characters per token), which is enough for a
 from __future__ import annotations
 
 import logging
-import os
 import re
 import threading
 from concurrent.futures import Future, ThreadPoolExecutor
@@ -28,14 +27,13 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from campusyamu.core import settings
-from campusyamu.core.openai_client import call_structured
+from campusyamu.core import llm
 from campusyamu.prompts import memory as prompts
 
 from .store import MemoryStore, open_store
 
 log = logging.getLogger(__name__)
 
-DEFAULT_MODEL = "gpt-4o-mini"
 RECENT_TOKENS = settings.get("memory.recent_tokens", 2000)
 KEEP_MESSAGES = settings.get("memory.keep_messages", 8)
 SUMMARIZE_EVERY = settings.get("memory.summarize_every", 8)
@@ -103,7 +101,7 @@ class ChatMemory:
                  summarize_every: int = SUMMARIZE_EVERY, facts_every: int = FACTS_EVERY,
                  max_facts: int = MAX_FACTS, rewrite_questions: bool = REWRITE_QUESTIONS) -> None:
         self._store = store
-        self.model = model or settings.model("memory", DEFAULT_MODEL)
+        self.model = model or settings.model("memory")
         self._caller = caller
         self.recent_tokens, self.keep_messages = recent_tokens, keep_messages
         self.summarize_every, self.facts_every, self.max_facts = summarize_every, facts_every, max_facts
@@ -131,10 +129,7 @@ class ChatMemory:
         }
         if self._caller is not None:
             return self._caller(payload)
-        key = os.getenv("OPENAI_API_KEY")
-        if not key:
-            raise RuntimeError("OPENAI_API_KEY is not set")
-        return call_structured(payload, key, 60, "CampusYamu-Memory/0.1")
+        return llm.call_structured(payload, llm.require_key(), 60, "CampusYamu-Memory/0.1")
 
     # --- before the answer ----------------------------------------------------------------
     def recall(self, user_id: str, uni_code: str) -> Recall:

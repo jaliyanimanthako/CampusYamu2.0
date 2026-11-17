@@ -3,7 +3,7 @@
 from .context import ContextManager
 from .guardrails import Guardrails
 from .loop import AgentLoop, AgentResult
-from .model import DEFAULT_AGENT_MODEL, ModelTurn, OpenAIToolModel, ToolCall, ToolCallingModel
+from .model import DEFAULT_AGENT_MODEL, ModelTurn, OpenAIToolModel, ToolCall, ToolCallingModel, ToolModel
 from .tools import Tool, ToolRegistry
 
 __all__ = [
@@ -17,5 +17,6 @@ __all__ = [
     "Tool",
     "ToolCall",
     "ToolCallingModel",
+    "ToolModel",
     "ToolRegistry",
 ]

@@ -24,7 +24,7 @@ Context for each question (numbered sources the answer must cite):
          in the chat when the student asks for research, cached per offering;
          the chat only reads the cache, it never fetches while answering.
 
-One OpenAI Responses call per question (strict JSON). The model may only cite
+One language-model call per question (llm.provider: OpenAI or Gemini; strict JSON). The model may only cite
 the sources given; unknown ids are dropped.
 
 Memory: with a user_id (a signed-in student) the server keeps the chat
@@ -51,7 +51,7 @@ from typing import Any
 from campusyamu.core import settings
 
 from campusyamu.agents.course_details import HandbookCourseIndex
-from campusyamu.core.openai_client import call_structured
+from campusyamu.core import llm
 
 from campusyamu.memory import ChatMemory
 from campusyamu.prompts import guardrail as guard_prompts
@@ -63,7 +63,6 @@ from campusyamu.prompts.course_chat import COURSE_CHAT_SYSTEM as SYSTEM_PROMPT
 
 log = logging.getLogger(__name__)
 
-DEFAULT_MODEL = "gpt-4o-mini"
 MAX_QUESTION = 1000
 STATUSES = ("answered", "partly_answered", "not_in_sources", "out_of_scope")
 MAX_HISTORY_TURNS = settings.get("chat.history_turns", 8)
@@ -143,7 +142,7 @@ class CourseChat:
         self._pool: ThreadPoolExecutor | None = None
         self.outlooks = outlooks or CareerOutlookStore()
         self.websites = websites
-        self.model = model or settings.model("chat", DEFAULT_MODEL)
+        self.model = model or settings.model("chat")
         self.use_search = use_search
         self._retriever = None
         self._driver = None
@@ -152,7 +151,9 @@ class CourseChat:
 
     # --- handbook search (optional) ------------------------------------------------
     def retriever(self):
-        """The hybrid retriever, or None (with a reason) when Neo4j/OpenAI isn't available."""
+        """The hybrid retriever, or None (with a reason) when Neo4j isn't available.
+
+        Without the llm.provider key for embeddings the retriever still runs on BM25 alone."""
 
         if not self.use_search:
             self._search_error = "handbook search disabled"
@@ -162,7 +163,7 @@ class CourseChat:
         if time.time() - self._search_failed_at < SEARCH_RETRY_SECONDS:
             return None
         try:
-            from campusyamu.handbook_search.embeddings import OpenAIEmbedder
+            from campusyamu.handbook_search.embeddings import make_embedder
             from campusyamu.handbook_search.retriever import CrossEncoderReranker, HybridRetriever
             from campusyamu.handbook_search.store import HandbookStore, connect
 
@@ -172,9 +173,14 @@ class CourseChat:
                 reranker = CrossEncoderReranker()
             except Exception:                                   # optional extra not installed
                 reranker = None
+            try:
+                embedder = make_embedder(query=True)
+            except RuntimeError as exc:                         # no key: keyword search only
+                log.warning("handbook search without vectors: %s", exc)
+                embedder = None
             self._driver = driver
             self._retriever = HybridRetriever(HandbookStore(driver, os.getenv("NEO4J_DATABASE")),
-                                              OpenAIEmbedder(), reranker)
+                                              embedder, reranker)
             self._search_error = None
             return self._retriever
         except BaseException as exc:                            # connect() raises SystemExit on missing config
@@ -239,7 +245,9 @@ class CourseChat:
             except Exception as exc:
                 hits = []
                 notes.append(f"handbook search failed ({str(exc)[:120]})")
-            extra = [h for h in hits if h.passage_id not in own_passages][:SEARCH_HITS]
+            if getattr(retriever, "vector_error", None):
+                notes.append(f"handbook search by keywords only: {retriever.vector_error}")
+            extra =[h for h in hits if h.passage_id not in own_passages][:SEARCH_HITS]
             for i, hit in enumerate(extra, 1):
                 sources.append({"id": f"H{i}", "kind": "handbook_search", "title": hit.title,
                                 "citation": hit.citation, "text": hit.text[:3000]})
@@ -291,10 +299,7 @@ class CourseChat:
                 "notes": notes, "model": self.model, "search_question": search_question}
 
     def _call(self, payload: dict[str, Any]) -> dict[str, Any]:
-        key = os.getenv("OPENAI_API_KEY")
-        if not key:
-            raise RuntimeError("OPENAI_API_KEY is not set")
-        return call_structured(payload, key, 90, "CampusYamu-CourseChat/0.1")
+        return llm.call_structured(payload, llm.require_key(), 90, "CampusYamu-CourseChat/0.1")
 
     def ask(self, question: str, course: dict[str, Any], student: dict[str, Any] | None = None,
             history: list[dict[str, str]] | None = None, user_id: str | None = None) -> dict[str, Any]:

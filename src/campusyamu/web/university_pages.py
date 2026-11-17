@@ -265,18 +265,14 @@ def _pages_for_llm(record: dict[str, Any]) -> list[dict[str, str]]:
 
 def _llm(system: str, user: dict[str, Any], schema: dict[str, Any], name: str, model: str,
          max_tokens: int) -> dict[str, Any]:
-    import os
+    from campusyamu.core import llm
 
-    from campusyamu.core.openai_client import call_structured
-
-    key = os.getenv("OPENAI_API_KEY")
-    if not key:
-        raise RuntimeError("OPENAI_API_KEY is not set")
+    key = llm.require_key()
     payload = {"model": model, "store": False, "max_output_tokens": max_tokens,
                "input": [{"role": "system", "content": system},
                          {"role": "user", "content": json.dumps(user, ensure_ascii=False)}],
                "text": {"format": {"type": "json_schema", "name": name, "strict": True, "schema": schema}}}
-    return call_structured(payload, key, 90, "CampusYamu-UniversityPages/0.1")
+    return llm.call_structured(payload, key, 90, "CampusYamu-UniversityPages/0.1")
 
 
 def profile_request(record: dict[str, Any], course: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:

@@ -8,12 +8,12 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 from pathlib import Path
 from typing import Any
 
 from campusyamu.agents.course_finder.finder import AL_GRADES, OL_GRADES, CourseFinder
 from campusyamu.agents.preference import engine_available, preference_engine
+from campusyamu.core import llm
 from campusyamu.knowledge_graph.al_clause_parsers import canonical_subject
 from campusyamu.knowledge_graph.handbook_prose import OWNER_INTERPRETATIONS
 from campusyamu.memory import ChatMemory
@@ -111,7 +111,8 @@ class AdvisorService:
             "ol_grades": list(OL_GRADES),
             "districts": sorted(ds_by_district),
             "ds_divisions": {d: sorted(v) for d, v in sorted(ds_by_district.items())},
-            "llm_available": bool(os.getenv("OPENAI_API_KEY")),      # OpenAI: chat, feedback
+            "llm_available": llm.available(),                         # llm.provider key: chat, feedback
+            "llm_provider": llm.provider(),                           # openai | gemini
             "preference_engine": preference_engine(),                # AI that reads the interests
             "preference_ai_available": engine_available(),
         }
@@ -163,7 +164,7 @@ class AdvisorService:
         """One chat question. With user_id (a signed-in student) the server's memory replaces `history`."""
 
         if not self.options["llm_available"]:
-            return 400, {"errors": ["The course chat needs OPENAI_API_KEY in .env"]}
+            return 400, {"errors": [f"The course chat needs {llm.key_name()} in .env"]}
         course = body.get("course") or {}
         student = body.get("student") or {}
         if not course.get("course_code") and body.get("uni_code") and user_id:

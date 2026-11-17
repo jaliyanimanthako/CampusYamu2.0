@@ -27,10 +27,9 @@ from typing import Any, Protocol
 from campusyamu.core import settings
 
 from .categories import CATEGORIES, CATEGORY_BY_ID, CourseTags, relatedness
-from campusyamu.core.openai_client import call_structured
+from campusyamu.core import llm
 from campusyamu.prompts.preference import INTERESTS_SYSTEM as SYSTEM_PROMPT
 
-DEFAULT_MODEL = "gpt-4o-mini"
 NO_PREFERENCE = {"anything", "any", "everything", "no preference", "none", "not sure", "dont know",
                  "don't know", "any course", "all"}
 FILLER = re.compile(r"\b(i|i'd|id|would|like|love|want|to|study|studying|interested|in|maybe|"
@@ -219,17 +218,13 @@ def _schema(course_codes: list[str], mark_codes: list[str]) -> dict[str, Any]:
 
 
 class LLMInterpreter:
-    """One OpenAI Responses call with a strict JSON schema."""
-
-    url = "https://api.openai.com/v1/responses"
+    """One language-model call (llm.provider: OpenAI or Gemini) with a strict JSON schema."""
 
     def __init__(self, tags: dict[str, CourseTags], model: str | None = None,
                  api_key: str | None = None, timeout: int = 45) -> None:
         self.tags = tags
-        self.model = model or settings.model("preference", DEFAULT_MODEL)
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        if not self.api_key:
-            raise RuntimeError("OPENAI_API_KEY is not set")
+        self.model = model or settings.model("preference")
+        self.api_key = api_key or llm.require_key()
         self.timeout = timeout
 
     def request_payload(self, text: str, courses: list[str] | None = None) -> dict[str, Any]:
@@ -250,7 +245,7 @@ class LLMInterpreter:
         }
 
     def _call(self, payload: dict[str, Any]) -> dict[str, Any]:
-        return call_structured(payload, self.api_key, self.timeout, "CampusYamu-PreferenceAgent/0.1", self.url)
+        return llm.call_structured(payload, self.api_key, self.timeout, "CampusYamu-PreferenceAgent/0.1")
 
     def interpret(self, text: str, courses: list[str] | None = None) -> Interpretation:
         return self.parse(text, self._call(self.request_payload(text, courses)), courses)
@@ -288,24 +283,28 @@ class LLMInterpreter:
         return fill_marks(result, courses, self.tags)
 
 
-ENGINES = ("openai", "gemini_decision")
+ENGINES = ("llm", "gemini_decision")
+ENGINE_ALIASES = {"openai": "llm"}       # the old name, from when the LLM was always OpenAI
 
 
 def preference_engine() -> str:
     """Which AI reads the interests: preferences.engine in settings.yaml."""
 
-    return str(settings.get("preferences.engine", "openai") or "openai").strip().lower()
+    engine = str(settings.get("preferences.engine", "llm") or "llm").strip().lower()
+    return ENGINE_ALIASES.get(engine, engine)
 
 
 def engine_available(engine: str | None = None) -> bool:
-    engine = engine or preference_engine()
-    return bool(os.getenv({"openai": "OPENAI_API_KEY", "gemini_decision": "GEMINI_API_KEY"}.get(engine, "")))
+    engine = ENGINE_ALIASES.get(engine or "", engine) or preference_engine()
+    if engine == "llm":
+        return llm.available()
+    return bool(os.getenv("GEMINI_API_KEY")) if engine == "gemini_decision" else False
 
 
 class PreferenceInterpreter:
     """The chosen AI engine when available, keywords otherwise (or when the call fails).
 
-    engine: "openai" (LLMInterpreter, gpt-4o-mini writes the marks) or "gemini_decision"
+    engine: "llm" (LLMInterpreter: the llm.provider model writes the marks) or "gemini_decision"
     (GeminiDecisionInterpreter, gemini-decision-1 scores them); default from preference_engine().
     """
 
@@ -313,11 +312,11 @@ class PreferenceInterpreter:
                  engine: str | None = None) -> None:
         self.keywords = KeywordInterpreter(tags)
         self.llm: Any = None
-        self.engine = engine or preference_engine()
+        self.engine = ENGINE_ALIASES.get(engine or "", engine) or preference_engine()
         self.reason = "LLM disabled (--no-llm)"
         if use_llm:
             try:
-                if self.engine == "openai":
+                if self.engine == "llm":
                     self.llm = LLMInterpreter(tags, model=model)
                 elif self.engine == "gemini_decision":
                     from .decision import GeminiDecisionInterpreter
