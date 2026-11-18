@@ -282,7 +282,7 @@ async function init() {
   document.querySelectorAll(".al-subject").forEach((el) => el.addEventListener("change", checkStream));
   checkStream();
   const aiOn = OPTIONS.llm_available || OPTIONS.preference_ai_available;
-  const provider = OPTIONS.llm_provider === "gemini" ? "Gemini" : "OpenAI";
+  const provider = {gemini: "Gemini", openrouter: "OpenRouter"}[OPTIONS.llm_provider] || "OpenAI";
   const engine = OPTIONS.preference_engine === "gemini_decision" ? "Gemini Decision" : provider;
   $("llm").checked = aiOn;
   $("llm").disabled = !aiOn;

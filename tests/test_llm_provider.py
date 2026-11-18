@@ -1,4 +1,4 @@
-"""llm.provider switch: Responses <-> Gemini translation, keys, models, both embedding sets (no network)."""
+"""llm.provider switch: Responses <-> Gemini / Chat Completions translation, keys, models, both embedding sets (no network)."""
 
 from __future__ import annotations
 
@@ -146,6 +146,83 @@ class GeminiTranslationTests(unittest.TestCase):
             with with_settings({"llm.provider": "gemini"}):
                 llm.chat_completions({"model": "m", "messages": []}, api_key="k")
         self.assertTrue(sent[0].endswith("/v1beta/openai/chat/completions"))
+
+
+class OpenRouterTests(unittest.TestCase):
+    def test_structured_request_and_routing(self) -> None:
+        sent = []
+
+        def fake_post(url, payload, auth, timeout, user_agent, who, attempts=4):
+            sent.append((url, payload, auth, who))
+            return {"choices": [{"finish_reason": "stop", "message": {"role": "assistant",
+                                                                      "content": '{"answer": "r"}'}}]}
+
+        values = {"llm.provider": "openrouter", "llm.openrouter.reasoning": "low",
+                  "llm.openrouter.extra_output_tokens": 100}
+        with with_settings(values), mock.patch.object(llm, "post_json", fake_post):
+            self.assertEqual(llm.call_structured(PAYLOAD, "rk"), {"answer": "r"})
+        url, body, auth, who = sent[0]
+        self.assertEqual(url, "https://openrouter.ai/api/v1/chat/completions")
+        self.assertEqual(auth, {"Authorization": "Bearer rk"})
+        self.assertEqual(who, "OpenRouter")
+        self.assertEqual(body["model"], "gemini-test")
+        self.assertEqual([m["role"] for m in body["messages"]], ["system", "system", "user", "assistant", "user"])
+        self.assertEqual(body["messages"][1]["content"], "JSON only.")
+        self.assertEqual(body["response_format"], {"type": "json_schema", "json_schema": {
+            "name": "x", "strict": True, "schema": SCHEMA}})
+        self.assertEqual(body["max_tokens"], 600)
+        self.assertEqual(body["reasoning"], {"effort": "low"})
+        self.assertEqual(body["provider"], {"require_parameters": True})
+
+    def test_tool_call_round_trip(self) -> None:
+        tools = [{"type": "function", "name": "get_time", "description": "d", "strict": True,
+                  "parameters": {"type": "object", "properties": {"city": {"type": "string"}}}}]
+        reply = llm.chat_to_responses({"choices": [{"finish_reason": "tool_calls", "message": {
+            "role": "assistant", "content": None, "tool_calls": [
+                {"id": "c1", "type": "function", "function": {"name": "get_time", "arguments": '{"city": "Kandy"}'}},
+                {"id": "c2", "type": "function", "function": {"name": "get_time", "arguments": '{"city": "Galle"}'}}]}}]})
+        calls = [i for i in reply["output"] if i["type"] == "function_call"]
+        self.assertEqual([c["call_id"] for c in calls], ["c1", "c2"])
+        with with_settings({}):
+            body = llm.chat_request({"model": "m", "tools": tools, "input": [
+                {"role": "user", "content": "time?"}, *calls,
+                {"type": "function_call_output", "call_id": "c1", "output": '{"time": "10:30"}'},
+                {"type": "function_call_output", "call_id": "c2", "output": {"time": "10:31"}}]})
+        user, assistant, tool1, tool2 = body["messages"]
+        self.assertEqual([c["id"] for c in assistant["tool_calls"]], ["c1", "c2"])   # one assistant turn
+        self.assertEqual(tool1, {"role": "tool", "tool_call_id": "c1", "content": '{"time": "10:30"}'})
+        self.assertEqual(json.loads(tool2["content"]), {"time": "10:31"})
+        self.assertEqual(body["tools"][0]["function"]["name"], "get_time")
+        self.assertTrue(body["tools"][0]["function"]["strict"])
+        self.assertNotIn("reasoning", body)
+
+    def test_length_refusal_and_errors(self) -> None:
+        cut = llm.chat_to_responses({"choices": [{"finish_reason": "length", "message": {"content": '{"a'}}]})
+        with self.assertRaisesRegex(RuntimeError, "did not complete"):
+            llm.response_text(cut)
+        refused = llm.chat_to_responses({"choices": [{"finish_reason": "stop", "message": {"refusal": "no"}}]})
+        with self.assertRaisesRegex(RuntimeError, "refused"):
+            llm.response_text(refused)
+        with self.assertRaisesRegex(RuntimeError, "OpenRouter error: no credit"):
+            llm.chat_to_responses({"error": {"message": "no credit", "code": 402}})
+
+    def test_chat_completions_and_embeddings_endpoints(self) -> None:
+        sent = []
+
+        def fake_post(url, payload, auth, timeout, user_agent, who, attempts=4):
+            sent.append((url, payload))
+            return {"data": [{"index": 1, "embedding": [0.2]}, {"index": 0, "embedding": [0.1]}]}
+
+        with mock.patch.object(llm, "post_json", fake_post), with_settings({"llm.provider": "openrouter"}), \
+                mock.patch.dict(os.environ, {"OPENROUTER_API_KEY": "rk"}):
+            llm.chat_completions({"model": "m", "messages": []})
+            embedder = embeddings.make_embedder()
+            self.assertIsInstance(embedder, embeddings.OpenRouterEmbedder)
+            self.assertEqual(embedder.cache_id, "openai/text-embedding-3-small")
+            self.assertEqual(embedder.embed(["a", "b"]), [[0.1], [0.2]])
+        self.assertEqual(sent[0][0], "https://openrouter.ai/api/v1/chat/completions")
+        self.assertEqual(sent[1][0], "https://openrouter.ai/api/v1/embeddings")
+        self.assertEqual(sent[1][1]["model"], "openai/text-embedding-3-small")
 
 
 class FakeDriver:

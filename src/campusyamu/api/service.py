@@ -112,7 +112,7 @@ class AdvisorService:
             "districts": sorted(ds_by_district),
             "ds_divisions": {d: sorted(v) for d, v in sorted(ds_by_district.items())},
             "llm_available": llm.available(),                         # llm.provider key: chat, feedback
-            "llm_provider": llm.provider(),                           # openai | gemini
+            "llm_provider": llm.provider(),                           # openai | gemini | openrouter
             "preference_engine": preference_engine(),                # AI that reads the interests
             "preference_ai_available": engine_available(),
         }

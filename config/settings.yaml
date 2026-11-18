@@ -3,13 +3,18 @@
 # Changing a value takes effect on the next run (restart the web app).
 
 llm:                           # the language model behind every AI call except Gemini Decision
-  provider: gemini             # openai | gemini. Key in .env: OPENAI_API_KEY | GEMINI_API_KEY.
+  provider: openrouter         # openai | gemini | openrouter.
+                               #   Key in .env: OPENAI_API_KEY | GEMINI_API_KEY | OPENROUTER_API_KEY.
                                #   Picks models.<provider>.* below and the handbook-search vectors.
   gemini:
     thinking: low              # Gemini 3+: minimal | low | medium | high; a number = thinking budget
                                #   (Gemini 2.5 models, 0 = off); empty = the model's own default
     extra_output_tokens: 4096  # added to each call's output cap: Gemini counts thinking tokens there
     embedding_dimensions: 1536 # handbook-search vectors from models.gemini.embedding (128-3072)
+  openrouter:
+    reasoning: low             # thinking models: minimal | low | medium | high; a number = reasoning
+                               #   token budget; empty = the model's own default (and not sent)
+    extra_output_tokens: 4096  # added to each call's output cap (reasoning models count thinking there)
 
 ranking:
   suggestions: 20              # entries per suggestion list
@@ -53,15 +58,31 @@ models:                        # every model the app uses (set here only, not in
   gemini:                      # used when llm.provider is gemini (GEMINI_API_KEY); same roles
     preference: gemini-3.5-flash
     feedback: gemini-3.5-flash
-    chat: gemini-3.5-flash
+    chat: gemini-3.5-flash-lite     # flash was overloaded (Nov 2026); back to gemini-3.5-flash when it is not
     memory: gemini-3.5-flash
     website: gemini-3.5-flash
     career_analysis: gemini-3.5-flash
     career_discovery: gemini-3.5-flash-lite
-    career_agent: gemini-3.5-flash
+    career_agent: gemini-3.5-flash-lite
     handbook_extraction: gemini-3.5-flash
     kg_chat: gemini-3.5-flash
     embedding: gemini-embedding-001
+  openrouter:                  # used when llm.provider is openrouter (OPENROUTER_API_KEY); same roles.
+                               #   Any openrouter.ai/models id (vendor/model) that supports structured
+                               #   outputs and tools, e.g. google/gemini-3.5-flash, anthropic/claude-haiku-5-5
+    # free models for local testing (low daily limit, prompts may be logged: no real student data);
+    #   paid default: openai/gpt-4o-mini, embedding openai/text-embedding-3-small
+    preference: nvidia/nemotron-3.5-super-vl:free
+    feedback: nvidia/nemotron-3.5-super-vl:free
+    chat: nvidia/nemotron-3.5-super-vl:free
+    memory: nvidia/nemotron-3.5-super-vl:free
+    website: nvidia/nemotron-3.5-super-vl:free
+    career_analysis: nvidia/nemotron-3.5-super-vl:free
+    career_discovery: nvidia/nemotron-3.5-super-vl:free
+    career_agent: nvidia/nemotron-3.5-super-vl:free
+    handbook_extraction: nvidia/nemotron-3.5-super-vl:free
+    kg_chat: nvidia/nemotron-3.5-super-vl:free
+    embedding: nvidia/nemotron-3.5-embed-1b:free
   # Gemini Decision (GEMINI_API_KEY), whatever llm.provider is:
   preference_decision: gemini-decision-1   # reads the interests (preferences.engine: gemini_decision)
   guardrail: gemini-decision-1 # course chat scope check

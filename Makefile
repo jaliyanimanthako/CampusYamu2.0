@@ -1,5 +1,5 @@
 # CampusYamu — common tasks.  `make help` lists them.
-# Targets marked (paid) call the language model (llm.provider in config/settings.yaml: OpenAI or Gemini)
+# Targets marked (paid) call the language model (llm.provider in config/settings.yaml: OpenAI, Gemini or OpenRouter)
 # or web-search APIs, with the keys in .env.
 
 UV ?= uv
@@ -31,7 +31,7 @@ help:
 	@echo "  make neo4j-push       load the graph + travel data into Neo4j (needs NEO4J_* in .env)"
 	@echo "Handbook search (Neo4j vector + BM25)"
 	@echo "  make search-chunk     parent/child chunks from the handbook"
-	@echo "  make search-embed     embed the chunks for llm.provider (paid, cents; cached; PROVIDER=all for both)"
+	@echo "  make search-embed     embed the chunks for llm.provider (paid, cents; cached; PROVIDER=all for every key set)"
 	@echo "  make search-load      load chunks + embeddings into Neo4j"
 	@echo "Data"
 	@echo "  make travel-db        rebuild data/processed/travel/travel_times.db from the CSVs"

@@ -1,16 +1,17 @@
-"""Handbook chunk embeddings (OpenAI or Gemini), cached by content hash.
+"""Handbook chunk embeddings (OpenAI, Gemini or OpenRouter), cached by content hash.
 
     uv run python -m campusyamu.handbook_search.embeddings                  # the llm.provider set
-    uv run python -m campusyamu.handbook_search.embeddings --provider all   # both sets
+    uv run python -m campusyamu.handbook_search.embeddings --provider all   # every set with a key
 
 Embeds every child chunk's ``embed_text`` and stores the vectors in
 ``data/processed/knowledge_graph/handbook_embeddings.json`` keyed by
-sha256(cache id + text). Both providers' vectors live side by side in that file
-(cache ids ``text-embedding-3-small`` and ``gemini-embedding-001@1536``), so
+sha256(cache id + text). Every provider's vectors live side by side in that file
+(cache ids ``text-embedding-3-small``, ``gemini-embedding-001@1536`` and
+``openai/text-embedding-3-small`` for OpenRouter), so
 re-running only pays for new or changed chunks and switching provider never
 re-embeds. Vectors are stored as base64 float32 to keep the file small.
 
-Models: models.openai.embedding / models.gemini.embedding in settings.yaml;
+Models: models.<provider>.embedding in settings.yaml;
 Gemini's vector size: llm.gemini.embedding_dimensions.
 """
 
@@ -28,7 +29,8 @@ from ..core import llm, settings
 from ..knowledge_graph.handbook_prose import PROJECT_ROOT, _load_env
 from .chunking import DEFAULT_CHUNKS, load_chunks
 
-DEFAULT_MODELS = {"openai": "text-embedding-3-small", "gemini": "gemini-embedding-001"}
+DEFAULT_MODELS = {"openai": "text-embedding-3-small", "gemini": "gemini-embedding-001",
+                  "openrouter": "openai/text-embedding-3-small"}
 DEFAULT_MODEL = DEFAULT_MODELS["openai"]
 DIMENSIONS = 1536
 DEFAULT_CACHE = Path("data/processed/knowledge_graph/handbook_embeddings.json")
@@ -61,24 +63,35 @@ def cache_id(provider: str, model: str | None = None) -> str:
 
 
 class OpenAIEmbedder:
-    """Minimal embeddings client (stdlib only)."""
+    """Minimal OpenAI-format /embeddings client (stdlib only)."""
 
     provider = "openai"
+    url = llm.OPENAI_URL
 
     def __init__(self, model: str | None = None, api_key: str | None = None, timeout: int = 60) -> None:
-        self.model = model or embedding_model("openai")
-        self.cache_id = cache_id("openai", self.model)
-        self.api_key = api_key or llm.api_key("openai")
+        self.model = model or embedding_model(self.provider)
+        self.cache_id = cache_id(self.provider, self.model)
+        self.api_key = api_key or llm.api_key(self.provider)
         if not self.api_key:
-            raise RuntimeError("Set OPENAI_API_KEY (environment or .env) to create OpenAI embeddings")
+            raise RuntimeError(f"Set {llm.key_name(self.provider)} (environment or .env) to create "
+                               f"{llm.label(self.provider)} embeddings")
         self.timeout = timeout
 
     def embed(self, texts: Sequence[str]) -> list[list[float]]:
         payload = {"model": self.model, "input": [t[:MAX_INPUT_CHARS] for t in texts]}
-        body = llm.post_json(f"{llm.OPENAI_URL}/embeddings", payload, {"Authorization": f"Bearer {self.api_key}"},
-                             self.timeout, "CampusYamu-HandbookSearch/0.1", "OpenAI", attempts=4)
-        data = sorted(body["data"], key=lambda item: item["index"])
-        return [item["embedding"] for item in data]
+        body = llm.post_json(f"{self.url}/embeddings", payload, {"Authorization": f"Bearer {self.api_key}"},
+                             self.timeout, "CampusYamu-HandbookSearch/0.1", llm.label(self.provider), attempts=4)
+        if not body.get("data"):
+            raise RuntimeError(f"{llm.label(self.provider)} returned no embeddings: {str(body)[:300]}")
+        data = sorted(enumerate(body["data"]), key=lambda pair: pair[1].get("index", pair[0]))
+        return [item["embedding"] for _, item in data]
+
+
+class OpenRouterEmbedder(OpenAIEmbedder):
+    """OpenRouter's /embeddings (same format); models are named vendor/model."""
+
+    provider = "openrouter"
+    url = llm.OPENROUTER_URL
 
 
 class GeminiEmbedder:
@@ -118,6 +131,8 @@ def make_embedder(provider: str | None = None, query: bool = False, model: str |
     provider = provider or llm.provider()
     if provider == "gemini":
         return GeminiEmbedder(model, query=query)
+    if provider == "openrouter":
+        return OpenRouterEmbedder(model)
     return OpenAIEmbedder(model)
 
 
@@ -175,7 +190,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Embed handbook chunks (paid, cached).")
     parser.add_argument("--chunks", type=Path, default=PROJECT_ROOT / DEFAULT_CHUNKS)
     parser.add_argument("--cache", type=Path, default=PROJECT_ROOT / DEFAULT_CACHE)
-    parser.add_argument("--provider", choices=("openai", "gemini", "all"),
+    parser.add_argument("--provider", choices=(*llm.PROVIDERS, "all"),
                         help="whose embeddings to make (default: llm.provider in settings.yaml)")
     parser.add_argument("--model", help="override the provider's embedding model (one provider only)")
     parser.add_argument("--env-file", type=Path)
@@ -184,6 +199,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     _load_env(args.env_file)
     chunks = load_chunks(args.chunks)
     providers = list(llm.PROVIDERS) if args.provider == "all" else [args.provider or llm.provider()]
+    if args.provider == "all" and not args.dry_run:
+        for provider in [p for p in providers if not llm.available(p)]:
+            print(f"{provider}: skipped ({llm.key_name(provider)} not set)")
+        providers = [p for p in providers if llm.available(p)]
     for provider in providers:
         model = args.model if len(providers) == 1 else None
         if args.dry_run:

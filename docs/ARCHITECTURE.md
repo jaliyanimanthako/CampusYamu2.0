@@ -43,7 +43,7 @@ flowchart TD
 src/campusyamu/
 ├── core/              paths.py (every file location), settings.py (config/settings.yaml), openai_client.py
 ├── knowledge_graph/   handbook → tables/prose → A/L rules → NetworkX graph; eligibility checker; Neo4j export; graph chatbot
-├── handbook_search/   parent/child chunks, OpenAI and Gemini embeddings, Neo4j vector + BM25, RRF, optional cross-encoder rerank
+├── handbook_search/   parent/child chunks, OpenAI, Gemini and OpenRouter embeddings, Neo4j vector + BM25, RRF, optional cross-encoder rerank
 ├── agents/
 │   ├── course_finder/   step 1: courses a student can apply for
 │   ├── zscore/          historical cut-off analysis (SQLite)
@@ -98,9 +98,10 @@ Every prompt lives in `src/campusyamu/prompts/` (one module per area); `python -
 
 All calls go through `core/llm.py`. Code builds OpenAI Responses API requests (`store: false`);
 with `llm.provider: gemini` in `config/settings.yaml` they are translated to Gemini `generateContent`
-(structured output via `responseJsonSchema`, function calling with thought signatures kept) and the
+(structured output via `responseJsonSchema`, function calling with thought signatures kept), with
+`llm.provider: openrouter` to OpenRouter Chat Completions (`response_format` JSON schema, `tools`), and the
 replies translated back, so callers never branch. Keys live in `.env`; models are
-`models.<provider>.<role>` in `config/settings.yaml`. Handbook search keeps both providers' vectors
+`models.<provider>.<role>` in `config/settings.yaml`. Handbook search keeps every provider's vectors
 (one Neo4j index each) and queries the `llm.provider` one.
 
 ## API and web page

@@ -1,4 +1,4 @@
-"""Model: one tool-calling turn at a time, in the Responses API format (llm.provider: OpenAI or Gemini)."""
+"""Model: one tool-calling turn at a time, in the Responses API format (llm.provider: OpenAI, Gemini or OpenRouter)."""
 
 from __future__ import annotations
 

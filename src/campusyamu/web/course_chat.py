@@ -24,7 +24,7 @@ Context for each question (numbered sources the answer must cite):
          in the chat when the student asks for research, cached per offering;
          the chat only reads the cache, it never fetches while answering.
 
-One language-model call per question (llm.provider: OpenAI or Gemini; strict JSON). The model may only cite
+One language-model call per question (llm.provider: OpenAI, Gemini or OpenRouter; strict JSON). The model may only cite
 the sources given; unknown ids are dropped.
 
 Memory: with a user_id (a signed-in student) the server keeps the chat

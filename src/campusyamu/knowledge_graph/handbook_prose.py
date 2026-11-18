@@ -1505,7 +1505,7 @@ DEVELOPER_PROMPT = rule_extraction_prompt(AL_SUBJECTS, EXPECTED_IGNORE_REASON)
 
 
 class HandbookExtractionClient:
-    """Minimal Responses-format client for strict handbook-rule proposals (llm.provider: OpenAI or Gemini)."""
+    """Minimal Responses-format client for strict handbook-rule proposals (llm.provider: OpenAI, Gemini or OpenRouter)."""
 
     def __init__(
         self,

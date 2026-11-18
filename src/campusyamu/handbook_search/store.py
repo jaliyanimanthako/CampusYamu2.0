@@ -25,11 +25,12 @@ import os
 import re
 from typing import Any, Sequence
 
+from ..core import llm
 from .embeddings import vector_for
 
 DOCS_LABEL = "CampusDocs"
 LEGACY_VECTOR_INDEX = "handbook_chunk_embedding"          # before there was one index per provider
-PROVIDERS = ("openai", "gemini")
+PROVIDERS = llm.PROVIDERS
 
 
 def vector_index(provider: str) -> str:

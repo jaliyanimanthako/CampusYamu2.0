@@ -277,7 +277,7 @@ class ChatModel(Protocol):
 class ChatClient:
     """Minimal Chat Completions client with tool calling (stdlib only).
 
-    llm.provider picks OpenAI or Gemini (Gemini's OpenAI-compatible endpoint takes the same shape,
+    llm.provider picks OpenAI, Gemini or OpenRouter (Gemini's OpenAI-compatible endpoint takes the same shape,
     and its tool calls carry their thought signatures back in the echoed `tool_calls`).
     """
 

@@ -1,4 +1,4 @@
-"""Small Responses-format client for structured analytics, sent to llm.provider (OpenAI or Gemini)."""
+"""Small Responses-format client for structured analytics, sent to llm.provider (OpenAI, Gemini or OpenRouter)."""
 
 from __future__ import annotations
 

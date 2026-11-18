@@ -2,7 +2,7 @@
 
     uv run python -m campusyamu.handbook_search chunk
     uv run python -m campusyamu.handbook_search embed          # llm.provider's embeddings, paid (cents)
-    uv run python -m campusyamu.handbook_search embed --provider all   # OpenAI and Gemini sets
+    uv run python -m campusyamu.handbook_search embed --provider all   # every provider with a key
     uv run python -m campusyamu.handbook_search load           # every complete set into Neo4j
     uv run --extra rerank python -m campusyamu.handbook_search search "your question"
 
@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Sequence
 
 from ..knowledge_graph.handbook_prose import PROJECT_ROOT, _load_env
+from ..core import llm
 from . import chunking, embeddings
 from .retriever import DEFAULT_RERANKER, CrossEncoderReranker, HybridRetriever
 from .store import HandbookStore, connect
@@ -46,9 +47,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--cache", type=Path, default=PROJECT_ROOT / embeddings.DEFAULT_CACHE)
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("chunk", help="Split the handbook into parent/child chunks (free)")
-    embed = sub.add_parser("embed", help="Embed chunks with OpenAI and/or Gemini (paid, cached)")
+    embed = sub.add_parser("embed", help="Embed chunks for one provider or all (paid, cached)")
     embed.add_argument("--dry-run", action="store_true")
-    embed.add_argument("--provider", choices=("openai", "gemini", "all"),
+    embed.add_argument("--provider", choices=(*llm.PROVIDERS, "all"),
                        help="whose embeddings (default: llm.provider in settings.yaml)")
     sub.add_parser("load", help="Load passages, chunks and indexes into Neo4j")
     search = sub.add_parser("search", help="Hybrid search with reranking")
@@ -59,7 +60,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     search.add_argument("--reranker", default=DEFAULT_RERANKER)
     search.add_argument("--full", action="store_true", help="Print whole parent passages")
     search.add_argument("--json", action="store_true")
-    search.add_argument("--provider", choices=("openai", "gemini"), help="whose vector index (default: llm.provider)")
+    search.add_argument("--provider", choices=llm.PROVIDERS, help="whose vector index (default: llm.provider)")
     args = parser.parse_args(argv)
     _load_env(args.env_file)
 
@@ -74,7 +75,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         provider = getattr(args, "provider", None)
         store = HandbookStore(driver, provider=provider)
         if args.command == "load":
-            cache_ids = {p: embeddings.cache_id(p) for p in ("openai", "gemini")}
+            cache_ids = {p: embeddings.cache_id(p) for p in llm.PROVIDERS}
             counts = store.load(chunking.load_chunks(args.chunks), embeddings.load_cache(args.cache), cache_ids)
             vectors = ", ".join(f"{p} {d}-d" for p, d in counts["dimensions"].items())
             print(f"Loaded {counts['passages']} passages and {counts['chunks']} chunks "

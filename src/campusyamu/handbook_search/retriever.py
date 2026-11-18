@@ -1,7 +1,7 @@
 """Hybrid handbook retrieval: BM25 + vector search, RRF fusion, cross-encoder rerank.
 
 1. The query is matched against child chunks twice: the Neo4j vector index
-   (the query embedded by the llm.provider model, OpenAI or Gemini, against that
+   (the query embedded by the llm.provider model, OpenAI, Gemini or OpenRouter, against that
    provider's index) and the full-text index (Lucene BM25). Without an embedder,
    or when the vector search fails, BM25 alone is used (``vector_error`` says why).
 2. The two ranked lists are fused with Reciprocal Rank Fusion
