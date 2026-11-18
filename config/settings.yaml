@@ -3,9 +3,9 @@
 # Changing a value takes effect on the next run (restart the web app).
 
 llm:                           # the language model behind every AI call except Gemini Decision
-  provider: groq               # openai | gemini | openrouter | groq. Picks models.<provider>.* below.
+  provider: gemini               # openai | gemini | openrouter | groq. Picks models.<provider>.* below.
                                #   Key in .env: OPENAI_API_KEY | GEMINI_API_KEY | OPENROUTER_API_KEY | GROQ_API_KEY.
-  embedding_provider: openai   # handbook-search vectors: openai | gemini | openrouter (Groq has none);
+  embedding_provider: gemini   # handbook-search vectors: openai | gemini | openrouter (Groq has none);
                                #   empty = same as provider. After a change: make search-embed, search-load
   gemini:
     thinking: low              # Gemini 3+: minimal | low | medium | high; a number = thinking budget
