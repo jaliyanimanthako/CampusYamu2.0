@@ -225,6 +225,43 @@ class OpenRouterTests(unittest.TestCase):
         self.assertEqual(sent[1][1]["model"], "openai/text-embedding-3-small")
 
 
+class GroqTests(unittest.TestCase):
+    def test_groq_request_has_no_openrouter_fields(self) -> None:
+        sent = []
+
+        def fake_post(url, payload, auth, timeout, user_agent, who, attempts=4):
+            sent.append((url, payload, who))
+            return {"choices": [{"finish_reason": "stop", "message": {"content": '{"answer": "q"}'}}]}
+
+        tools = [{"type": "function", "name": "f", "strict": True, "parameters": {"type": "object"}}]
+        values = {"llm.provider": "groq", "llm.groq.reasoning": "low", "llm.groq.extra_output_tokens": 10}
+        with with_settings(values), mock.patch.object(llm, "post_json", fake_post):
+            self.assertEqual(llm.call_structured(PAYLOAD, "qk"), {"answer": "q"})
+            llm.post_responses({"model": "m", "input": "hi", "tools": tools}, api_key="qk")
+        url, body, who = sent[0]
+        self.assertEqual(url, "https://api.groq.com/openai/v1/chat/completions")
+        self.assertEqual(who, "Groq")
+        self.assertEqual(body["max_completion_tokens"], 510)
+        self.assertEqual(body["reasoning_effort"], "low")
+        self.assertEqual(body["response_format"]["json_schema"]["schema"], SCHEMA)
+        for key in ("provider", "reasoning", "max_tokens"):
+            self.assertNotIn(key, body)
+        self.assertNotIn("strict", sent[1][1]["tools"][0]["function"])
+        with self.assertRaisesRegex(RuntimeError, "Groq error"):
+            llm.chat_to_responses({"error": {"message": "rate limit"}}, "groq")
+
+    def test_embedding_provider(self) -> None:
+        with with_settings({"llm.provider": "groq", "llm.embedding_provider": "gemini"}), \
+                mock.patch.dict(os.environ, {"GEMINI_API_KEY": "g"}):
+            self.assertEqual(llm.embedding_provider(), "gemini")
+            self.assertIsInstance(embeddings.make_embedder(query=True), embeddings.GeminiEmbedder)
+            self.assertEqual(HandbookStore(FakeDriver()).provider, "gemini")
+        with with_settings({"llm.provider": "groq"}), self.assertRaisesRegex(ValueError, "embedding_provider"):
+            llm.embedding_provider()
+        with with_settings({"llm.provider": "openrouter"}):
+            self.assertEqual(llm.embedding_provider(), "openrouter")                # default: llm.provider
+
+
 class FakeDriver:
     def __init__(self) -> None:
         self.queries: list[tuple[str, dict]] = []

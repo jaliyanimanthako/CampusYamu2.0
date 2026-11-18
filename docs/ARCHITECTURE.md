@@ -99,10 +99,10 @@ Every prompt lives in `src/campusyamu/prompts/` (one module per area); `python -
 All calls go through `core/llm.py`. Code builds OpenAI Responses API requests (`store: false`);
 with `llm.provider: gemini` in `config/settings.yaml` they are translated to Gemini `generateContent`
 (structured output via `responseJsonSchema`, function calling with thought signatures kept), with
-`llm.provider: openrouter` to OpenRouter Chat Completions (`response_format` JSON schema, `tools`), and the
+`llm.provider: openrouter` or `groq` to Chat Completions (`response_format` JSON schema, `tools`), and the
 replies translated back, so callers never branch. Keys live in `.env`; models are
 `models.<provider>.<role>` in `config/settings.yaml`. Handbook search keeps every provider's vectors
-(one Neo4j index each) and queries the `llm.provider` one.
+(one Neo4j index each) and queries the `llm.embedding_provider` one (Groq has no embeddings).
 
 ## API and web page
 

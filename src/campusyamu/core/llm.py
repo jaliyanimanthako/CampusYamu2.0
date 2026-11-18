@@ -1,9 +1,9 @@
-"""One door for every language-model call: OpenAI, Gemini or OpenRouter, chosen by llm.provider in
-settings.yaml.
+"""One door for every language-model call: OpenAI, Gemini, OpenRouter or Groq, chosen by llm.provider
+in settings.yaml.
 
 The code builds requests in the OpenAI Responses API shape (``input`` items, ``text.format`` JSON
 schema, function tools) and reads replies in that shape. With ``llm.provider: gemini`` the request is
-translated to Gemini's ``generateContent``, with ``openrouter`` to Chat Completions, and the reply is
+translated to Gemini's ``generateContent``, with ``openrouter`` / ``groq`` to Chat Completions, and the reply is
 translated back, so callers never branch:
 
     from campusyamu.core import llm
@@ -11,7 +11,8 @@ translated back, so callers never branch:
     llm.post_responses(payload)         # the whole Responses-shaped reply (tool calls, text)
     llm.chat_completions(payload)       # Chat Completions shape (graph-viewer chatbot)
 
-Keys come from .env: OPENAI_API_KEY, GEMINI_API_KEY or OPENROUTER_API_KEY. Models: models.<provider>.<role>
+Keys come from .env: OPENAI_API_KEY, GEMINI_API_KEY, OPENROUTER_API_KEY or GROQ_API_KEY.
+Handbook-search vectors come from llm.embedding_provider (default: llm.provider; Groq has none). Models: models.<provider>.<role>
 (settings.model). The Gemini Decision calls (guardrail, preference engine) are separate and always
 Gemini.
 
@@ -32,23 +33,39 @@ from typing import Any
 
 from . import settings
 
-PROVIDERS = ("openai", "gemini", "openrouter")
-KEY_NAMES = {"openai": "OPENAI_API_KEY", "gemini": "GEMINI_API_KEY", "openrouter": "OPENROUTER_API_KEY"}
-LABELS = {"openai": "OpenAI", "gemini": "Gemini", "openrouter": "OpenRouter"}
-DEFAULT_MODELS = {"openai": "gpt-4o-mini", "gemini": "gemini-3.5-flash", "openrouter": "openai/gpt-4o-mini"}
+PROVIDERS = ("openai", "gemini", "openrouter", "groq")
+EMBEDDING_PROVIDERS = ("openai", "gemini", "openrouter")          # Groq serves no embedding models
+KEY_NAMES = {"openai": "OPENAI_API_KEY", "gemini": "GEMINI_API_KEY", "openrouter": "OPENROUTER_API_KEY",
+             "groq": "GROQ_API_KEY"}
+LABELS = {"openai": "OpenAI", "gemini": "Gemini", "openrouter": "OpenRouter", "groq": "Groq"}
+DEFAULT_MODELS = {"openai": "gpt-4o-mini", "gemini": "gemini-3.5-flash", "openrouter": "openai/gpt-4o-mini",
+                  "groq": "openai/gpt-oss-20b"}
 OPENAI_URL = "https://api.openai.com/v1"
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta"
 OPENROUTER_URL = "https://openrouter.ai/api/v1"
+GROQ_URL = "https://api.groq.com/openai/v1"
+CHAT_URLS = {"openai": f"{OPENAI_URL}/chat/completions", "gemini": f"{GEMINI_URL}/openai/chat/completions",
+             "openrouter": f"{OPENROUTER_URL}/chat/completions", "groq": f"{GROQ_URL}/chat/completions"}
 RETRY_CODES = {429, 500, 502, 503, 504}
 
 
 # --- provider and keys ----------------------------------------------------------------------
 def provider() -> str:
-    """llm.provider in settings.yaml: "openai" (default), "gemini" or "openrouter"."""
+    """llm.provider in settings.yaml: "openai" (default), "gemini", "openrouter" or "groq"."""
 
     name = str(settings.get("llm.provider") or "openai").strip().casefold()
     if name not in PROVIDERS:
         raise ValueError(f"llm.provider must be one of {PROVIDERS}, not {name!r}")
+    return name
+
+
+def embedding_provider() -> str:
+    """Whose vectors handbook search uses: llm.embedding_provider, else llm.provider."""
+
+    name = str(settings.get("llm.embedding_provider") or provider()).strip().casefold()
+    if name not in EMBEDDING_PROVIDERS:
+        raise ValueError(f"no embeddings from {name!r}: set llm.embedding_provider to one of "
+                         f"{EMBEDDING_PROVIDERS} in settings.yaml")
     return name
 
 
@@ -87,10 +104,10 @@ def post_responses(payload: dict[str, Any], *, api_key: str | None = None, timeo
     if name == "openai":
         return post_json(f"{OPENAI_URL}/responses", payload, {"Authorization": f"Bearer {key}"},
                      timeout, user_agent, "OpenAI")
-    if name == "openrouter":
-        body = post_json(f"{OPENROUTER_URL}/chat/completions", chat_request(payload),
-                         {"Authorization": f"Bearer {key}"}, timeout, user_agent, "OpenRouter")
-        return chat_to_responses(body)
+    if name in ("openrouter", "groq"):
+        body = post_json(CHAT_URLS[name], chat_request(payload, name),
+                         {"Authorization": f"Bearer {key}"}, timeout, user_agent, label(name))
+        return chat_to_responses(body, name)
     model = payload.get("model") or settings.model("chat")
     body = post_json(f"{GEMINI_URL}/models/{model}:generateContent", gemini_request(payload),
                  {"x-goog-api-key": key}, timeout, user_agent, "Gemini")
@@ -138,8 +155,7 @@ def chat_completions(payload: dict[str, Any], *, api_key: str | None = None, tim
 
     name = name or provider()
     key = api_key or require_key(name)
-    url = {"openai": f"{OPENAI_URL}/chat/completions", "gemini": f"{GEMINI_URL}/openai/chat/completions",
-           "openrouter": f"{OPENROUTER_URL}/chat/completions"}[name]
+    url = CHAT_URLS[name]
     return post_json(url, payload, {"Authorization": f"Bearer {key}"}, timeout, user_agent, label(name))
 
 
@@ -328,9 +344,9 @@ def gemini_to_responses(body: dict[str, Any]) -> dict[str, Any]:
     return {"status": "completed", "output": output, "usage": body.get("usageMetadata")}
 
 
-# --- Responses -> Chat Completions (OpenRouter) ---------------------------------------------
-def chat_request(payload: dict[str, Any]) -> dict[str, Any]:
-    """Translate a Responses API payload into a Chat Completions body (OpenRouter)."""
+# --- Responses -> Chat Completions (OpenRouter, Groq) ---------------------------------------
+def chat_request(payload: dict[str, Any], name: str = "openrouter") -> dict[str, Any]:
+    """Translate a Responses API payload into a Chat Completions body for OpenRouter or Groq."""
 
     messages: list[dict[str, Any]] = []
     if payload.get("instructions"):
@@ -364,13 +380,16 @@ def chat_request(payload: dict[str, Any]) -> dict[str, Any]:
             "name": fmt.get("name") or "output", "strict": bool(fmt.get("strict", True)),
             "schema": fmt.get("schema") or {}}}
     if payload.get("max_output_tokens"):
-        extra = int(settings.get("llm.openrouter.extra_output_tokens", 0) or 0)
-        body["max_tokens"] = int(payload["max_output_tokens"]) + extra
+        # reasoning models count their thinking against this cap; the headroom keeps answers whole
+        extra = int(settings.get(f"llm.{name}.extra_output_tokens", 0) or 0)
+        body["max_completion_tokens" if name == "groq" else "max_tokens"] = int(payload["max_output_tokens"]) + extra
     if payload.get("temperature") is not None:
         body["temperature"] = payload["temperature"]
-    reasoning = settings.get("llm.openrouter.reasoning")
+    reasoning = settings.get(f"llm.{name}.reasoning")
     if isinstance(reasoning, bool) or reasoning in (None, ""):
         pass
+    elif name == "groq":
+        body["reasoning_effort"] = str(reasoning)               # gpt-oss: low | medium | high
     elif isinstance(reasoning, int):
         body["reasoning"] = {"max_tokens": reasoning}
     else:
@@ -380,21 +399,21 @@ def chat_request(payload: dict[str, Any]) -> dict[str, Any]:
         body["tools"] = [{"type": "function", "function": {
             "name": t["name"], "description": t.get("description", ""),
             "parameters": t.get("parameters") or {"type": "object", "properties": {}},
-            **({"strict": True} if t.get("strict") else {})}} for t in tools]
-    if tools or "response_format" in body:
+            **({"strict": True} if t.get("strict") and name == "openrouter" else {})}} for t in tools]
+    if name == "openrouter" and (tools or "response_format" in body):
         # route only to upstream providers that honour the JSON schema / tools
         body["provider"] = {"require_parameters": True}
     return body
 
 
-def chat_to_responses(body: dict[str, Any]) -> dict[str, Any]:
+def chat_to_responses(body: dict[str, Any], name: str = "openrouter") -> dict[str, Any]:
     """Translate a Chat Completions reply into the Responses API reply shape."""
 
     choices = body.get("choices") or []
     error = body.get("error") or (choices[0].get("error") if choices else None)
     if error or not choices:
         detail = error.get("message") if isinstance(error, dict) else error
-        raise RuntimeError(f"OpenRouter error: {detail or 'no choices in the reply'}")
+        raise RuntimeError(f"{label(name)} error: {detail or 'no choices in the reply'}")
     choice = choices[0]
     message = choice.get("message") or {}
     finish = choice.get("finish_reason") or "stop"
@@ -463,10 +482,14 @@ def _check() -> int:
     step(f"2. tool call ({agent})", tool_round_trip)
 
     def embedding() -> str:
-        embedder = make_embedder(name, query=True)
+        embedder = make_embedder(query=True)
         return f"{embedder.cache_id}: {len(embedder.embed(['z-score'])[0])} dimensions"
 
-    step("3. embedding", embedding)
+    try:
+        source = embedding_provider()
+    except ValueError:
+        source = "none"
+    step(f"3. embedding ({source})", embedding)
     if failed:
         print(f"\n{failed} of 3 failed. HTTP 503/429 = {label()} busy or rate-limited: try again in a few "
               f"minutes, or set another model in models.{name} (settings.yaml). HTTP 400 = a request the model "

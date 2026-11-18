@@ -24,7 +24,7 @@ Context for each question (numbered sources the answer must cite):
          in the chat when the student asks for research, cached per offering;
          the chat only reads the cache, it never fetches while answering.
 
-One language-model call per question (llm.provider: OpenAI, Gemini or OpenRouter; strict JSON). The model may only cite
+One language-model call per question (llm.provider: OpenAI, Gemini, OpenRouter or Groq; strict JSON). The model may only cite
 the sources given; unknown ids are dropped.
 
 Memory: with a user_id (a signed-in student) the server keeps the chat
@@ -153,7 +153,7 @@ class CourseChat:
     def retriever(self):
         """The hybrid retriever, or None (with a reason) when Neo4j isn't available.
 
-        Without the llm.provider key for embeddings the retriever still runs on BM25 alone."""
+        Without the llm.embedding_provider key the retriever still runs on BM25 alone."""
 
         if not self.use_search:
             self._search_error = "handbook search disabled"
@@ -175,12 +175,13 @@ class CourseChat:
                 reranker = None
             try:
                 embedder = make_embedder(query=True)
-            except RuntimeError as exc:                         # no key: keyword search only
+            except (RuntimeError, ValueError) as exc:           # no key / no embedding provider: keywords only
                 log.warning("handbook search without vectors: %s", exc)
                 embedder = None
             self._driver = driver
-            self._retriever = HybridRetriever(HandbookStore(driver, os.getenv("NEO4J_DATABASE")),
-                                              embedder, reranker)
+            store = HandbookStore(driver, os.getenv("NEO4J_DATABASE"),
+                                  provider=getattr(embedder, "provider", None) or "openai")
+            self._retriever = HybridRetriever(store, embedder, reranker)
             self._search_error = None
             return self._retriever
         except BaseException as exc:                            # connect() raises SystemExit on missing config

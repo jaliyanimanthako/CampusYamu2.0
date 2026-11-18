@@ -9,7 +9,7 @@
     uv run python -m campusyamu.pipeline            # asks the questions
 
 --prefer is free text (first = most liked). It is read by one small language-model call
-(llm.provider in config/settings.yaml: OpenAI, Gemini or OpenRouter, key OPENAI_API_KEY / GEMINI_API_KEY / OPENROUTER_API_KEY in .env;
+(llm.provider in config/settings.yaml: OpenAI, Gemini, OpenRouter or Groq, key OPENAI_API_KEY / GEMINI_API_KEY / OPENROUTER_API_KEY in .env;
 model models.<provider>.preference). Without a key, or with --no-llm, keyword matching is used.
 """
 

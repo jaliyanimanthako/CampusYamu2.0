@@ -3,9 +3,10 @@
 # Changing a value takes effect on the next run (restart the web app).
 
 llm:                           # the language model behind every AI call except Gemini Decision
-  provider: openrouter         # openai | gemini | openrouter.
-                               #   Key in .env: OPENAI_API_KEY | GEMINI_API_KEY | OPENROUTER_API_KEY.
-                               #   Picks models.<provider>.* below and the handbook-search vectors.
+  provider: groq               # openai | gemini | openrouter | groq. Picks models.<provider>.* below.
+                               #   Key in .env: OPENAI_API_KEY | GEMINI_API_KEY | OPENROUTER_API_KEY | GROQ_API_KEY.
+  embedding_provider: openai   # handbook-search vectors: openai | gemini | openrouter (Groq has none);
+                               #   empty = same as provider. After a change: make search-embed, search-load
   gemini:
     thinking: low              # Gemini 3+: minimal | low | medium | high; a number = thinking budget
                                #   (Gemini 2.5 models, 0 = off); empty = the model's own default
@@ -15,6 +16,9 @@ llm:                           # the language model behind every AI call except 
     reasoning: low             # thinking models: minimal | low | medium | high; a number = reasoning
                                #   token budget; empty = the model's own default (and not sent)
     extra_output_tokens: 4096  # added to each call's output cap (reasoning models count thinking there)
+  groq:
+    reasoning: low             # gpt-oss models: low | medium | high; empty = the model's default (not sent)
+    extra_output_tokens: 2048  # added to each call's output cap (gpt-oss counts its thinking there)
 
 ranking:
   suggestions: 20              # entries per suggestion list
@@ -83,6 +87,18 @@ models:                        # every model the app uses (set here only, not in
     handbook_extraction: nvidia/nemotron-3.5-super-vl:free
     kg_chat: nvidia/nemotron-3.5-super-vl:free
     embedding: nvidia/nemotron-3.5-embed-1b:free
+  groq:                        # used when llm.provider is groq (GROQ_API_KEY); same roles, no embedding.
+                               #   gpt-oss supports strict JSON + tools on Groq (console.groq.com/docs/models)
+    preference: openai/gpt-oss-20b
+    feedback: openai/gpt-oss-20b
+    chat: openai/gpt-oss-20b
+    memory: openai/gpt-oss-20b
+    website: openai/gpt-oss-20b
+    career_analysis: openai/gpt-oss-20b
+    career_discovery: openai/gpt-oss-20b
+    career_agent: openai/gpt-oss-20b
+    handbook_extraction: openai/gpt-oss-20b
+    kg_chat: openai/gpt-oss-20b
   # Gemini Decision (GEMINI_API_KEY), whatever llm.provider is:
   preference_decision: gemini-decision-1   # reads the interests (preferences.engine: gemini_decision)
   guardrail: gemini-decision-1 # course chat scope check

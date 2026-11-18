@@ -48,7 +48,7 @@ docker compose --profile neo4j up --build -d    # + Neo4j for handbook search in
 ```
 .
 ├── src/campusyamu/        the package (see docs/ARCHITECTURE.md)
-│   ├── core/              paths, settings, language-model client (llm.py: OpenAI, Gemini or OpenRouter)
+│   ├── core/              paths, settings, language-model client (llm.py: OpenAI, Gemini, OpenRouter or Groq)
 │   ├── knowledge_graph/   handbook → rules → graph, eligibility, Neo4j export
 │   ├── handbook_search/   vector + BM25 handbook search
 │   ├── agents/            course_finder, zscore, travel_time, course_details,

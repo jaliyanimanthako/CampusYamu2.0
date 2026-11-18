@@ -1,5 +1,5 @@
 # CampusYamu — common tasks.  `make help` lists them.
-# Targets marked (paid) call the language model (llm.provider in config/settings.yaml: OpenAI, Gemini or OpenRouter)
+# Targets marked (paid) call the language model (llm.provider in config/settings.yaml: OpenAI, Gemini, OpenRouter or Groq)
 # or web-search APIs, with the keys in .env.
 
 UV ?= uv

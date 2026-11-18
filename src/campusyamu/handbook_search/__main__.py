@@ -1,14 +1,14 @@
 """Handbook vector search: chunk -> embed -> load -> search.
 
     uv run python -m campusyamu.handbook_search chunk
-    uv run python -m campusyamu.handbook_search embed          # llm.provider's embeddings, paid (cents)
+    uv run python -m campusyamu.handbook_search embed          # llm.embedding_provider's vectors, paid (cents)
     uv run python -m campusyamu.handbook_search embed --provider all   # every provider with a key
     uv run python -m campusyamu.handbook_search load           # every complete set into Neo4j
     uv run --extra rerank python -m campusyamu.handbook_search search "your question"
 
 Neo4j settings and keys come from .env (NEO4J_URI, NEO4J_USER,
 NEO4J_PASSWORD, NEO4J_DATABASE, OPENAI_API_KEY / GEMINI_API_KEY). Searches use the
-llm.provider set in config/settings.yaml.
+llm.embedding_provider set in config/settings.yaml (default: llm.provider).
 """
 
 from __future__ import annotations
@@ -49,8 +49,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     sub.add_parser("chunk", help="Split the handbook into parent/child chunks (free)")
     embed = sub.add_parser("embed", help="Embed chunks for one provider or all (paid, cached)")
     embed.add_argument("--dry-run", action="store_true")
-    embed.add_argument("--provider", choices=(*llm.PROVIDERS, "all"),
-                       help="whose embeddings (default: llm.provider in settings.yaml)")
+    embed.add_argument("--provider", choices=(*llm.EMBEDDING_PROVIDERS, "all"),
+                       help="whose embeddings (default: llm.embedding_provider in settings.yaml)")
     sub.add_parser("load", help="Load passages, chunks and indexes into Neo4j")
     search = sub.add_parser("search", help="Hybrid search with reranking")
     search.add_argument("query")
@@ -60,7 +60,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     search.add_argument("--reranker", default=DEFAULT_RERANKER)
     search.add_argument("--full", action="store_true", help="Print whole parent passages")
     search.add_argument("--json", action="store_true")
-    search.add_argument("--provider", choices=llm.PROVIDERS, help="whose vector index (default: llm.provider)")
+    search.add_argument("--provider", choices=llm.EMBEDDING_PROVIDERS, help="whose vector index (default: llm.embedding_provider)")
     args = parser.parse_args(argv)
     _load_env(args.env_file)
 
@@ -75,14 +75,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         provider = getattr(args, "provider", None)
         store = HandbookStore(driver, provider=provider)
         if args.command == "load":
-            cache_ids = {p: embeddings.cache_id(p) for p in llm.PROVIDERS}
+            cache_ids = {p: embeddings.cache_id(p) for p in llm.EMBEDDING_PROVIDERS}
             counts = store.load(chunking.load_chunks(args.chunks), embeddings.load_cache(args.cache), cache_ids)
             vectors = ", ".join(f"{p} {d}-d" for p, d in counts["dimensions"].items())
             print(f"Loaded {counts['passages']} passages and {counts['chunks']} chunks "
                   f"(vectors: {vectors}); {counts['linked_to_kg']} passages linked to KG HandbookSection nodes")
             for p, missing in counts["skipped"].items():
                 print(f"  no {p} vectors loaded: {missing} chunks missing from the cache "
-                      f"(make search-embed with llm.provider {p}, or --provider {p})")
+                      f"(make search-embed PROVIDER={p})")
             return 0
         reranker = None if args.no_rerank else CrossEncoderReranker(args.reranker)
         retriever = HybridRetriever(store, embeddings.make_embedder(store.provider, query=True), reranker,

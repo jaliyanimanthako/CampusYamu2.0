@@ -12,7 +12,7 @@ Indexes:
                                      on HandbookChunk.embed_text
 
 Both providers' vectors are loaded when the embedding cache has them; searches use the
-llm.provider one (settings.yaml), so switching provider needs no reload.
+llm.embedding_provider one (settings.yaml), so switching provider needs no reload.
 
 Loading replaces every ``CampusDocs`` node and never touches the KG
 (``CampusKG``) nodes; the KG export re-creates the IN_SECTION links after a
@@ -30,7 +30,7 @@ from .embeddings import vector_for
 
 DOCS_LABEL = "CampusDocs"
 LEGACY_VECTOR_INDEX = "handbook_chunk_embedding"          # before there was one index per provider
-PROVIDERS = llm.PROVIDERS
+PROVIDERS = llm.EMBEDDING_PROVIDERS
 
 
 def vector_index(provider: str) -> str:
@@ -83,7 +83,7 @@ class HandbookStore:
         if provider is None:
             from campusyamu.core import llm
 
-            provider = llm.provider()
+            provider = llm.embedding_provider()
         self.provider = provider                    # whose vectors vector_search uses
         self._search_clause: bool | None = None     # None = not tried yet
 

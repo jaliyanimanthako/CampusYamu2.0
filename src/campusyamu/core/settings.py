@@ -61,7 +61,7 @@ def get(key: str, default: Any = None) -> Any:
 def model(role: str, default: str | None = None, provider: str | None = None) -> str:
     """The model for one role.
 
-    models.<provider>.<role> for the provider in llm.provider (openai | gemini | openrouter), else a top-level
+    models.<provider>.<role> for the provider in llm.provider (openai | gemini | openrouter | groq), else a top-level
     models.<role> (roles tied to one service, e.g. the Gemini Decision guardrail), else the default,
     else the provider's default model. `provider` asks about one provider instead of the configured one.
     """

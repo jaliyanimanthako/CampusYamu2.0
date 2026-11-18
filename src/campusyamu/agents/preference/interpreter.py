@@ -218,7 +218,7 @@ def _schema(course_codes: list[str], mark_codes: list[str]) -> dict[str, Any]:
 
 
 class LLMInterpreter:
-    """One language-model call (llm.provider: OpenAI, Gemini or OpenRouter) with a strict JSON schema."""
+    """One language-model call (llm.provider: OpenAI, Gemini, OpenRouter or Groq) with a strict JSON schema."""
 
     def __init__(self, tags: dict[str, CourseTags], model: str | None = None,
                  api_key: str | None = None, timeout: int = 45) -> None:

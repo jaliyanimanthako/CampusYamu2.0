@@ -1,6 +1,6 @@
-"""Handbook chunk embeddings (OpenAI, Gemini or OpenRouter), cached by content hash.
+"""Handbook chunk embeddings (OpenAI, Gemini, OpenRouter or Groq), cached by content hash.
 
-    uv run python -m campusyamu.handbook_search.embeddings                  # the llm.provider set
+    uv run python -m campusyamu.handbook_search.embeddings                  # the llm.embedding_provider set
     uv run python -m campusyamu.handbook_search.embeddings --provider all   # every set with a key
 
 Embeds every child chunk's ``embed_text`` and stores the vectors in
@@ -126,9 +126,9 @@ class GeminiEmbedder:
 
 
 def make_embedder(provider: str | None = None, query: bool = False, model: str | None = None) -> Embedder:
-    """The embedder for a provider (default llm.provider); `query` for search questions."""
+    """The embedder for a provider (default llm.embedding_provider); `query` for search questions."""
 
-    provider = provider or llm.provider()
+    provider = provider or llm.embedding_provider()
     if provider == "gemini":
         return GeminiEmbedder(model, query=query)
     if provider == "openrouter":
@@ -190,15 +190,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Embed handbook chunks (paid, cached).")
     parser.add_argument("--chunks", type=Path, default=PROJECT_ROOT / DEFAULT_CHUNKS)
     parser.add_argument("--cache", type=Path, default=PROJECT_ROOT / DEFAULT_CACHE)
-    parser.add_argument("--provider", choices=(*llm.PROVIDERS, "all"),
-                        help="whose embeddings to make (default: llm.provider in settings.yaml)")
+    parser.add_argument("--provider", choices=(*llm.EMBEDDING_PROVIDERS, "all"),
+                        help="whose embeddings to make (default: llm.embedding_provider in settings.yaml)")
     parser.add_argument("--model", help="override the provider's embedding model (one provider only)")
     parser.add_argument("--env-file", type=Path)
     parser.add_argument("--dry-run", action="store_true", help="Only report what would be embedded")
     args = parser.parse_args(argv)
     _load_env(args.env_file)
     chunks = load_chunks(args.chunks)
-    providers = list(llm.PROVIDERS) if args.provider == "all" else [args.provider or llm.provider()]
+    providers = list(llm.EMBEDDING_PROVIDERS) if args.provider == "all" else [args.provider or llm.embedding_provider()]
     if args.provider == "all" and not args.dry_run:
         for provider in [p for p in providers if not llm.available(p)]:
             print(f"{provider}: skipped ({llm.key_name(provider)} not set)")
