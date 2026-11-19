@@ -1,0 +1,460 @@
+{
+ "course": "Engineering",
+ "region": "Sri Lanka",
+ "generated_at": "2026-11-14T06:46:30.738625+00:00",
+ "status": "success",
+ "model": "gpt-4o-mini",
+ "web_source": "TavilyClient",
+ "horizon_years": 5,
+ "collection": {
+  "retained_after_deduplication": 29,
+  "trusted_sources": 10,
+  "career_paths": [
+   "software engineer",
+   "civil engineer",
+   "electrical engineer",
+   "mechanical engineer",
+   "mechatronics engineer",
+   "mep project engineer",
+   "biomedical engineer",
+   "water resources engineer"
+  ],
+  "emerging_areas": [
+   "ai-driven predictive maintenance",
+   "climate adaptation",
+   "environmental law and permitting",
+   "closed-loop manufacturing",
+   "renewable energy grid integration"
+  ]
+ },
+ "analysis": {
+  "course": "Engineering",
+  "status": "success",
+  "analysis_context": {
+   "analysis_year": 2026,
+   "expected_entry_year": 2031,
+   "horizon_years": 5,
+   "evidence_collected_at": "2026-11-14T06:45:13.526970+00:00",
+   "confidence_ratings_lowered": 2,
+   "specificity_problems_found": 4,
+   "revised": true,
+   "generic_items_dropped": 1,
+   "advice_or_advert_sentences_removed": 1,
+   "remaining_problems": []
+  },
+  "evidence_synthesis": [
+   {
+    "theme": "Job Market Overview",
+    "key_details": [
+     "Sri Lanka produces around 37,000 IT graduates yearly but faces a mismatch with about 28% of recent IT graduates unemployed (E012)",
+     "The demand for engineers in various sectors remains steady; however, lagging job creation has led to entry-level challenges (E002, E019)",
+     "Current demand for Mechatronics Engineers is increasing, yet the sector shows high variance in pay and job satisfaction based on anecdotal evidence (E013, E020)"
+    ],
+    "takeaway": "The engineering job market in Sri Lanka shows a high number of graduates but limited job openings, presenting significant challenges for entry-level candidates. Sectors like Mechatronics are growing, but frustrations surrounding job conditions exist.",
+    "agreement": "mixed",
+    "evidence_refs": [
+     "E012",
+     "E002",
+     "E019",
+     "E013",
+     "E020"
+    ]
+   },
+   {
+    "theme": "Emerging Specialisations",
+    "key_details": [
+     "AI applications like predictive maintenance are becoming crucial across engineering sectors (E017, E022)",
+     "Sustainability-related certifications are gaining importance, enhancing employability and aligning with global trends (E024, E027)",
+     "The Engineering Council of Sri Lanka enforces standards that enhance professionalism and career prospects for engineers (E028)"
+    ],
+    "takeaway": "Innovations in AI-driven processes and sustainability are opening up niche areas within engineering, making relevant certifications increasingly vital for career advancement.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E017",
+     "E022",
+     "E024",
+     "E028"
+    ]
+   },
+   {
+    "theme": "Professional Requirements and Further Study",
+    "key_details": [
+     "The Engineering Council of Sri Lanka (ECSL) regulates professional standards, essential for practicing engineers (E028)",
+     "Obtaining credentials like the Chartered Engineer status through the IESL is vital to progress in the field (E029)",
+     "Enhanced employability is often tied to advanced degrees and certifications, particularly in new areas like sustainability (E024, E026)"
+    ],
+    "takeaway": "Professional recognition and advanced qualifications are increasingly essential for engineers aiming to secure lucrative positions, particularly in emerging specialisations.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E028",
+     "E029",
+     "E024",
+     "E026"
+    ]
+   }
+  ],
+  "course_introduction": {
+   "overview": "You'll develop expertise in design, analysis, and the optimization of systems, contributing effectively to innovation and sustainability efforts.",
+   "career_paths": [
+    {
+     "role": "Civil Engineer",
+     "what_you_do": "Design, construct and maintain infrastructure such as roads, bridges, and buildings."
+    },
+    {
+     "role": "Electrical Engineer",
+     "what_you_do": "Develop and design electrical systems and equipment, ensuring they operate efficiently."
+    },
+    {
+     "role": "Software Engineer",
+     "what_you_do": "Create, develop, and maintain software applications and systems."
+    },
+    {
+     "role": "Mechanical Engineer",
+     "what_you_do": "Design and analyze mechanical systems including machines and engines."
+    },
+    {
+     "role": "Mechatronics Engineer",
+     "what_you_do": "Integrate mechanical, electronic, and software components to create smart systems."
+    },
+    {
+     "role": "Biomedical Engineer",
+     "what_you_do": "Apply engineering principles to healthcare technologies and medical devices."
+    }
+   ],
+   "evidence_refs": [
+    "E002",
+    "E019",
+    "E016"
+   ]
+  },
+  "future_swot": {
+   "strengths": [
+    {
+     "course_specifics": [
+      "Regulatory standards enforced by the Engineering Council of Sri Lanka (ECSL) (E028)",
+      "Certification opportunities in emerging fields like AI and sustainability enhance job market readiness (E024)"
+     ],
+     "finding": "The presence of standard regulatory bodies like ECSL ensures a defined benchmark for engineering professionals, allowing graduates to align with recognized industry standards.",
+     "evidence_refs": [
+      "E024",
+      "E028"
+     ],
+     "reasoning_type": "direct_evidence",
+     "confidence": "medium"
+    }
+   ],
+   "weaknesses": [
+    {
+     "course_specifics": [
+      "High percentage of engineering graduates facing unemployment (28%) (E012)",
+      "Mismatch between industry needs and the skill set of graduates (E012)"
+     ],
+     "finding": "The engineering job market in Sri Lanka is experiencing a high supply of graduates with a notable percentage facing unemployment, indicating a mismatch in skill requirements.",
+     "evidence_refs": [
+      "E012",
+      "E016"
+     ],
+     "reasoning_type": "direct_evidence",
+     "confidence": "medium"
+    }
+   ],
+   "opportunities": [],
+   "threats": [
+    {
+     "course_specifics": [
+      "Projected decline in entry-level IT job availability by 67% (E012)",
+      "Automation may reduce routine engineering roles (E012)"
+     ],
+     "finding": "The increasing integration of automation in engineering tasks, coupled with a decline in available entry-level positions, presents significant challenges for new graduates entering the workforce.",
+     "evidence_refs": [
+      "E012"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    }
+   ]
+  },
+  "local_vs_overseas": {
+   "label": "local_stronger",
+   "explanation": "Current data indicates a stronger demand for engineering roles within Sri Lanka compared to overseas opportunities, especially for skilled engineers in various sectors.",
+   "evidence_refs": [
+    "E002",
+    "E019"
+   ]
+  },
+  "further_study": {
+   "role": "helpful",
+   "explanation": "Further study, particularly in areas like AI and sustainability, enhances career prospects and is increasingly recognized by employers as beneficial for professional advancement.",
+   "evidence_refs": [
+    "E024",
+    "E028"
+   ]
+  },
+  "niche_specialisations": [
+   {
+    "area": "AI in Engineering Applications",
+    "why_it_matters": "AI enhances design processes, predictive maintenance, and systems optimization, becoming integral to modern engineering sectors.",
+    "evidence_refs": [
+     "E017",
+     "E021"
+    ]
+   },
+   {
+    "area": "Sustainability Certifications like ENV SP",
+    "why_it_matters": "Credentials like ENV SP help engineers align with global sustainability goals, enhancing employability in the growing green sector.",
+    "evidence_refs": [
+     "E024",
+     "E026"
+    ]
+   }
+  ],
+  "overall_outlook": {
+   "label": "mixed",
+   "summary": "The engineering job market in Sri Lanka shows promise, particularly in niches like AI and sustainable practices, while facing challenges related to a high number of graduates and limited entry-level opportunities. Automation threatens traditional roles while increasing demand for advanced skills, necessitating ongoing education and skill development for graduates.",
+   "evidence_refs": [
+    "E012",
+    "E024"
+   ],
+   "confidence": "medium"
+  },
+  "limitations": [
+   "The analysis lacks recent statistics on salary ranges across various engineering professions, affecting comprehensive wage comparisons.",
+   "Community discussions reflect individual experiences that may not represent broader trends and conditions in the job market.",
+   "Insufficient data on recent graduation rates and employment statistics may limit understanding of future workforce dynamics."
+  ]
+ },
+ "evidence_index": [
+  {
+   "evidence_id": "E001",
+   "title": "Graduate Engineering Trainee - IT at HCLTech Sri Lanka — Western Province, Sri Lanka | LinkedIn Jobs",
+   "url": "https://lk.linkedin.com/jobs/view/graduate-engineering-trainee-it-at-hcltech-sri-lanka-4437021109",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "local_live_jobs"
+  },
+  {
+   "evidence_id": "E002",
+   "title": "Sri Lanka Labour Force Survey Annual Report - 2023",
+   "url": "https://www.statistics.gov.lk/Resource/en/LabourForce/Annual_Reports/LFS2023.pdf",
+   "source_tier": "local_official",
+   "trusted": true,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E003",
+   "title": "Entry Level Software Engineer Salary in Colombo, Sri Lanka",
+   "url": "https://www.levels.fyi/t/software-engineer/levels/entry-level/locations/colombo-lka",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E004",
+   "title": "Software Engineering Job Growth Outpaces Overall US Employment | Taleb Alashkar posted on the topic | LinkedIn",
+   "url": "https://www.linkedin.com/posts/talebalashkar_there-is-a-lot-of-hype-right-now-about-ai-activity-7426481077365612544-h-dQ",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "global_outlook"
+  },
+  {
+   "evidence_id": "E005",
+   "title": "in Asia Pacific: Prioritized destinations for Sri Lankan migrant workers",
+   "url": "https://www.ilo.org/media/556041/download",
+   "source_tier": "global_official",
+   "trusted": true,
+   "query_category": "international_pathways"
+  },
+  {
+   "evidence_id": "E006",
+   "title": "Sri Lanka Number of Graduating: Engineering | Economic Indicators | CEIC",
+   "url": "https://www.ceicdata.com/en/sri-lanka/university-education-statistics/number-of-graduating-engineering",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "further_study"
+  },
+  {
+   "evidence_id": "E007",
+   "title": "Exploring Sustainability in Engineering: A 2025 Perspective - ACEC Colorado Blog",
+   "url": "https://acec-co.org/blog/2025/06/30/exploring-sustainability-in-engineering-a-2025-perspective",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E008",
+   "title": "Software Engineer Executive Full Stack",
+   "url": "https://www.cbsl.gov.lk/sites/default/files/cbslweb_documents/about/careers_20260930_software_engineer_executive_full_stack_e.pdf",
+   "source_tier": "local_official",
+   "trusted": true,
+   "query_category": "field_sources"
+  },
+  {
+   "evidence_id": "E009",
+   "title": "topjobs | Vacancy Browse",
+   "url": "https://www.topjobs.lk/applicant/vacancybyfunctionalarea.jsp?FA=MAE",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "career_paths"
+  },
+  {
+   "evidence_id": "E010",
+   "title": "I'm hiring in Sri Lanka",
+   "url": "https://www.reddit.com/r/DevLK/comments/1x966oy/im_hiring_in_sri_lanka/",
+   "source_tier": "community_discussion",
+   "trusted": false,
+   "query_category": "community_signals"
+  },
+  {
+   "evidence_id": "E011",
+   "title": "Software Engineering Jobs in Sri Lanka | ITPro.lk",
+   "url": "https://itpro.lk/jobs/software-engineering",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_live_jobs"
+  },
+  {
+   "evidence_id": "E012",
+   "title": "The Sri Lankan IT Entry-Level Job Market Analysis (2022-2025) | MSANJANA",
+   "url": "https://mydiary.msanjana.com/articles/sri-lanka-it-market-report-2025",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E013",
+   "title": "Mechatronics Engineer Jobs in Sri Lanka — Salary, Skills & Career Path | paths.lk",
+   "url": "https://www.paths.lk/career-paths/mechatronics-engineer",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E014",
+   "title": "Force, mass, mechanisms, and vectors: employment projections and wages in engineering : The Economics Daily : U.S. Bureau of Labor Statistics",
+   "url": "https://www.bls.gov/opub/ted/2026/force-mass-mechanisms-and-vectors-employment-projections-and-wages-in-engineering.htm",
+   "source_tier": "global_official",
+   "trusted": true,
+   "query_category": "global_outlook"
+  },
+  {
+   "evidence_id": "E015",
+   "title": "Software Engineer (4 YOE, Sri Lanka) — Want to Migrate for Better ...",
+   "url": "https://www.reddit.com/r/srilanka/comments/1nanw04/software_engineer_4_yoe_sri_lanka_want_to_migrate",
+   "source_tier": "community_discussion",
+   "trusted": false,
+   "query_category": "international_pathways"
+  },
+  {
+   "evidence_id": "E016",
+   "title": "Employability of Graduates of Sri Lankan Universities - ResearchGate",
+   "url": "https://www.researchgate.net/publication/266419775_Employability_of_Graduates_of_Sri_Lankan_Universities",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "further_study"
+  },
+  {
+   "evidence_id": "E017",
+   "title": "AI for Predictive Maintenance in Engineering | SSB",
+   "url": "https://certificates.stanmoreuk.org/Home/CourseDetails/7828821/ai-for-predictive-maintenance-in-engineering",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E018",
+   "title": "Job Vacancies",
+   "url": "https://iesl.lk/index.php?option=com_content&view=category&id=23&lang=en&Itemid=101",
+   "source_tier": "local_professional_body",
+   "trusted": true,
+   "query_category": "field_sources"
+  },
+  {
+   "evidence_id": "E019",
+   "title": "Career Opportunities in Sri Lanka | Find Your Spark",
+   "url": "https://careers.hcltech.com/go/Sri-Lanka/9555555",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "career_paths"
+  },
+  {
+   "evidence_id": "E020",
+   "title": "My life is miserable — working as a Civil Engineer in SL",
+   "url": "https://www.reddit.com/r/srilanka/comments/1qwm7ef/my_life_is_miserable_working_as_a_civil_engineer/",
+   "source_tier": "community_discussion",
+   "trusted": false,
+   "query_category": "community_signals"
+  },
+  {
+   "evidence_id": "E021",
+   "title": "AI in Mechanical Engineering: Applications and Benefits - Visure Solutions",
+   "url": "https://visuresolutions.com/ai-engineering/ai-in-mechanical-engineering",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E022",
+   "title": "How Artificial Intelligence Is Transforming Engineering Workflows",
+   "url": "https://haward.org/blogs/28/how-artificial-intelligence-is-transforming-engineering-workflows",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E023",
+   "title": "How Machine Learning Is Transforming Engineering | SD Mines",
+   "url": "https://www.sdsmt.edu/academics/academic-departments/electrical-engineering-and-computer-science/machine-learning-in-engineering-careers.html",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E024",
+   "title": "99 sustainability certifications for 2026",
+   "url": "https://trellis.net/article/99-sustainability-certifications-for-2026",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E025",
+   "title": "Sustainability Engineering",
+   "url": "https://www.e-lab.com.au/expertise/sustainability-engineering",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E026",
+   "title": "Envision Sustainability Professional (ENV SP) Credentialing Course | Interdisciplinary Professional Programs",
+   "url": "https://interpro.wisc.edu/courses/envision-sustainability-professional-env-sp-credentialing-course",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E027",
+   "title": "Membership and Licensure Bodies",
+   "url": "https://www.commonwealthengineers.org/membership-and-licensure-bodies.html",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E028",
+   "title": "Engineering Council Sri Lanka Maintains Professional Standards | Sanjaya Karunarathna posted on the topic | LinkedIn",
+   "url": "https://www.linkedin.com/posts/kwtsk_engineering-srilanka-ecsl-activity-7472243364185198592-VgmG",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E029",
+   "title": "IESL Recognised Degrees",
+   "url": "https://iesl.lk/index.php?option=com_content&view=article&id=50&Itemid=169&lang=en",
+   "source_tier": "local_professional_body",
+   "trusted": true,
+   "query_category": "emerging_specialisations"
+  }
+ ]
+}

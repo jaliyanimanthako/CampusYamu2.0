@@ -8,7 +8,7 @@ from .future_analytics import FutureCareerAnalyticsAgent
 from .models import CourseProfile, SearchQuery, WebDocument, WebResearchRequest
 from .pipeline import CareerTrendsPipeline
 from .research_harness import ResearchHarness
-from .openai_client import OpenAIResponsesClient, StructuredAnalyticsModel
+from .openai_client import OpenAIResponsesClient, ResponsesClient, StructuredAnalyticsModel
 from .web_research import CareerWebResearchAgent
 
 __all__ = [
@@ -20,6 +20,7 @@ __all__ = [
     "FirecrawlClient",
     "FutureCareerAnalyticsAgent",
     "OpenAIResponsesClient",
+    "ResponsesClient",
     "ResearchHarness",
     "SearchQuery",
     "StructuredAnalyticsModel",

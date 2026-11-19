@@ -12,14 +12,8 @@ from __future__ import annotations
 from typing import Any, Callable
 
 from .model import ModelTurn, ToolCallingModel
+from campusyamu.prompts.career import CONTEXT_SUMMARY as SUMMARY_PROMPT
 
-
-SUMMARY_PROMPT = """
-Your working context is about to be cleared. Write notes for yourself so you
-can continue: what you have found so far (with source IDs), which searches
-did not help, and what you still plan to look for. At most 150 words. Plain
-text only. Do not add anything that is not in the conversation.
-""".strip()
 
 
 class ContextManager:

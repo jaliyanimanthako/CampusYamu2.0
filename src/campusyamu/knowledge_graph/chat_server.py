@@ -3,9 +3,9 @@
     uv run python -m campusyamu.knowledge_graph.chat_server
     # then open http://127.0.0.1:8765
 
-Serves the graph browser page and ``POST /api/chat``. The OpenAI key stays on
-the server (read from the environment / .env like the extraction pipeline);
-the browser never sees it. The model (default gpt-4o-mini) answers only
+Serves the graph browser page and ``POST /api/chat``. The API key (llm.provider:
+OPENAI_API_KEY or GEMINI_API_KEY) stays on the server (read from the environment / .env
+like the extraction pipeline); the browser never sees it. The model (models.<provider>.kg_chat) answers only
 through graph tools -- search, node details, eligibility checks, offerings --
 so every course, rule and number in an answer comes from the graph, with
 handbook citations. Binds to 127.0.0.1 only.
@@ -16,10 +16,7 @@ from __future__ import annotations
 import argparse
 import errno
 import json
-import os
 import re
-import urllib.error
-import urllib.request
 from dataclasses import asdict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -31,27 +28,15 @@ from .build_graph import DEFAULT_OUTPUT, load_graph
 from .eligibility import EligibilityChecker, make_student
 from .graph_viewer import render_viewer
 from .handbook_prose import PROJECT_ROOT, _load_env
+from campusyamu.core import settings
+from campusyamu.prompts.kg_chat import KG_CHAT_SYSTEM as SYSTEM_PROMPT
 
-DEFAULT_MODEL = "gpt-4o-mini"
+DEFAULT_MODEL = None          # None: the provider's default (settings.model)
 MAX_TOOL_ROUNDS = 6
 MAX_HISTORY = 12
 MAX_MESSAGE_CHARS = 2000
 MAX_BODY_BYTES = 64_000
 SEARCH_TYPES = {"Course", "Institution", "Subject", "DegreeProgramme", "Stream", "Offering", "CourseGroup"}
-
-SYSTEM_PROMPT = """You are the CampusYamu admissions assistant for Sri Lankan state university admission, using the UGC Student Handbook 2024/2025 as stored in a knowledge graph.
-
-Rules:
-- Answer ONLY from tool results. Never invent courses, universities, UGC codes, intakes, subjects or requirements. If the tools return nothing, say you could not find it in the handbook data.
-- For "can I do / am I eligible / which courses" questions, call check_eligibility with the student's three A/L subjects and grades (A, B, C, S), stream and Common General Test mark. If grades or the CGT mark are missing, say which assumption you used (for a stream-level overview use A grades and CGT 60, and say so).
-- Eligibility means meeting the handbook's minimum subject requirements. Selection also depends on Z-score cut-offs, which are NOT in this graph; mention this when giving eligibility answers.
-- When stating a requirement, quote or closely paraphrase the handbook text from the tools and give its citation (e.g. "Handbook §2.2.3.1, p. 58").
-- If a result says check_handbook or contains unresolved text, show that text and advise the student to confirm with the UGC handbook or university.
-- Mention extra conditions the tools report (O/L requirements, aptitude tests, physical conditions, programme-level requirements such as Accounting for finance degrees).
-- Use search_nodes to resolve names before get_node when you do not have an exact id. For "what does University X offer" use institution_offerings; for "where is course Y offered" use course_offerings.
-- Only present results about the entity the user asked for. If a tool returns an error or a different entity than asked, say so and try the right tool; never relabel one entity's data as another's.
-- List every item a tool returns when the user asks for "all" or "what are"; do not drop items silently.
-- Be concise: short paragraphs and bullet lists. Use the student's wording for subjects where possible."""
 
 
 def _tool(name: str, description: str, properties: dict[str, Any], required: Sequence[str]) -> dict[str, Any]:
@@ -289,33 +274,29 @@ class ChatModel(Protocol):
     def complete(self, messages: list[dict[str, Any]], tools: list[dict[str, Any]]) -> dict[str, Any]: ...
 
 
-class OpenAIChatClient:
-    """Minimal Chat Completions client with tool calling (stdlib only)."""
+class ChatClient:
+    """Minimal Chat Completions client with tool calling (stdlib only).
 
-    def __init__(self, model: str = DEFAULT_MODEL, api_key: str | None = None, timeout: int = 60) -> None:
-        self.model = model
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+    llm.provider picks OpenAI, Gemini, OpenRouter or Groq (Gemini's OpenAI-compatible endpoint takes the same shape,
+    and its tool calls carry their thought signatures back in the echoed `tool_calls`).
+    """
+
+    def __init__(self, model: str | None = DEFAULT_MODEL, api_key: str | None = None, timeout: int = 60) -> None:
+        from campusyamu.core import llm
+
+        self.model = model or settings.model("kg_chat")
+        self.api_key = api_key or llm.api_key()
         if not self.api_key:
-            raise RuntimeError("Set OPENAI_API_KEY (environment or .env) to use the chat")
+            raise RuntimeError(f"Set {llm.key_name()} (environment or .env) to use the chat")
         self.timeout = timeout
 
     def complete(self, messages: list[dict[str, Any]], tools: list[dict[str, Any]]) -> dict[str, Any]:
         payload = {"model": self.model, "messages": messages, "tools": tools, "tool_choice": "auto",
                    "temperature": 0.2}
-        request = urllib.request.Request(
-            "https://api.openai.com/v1/chat/completions",
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json",
-                     "User-Agent": "CampusYamu-GraphChat/0.1"},
-            method="POST",
-        )
-        try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                body = json.loads(response.read().decode("utf-8"))
-        except urllib.error.HTTPError as exc:
-            raise RuntimeError(f"OpenAI HTTP {exc.code}: {exc.read().decode('utf-8', 'replace')[:300]}") from exc
-        except urllib.error.URLError as exc:
-            raise RuntimeError(f"OpenAI request failed: {exc.reason}") from exc
+        from campusyamu.core import llm
+
+        body = llm.chat_completions(payload, api_key=self.api_key, timeout=self.timeout,
+                                    user_agent="CampusYamu-GraphChat/0.1")
         return body["choices"][0]["message"]
 
 
@@ -395,7 +376,7 @@ def make_handler(page: str, agent_factory: Callable[[], ChatAgent | None], model
                 return
             agent = agent_factory()
             if agent is None:
-                self._json(503, {"error": "OPENAI_API_KEY is not set on the server"})
+                self._json(503, {"error": "the language-model key (llm.provider) is not set on the server"})
                 return
             try:
                 self._json(200, agent.answer(history))
@@ -425,18 +406,19 @@ def bind_server(handler, first_port: int, attempts: int = 20) -> ThreadingHTTPSe
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Serve the graph browser with a chat assistant.")
     parser.add_argument("--graph", type=Path, default=PROJECT_ROOT / DEFAULT_OUTPUT)
-    parser.add_argument("--model", default=os.getenv("CHAT_MODEL", DEFAULT_MODEL))
+    parser.add_argument("--model", default=None, help="default: models.<provider>.kg_chat")
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--env-file", type=Path)
     args = parser.parse_args(argv)
     _load_env(args.env_file)
     graph = load_graph(args.graph)
     page = render_viewer(graph, chat=True)
-    client: list[OpenAIChatClient | None] = [None]
+    client: list[ChatClient | None] = [None]
     try:
-        client[0] = OpenAIChatClient(args.model)
+        client[0] = ChatClient(args.model)
     except RuntimeError as exc:
         print(f"Chat disabled: {exc}")
+    args.model = client[0].model if client[0] else (args.model or settings.model("kg_chat"))
 
     def factory() -> ChatAgent | None:
         return ChatAgent(graph, client[0]) if client[0] else None

@@ -2,7 +2,7 @@
 
 * ``TemplateFeedback`` writes it from the what-if facts with fixed sentences
   (offline, deterministic; the fallback and what the tests use).
-* ``LLMFeedback`` sends the same facts to OpenAI once (strict JSON schema) and
+* ``LLMFeedback`` sends the same facts to the llm.provider model once (strict JSON schema) and
   gets back friendlier wording. It may only refer to the courses it was given;
   unknown codes are dropped, and any course it skips gets the template note.
 * ``FeedbackWriter`` picks the LLM when a key is set, else the template.
@@ -11,16 +11,15 @@
 from __future__ import annotations
 
 import json
-import os
 from typing import Any
 
 from campusyamu.core import settings
 
-from campusyamu.core.openai_client import call_structured
+from campusyamu.core import llm
 
 from .sensitivity import PROFILE_LABELS
+from campusyamu.prompts.feedback import FEEDBACK_SYSTEM as SYSTEM_PROMPT
 
-DEFAULT_MODEL = "gpt-4o-mini"
 MAX_NOTE_CHARS = 320
 WHAT_IF = [p for p in PROFILE_LABELS if p != "balanced"]
 STRENGTH_TEXT = {"interest": "it fits your interests", "cutoff": "it is a high-demand course (high cut-off)",
@@ -116,30 +115,13 @@ class TemplateFeedback:
                 "close_calls": close, "cautions": cautions, "notes": []}
 
 
-SYSTEM_PROMPT = """You advise a Sri Lankan A/L student on ordering their state-university course choices.
-You get computed facts about their balanced order ("order 3": interest + last-year cut-off + distance) and a
-what-if analysis that re-ranks it when one factor counts 1.5x more. Write feedback in simple English.
-Rules:
-- Use ONLY the facts given. Do not invent courses, numbers, cut-offs, rankings or facts about universities.
-- Never promise admission. Bands describe last year's cut-offs only: strong = at or above, competitive = close,
-  reach = a little below, unlikely = well below.
-- summary: 2-4 sentences on the shape of the list (what it leans towards, how ambitious the top is, safe picks).
-- course_notes: one note for EVERY course given (max ~35 words): why it is at its position (its strength and
-  weakness), its band, and how it moves under the what-ifs when the move is notable (3+ places, or entering /
-  leaving the list). Courses with in_list=false are outside the list but enter it under some what-if: say so.
-- priorities: one piece of advice per what-if profile: which courses rise, enter or fall.
-- close_calls: one short note per near-tie group given (its ranks run from ranks[0] to ranks[1]).
-- cautions: real risks only (e.g. no strong options near the top, aptitude tests, O/L still to confirm)."""
-
 
 class LLMFeedback:
     method = "llm"
 
     def __init__(self, model: str | None = None, api_key: str | None = None, timeout: int = 90) -> None:
-        self.model = model or settings.model("feedback", "FEEDBACK_MODEL", DEFAULT_MODEL)
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        if not self.api_key:
-            raise RuntimeError("OPENAI_API_KEY is not set")
+        self.model = model or settings.model("feedback")
+        self.api_key = api_key or llm.require_key()
         self.timeout = timeout
         self.template = TemplateFeedback()
 
@@ -181,7 +163,7 @@ class LLMFeedback:
                                     "schema": schema}}}
 
     def _call(self, payload: dict[str, Any]) -> dict[str, Any]:
-        return call_structured(payload, self.api_key, self.timeout, "CampusYamu-RankingFeedback/0.1")
+        return llm.call_structured(payload, self.api_key, self.timeout, "CampusYamu-RankingFeedback/0.1")
 
     def write(self, analysis: dict[str, Any], context: dict[str, Any]) -> dict[str, Any]:
         return self.parse(self._call(self.request_payload(analysis, context)), analysis, context)

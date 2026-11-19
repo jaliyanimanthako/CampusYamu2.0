@@ -110,6 +110,12 @@ def _specializations(lines: list[str]) -> dict[str, list[str]]:
             heading = _clean(raw.lstrip("#")).rstrip(":")
             current = heading if re.search(r"University|Institute|Campus", heading) else None
             continue
+        if current and raw.strip() and not re.match(r"^\s*-\s", raw):
+            # a prose paragraph ends the institution's list: e.g. "**Candidates who have offered ... could
+            # also seek admission to the following courses ...**" introduces a list of OTHER courses
+            if raw.lstrip().startswith("**") or len(_clean(raw)) > 100:
+                current = None
+                continue
         if current and re.match(r"^\s*-\s+\S", raw) and not raw.lstrip("- ").startswith("#"):
             item = _clean(raw)
             if item and len(item) < 90 and item not in found.setdefault(current, []):

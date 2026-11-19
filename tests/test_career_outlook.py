@@ -100,7 +100,8 @@ class StartOnRequestTests(unittest.TestCase):
 
     def setUp(self) -> None:
         self.started = []
-        self.web.career_jobs.start = lambda course: (self.started.append(course) or (True, "started"))
+        self.web.career_jobs.start = lambda course, offering=None: (self.started.append((course, offering))
+                                                                    or (True, "started"))
         self.web.career_jobs.status = lambda course: None
 
     def ask(self, flag: bool) -> dict:
@@ -120,7 +121,9 @@ class StartOnRequestTests(unittest.TestCase):
             self.assertEqual(self.started, [])
             self.assertNotIn("start_career_research", data)
             self.ask(True)
-            self.assertEqual(self.started, ["Quantity Surveying"])
+            [(course, offering)] = self.started
+            self.assertEqual(course, "Quantity Surveying")
+            self.assertEqual(offering["course_name"], "Quantity Surveying")      # the row goes along: full research
         finally:
             server.missing_keys = original
 

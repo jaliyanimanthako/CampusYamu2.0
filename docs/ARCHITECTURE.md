@@ -43,7 +43,7 @@ flowchart TD
 src/campusyamu/
 ├── core/              paths.py (every file location), settings.py (config/settings.yaml), openai_client.py
 ├── knowledge_graph/   handbook → tables/prose → A/L rules → NetworkX graph; eligibility checker; Neo4j export; graph chatbot
-├── handbook_search/   parent/child chunks, OpenAI embeddings, Neo4j vector + BM25, RRF, optional cross-encoder rerank
+├── handbook_search/   parent/child chunks, OpenAI, Gemini and OpenRouter embeddings, Neo4j vector + BM25, RRF, optional cross-encoder rerank
 ├── agents/
 │   ├── course_finder/   step 1: courses a student can apply for
 │   ├── zscore/          historical cut-off analysis (SQLite)
@@ -94,8 +94,15 @@ re-registered (`make kg`).
 | career research | course name | cited 5-year SWOT | runs only when a student asks; evidence-referenced findings, guardrails in `career_trends/analysis_guardrails.py` |
 | knowledge graph | handbook clauses | rule proposals | offline, owner-reviewed; not used at request time |
 
-All calls use the OpenAI Responses API with `store: false`. Keys live in `.env`;
-models default from `config/settings.yaml` and can be overridden per role.
+Every prompt lives in `src/campusyamu/prompts/` (one module per area); `python -m campusyamu.prompts` lists them and `python -m campusyamu.prompts <name>` prints one exactly as sent.
+
+All calls go through `core/llm.py`. Code builds OpenAI Responses API requests (`store: false`);
+with `llm.provider: gemini` in `config/settings.yaml` they are translated to Gemini `generateContent`
+(structured output via `responseJsonSchema`, function calling with thought signatures kept), with
+`llm.provider: openrouter` or `groq` to Chat Completions (`response_format` JSON schema, `tools`), and the
+replies translated back, so callers never branch. Keys live in `.env`; models are
+`models.<provider>.<role>` in `config/settings.yaml`. Handbook search keeps every provider's vectors
+(one Neo4j index each) and queries the `llm.embedding_provider` one (Groq has no embeddings).
 
 ## API and web page
 
@@ -106,6 +113,37 @@ models default from `config/settings.yaml` and can be overridden per role.
 `api/service.py` (`AdvisorService`) holds the logic; `api/app.py` runs every call on
 one worker thread (the pipeline's SQLite connections are bound to it) and career
 research in a background thread. Full client guide: [API.md](API.md).
+
+Course research (`web/course_research.py`, `make research COURSE=… UNI=…`) runs three sub-agents in
+parallel for one offering: the career-trends agent (web + Reddit, cited SWOT; cached per course), the
+university-website agent (`web/university_pages.py`: a search limited to the owner-reviewed domains in
+`data/reference/university_domains.json`, read by the LLM into an applicant profile) and the specialisation
+agent (one official-site search per specialisation, in parallel, then a card each; names from the handbook,
+else from the website profile). Website and specialisations are cached per offering in
+`data/cache/university_pages/`. The course chat starts it when the student asks for research and reads
+the cache as sources W and D (`chat.website.enabled` in settings).
+
+Chat guardrails: the course chat only answers questions about its course and the university selection
+process (all its sources: handbook, the student's results, website and career research), nothing from other
+domains. `web/guardrail.py` refuses obvious manipulation phrases at once, then asks one Gemini Decision
+question (in_scope / out_of_scope / manipulation, `models.guardrail`, `guardrail:` in settings) in parallel with
+the memory recall, rewrite and handbook search; below `guardrail.allow_min` the student gets a fixed refusal
+(status `out_of_scope`) with no answer call and nothing saved to memory. It fails open, and the chat prompt
+repeats the scope rules (and stays neutral between courses) as a second layer.
+
+Chat memory (`src/campusyamu/memory/`, settings `memory:`) keeps each signed-in student's course chats on
+the server: one conversation per student per offering, every message, a running summary of older turns,
+and a short list of lasting student facts shared by all their chats. Per question the chat gets the facts,
+the summary and the newest turns that fit `memory.recent_tokens`; a follow-up is rewritten to stand alone for
+the handbook search; afterwards the turn is saved and, in a background thread, older turns are folded into
+the summary and new facts are extracted (small `models.memory` calls; prompts in `prompts/memory.py`). The
+store is Supabase Postgres when `SUPABASE_DB_URL` is set (tables: `supabase/migrations/`), otherwise a SQLite
+file. Sign-in is Supabase Auth: with `SUPABASE_URL` set, every /v1 endpoint except /v1/health needs the
+student's access token (`api/auth.py`, checked locally against the project's signing keys), `/v1/chat` uses
+that student's memory, `/v1/me/chats...` returns their saved chats, and `api/limits.py` caps the paid calls
+per student per day (`limits:` in settings; counts in `daily_usage`). Without `SUPABASE_URL` the API is open
+(local development) and the chat uses the client's `history`. Try memory from the terminal with
+`uv run python -m campusyamu.memory chat --user <uuid> --uni-code 008G`.
 
 `python -m campusyamu.web` (port 8770) only serves the page
 (`web/static/index.html`); the page calls the API at `API_BASE_URL`, like the mobile app.

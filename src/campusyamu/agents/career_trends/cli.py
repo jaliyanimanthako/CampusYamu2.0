@@ -56,7 +56,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--provider",
         choices=WEB_PROVIDERS,
-        help="Web search provider (default: SEARCH_PROVIDER, else tavily if "
+        help="Web search provider (default: career.search_provider in settings, else tavily if "
         "TAVILY_API_KEY is set, else firecrawl)",
     )
     parser.add_argument(
@@ -110,7 +110,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "off (--no-reddit)" if args.no_reddit else "off (APIFY_API_TOKEN not set)"
         )
         careers = "on" if discovery else (
-            "off (--no-discovery)" if args.no_discovery else "off (OpenAI not configured)"
+            "off (--no-discovery)" if args.no_discovery else "off (no language-model key)"
         )
         print(
             f"Web search: {provider} | Reddit: {reddit} | Career discovery: {careers}",

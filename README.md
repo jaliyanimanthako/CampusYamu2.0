@@ -13,13 +13,15 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for how it fits together.
 
 ```bash
 make install            # uv sync
-cp .env.example .env    # add OPENAI_API_KEY (optional: NEO4J_*, TAVILY_API_KEY …)
+cp .env.example .env    # add GEMINI_API_KEY or OPENAI_API_KEY (optional: NEO4J_*, TAVILY_API_KEY …)
 make api                # the API (FastAPI): http://127.0.0.1:8780/docs  (web page + mobile app use it)
 make web                # the web page: http://127.0.0.1:8770  (needs `make api` running in another terminal)
 ```
 
-Without an OpenAI key everything still runs: interests use keyword matching,
-feedback uses templates, and the course chat is disabled.
+The language model is Gemini or OpenAI: `llm.provider` in `config/settings.yaml` picks it, with
+models per provider under `models.gemini` / `models.openai`. `make llm-check` makes three tiny calls
+to confirm the setup. Without the provider's key everything still runs: interests use keyword
+matching, feedback uses templates, and the course chat is disabled.
 
 ### Command line
 
@@ -46,13 +48,14 @@ docker compose --profile neo4j up --build -d    # + Neo4j for handbook search in
 ```
 .
 ├── src/campusyamu/        the package (see docs/ARCHITECTURE.md)
-│   ├── core/              paths, settings, OpenAI client
+│   ├── core/              paths, settings, language-model client (llm.py: OpenAI, Gemini, OpenRouter or Groq)
 │   ├── knowledge_graph/   handbook → rules → graph, eligibility, Neo4j export
 │   ├── handbook_search/   vector + BM25 handbook search
 │   ├── agents/            course_finder, zscore, travel_time, course_details,
 │   │                      preference, ranking, career_trends
 │   ├── pipeline/          LangGraph student pipeline + CLI
 │   ├── api/               FastAPI service (/v1): the backend for the web page and the mobile app
+│   ├── prompts/           every LLM prompt in one place (python -m campusyamu.prompts lists them)
 │   └── web/               web page (static), course chat, career-outlook cache
 ├── data/
 │   ├── raw/               handbook, UGC tables, travel CSVs, Z-score DB

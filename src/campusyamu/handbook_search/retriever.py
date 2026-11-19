@@ -1,7 +1,9 @@
 """Hybrid handbook retrieval: BM25 + vector search, RRF fusion, cross-encoder rerank.
 
 1. The query is matched against child chunks twice: the Neo4j vector index
-   (OpenAI embedding of the query) and the full-text index (Lucene BM25).
+   (the query embedded by the llm.embedding_provider model, OpenAI, Gemini or OpenRouter, against that
+   provider's index) and the full-text index (Lucene BM25). Without an embedder,
+   or when the vector search fails, BM25 alone is used (``vector_error`` says why).
 2. The two ranked lists are fused with Reciprocal Rank Fusion
    (score = sum of 1 / (60 + rank)), which needs no score calibration.
 3. The best ``rerank_pool`` children are re-scored by a local cross-encoder
@@ -71,7 +73,8 @@ class HybridRetriever:
     def __init__(self, store, embedder, reranker: Reranker | None = None,
                  candidates: int = 30, rerank_pool: int = 20) -> None:
         self.store = store
-        self.embedder = embedder
+        self.embedder = embedder                # None: keyword (BM25) search only
+        self.vector_error: str | None = None if embedder is not None else "no embedder"
         self.reranker = reranker
         self.candidates = candidates
         self.rerank_pool = rerank_pool
@@ -80,7 +83,13 @@ class HybridRetriever:
         query = query.strip()
         if not query:
             return []
-        vector_hits = self.store.vector_search(self.embedder.embed([query])[0], self.candidates)
+        vector_hits: list[dict[str, Any]] = []
+        if self.embedder is not None:
+            try:
+                vector_hits = self.store.vector_search(self.embedder.embed([query])[0], self.candidates)
+                self.vector_error = None
+            except Exception as exc:            # missing index / key / network: keep the BM25 half
+                self.vector_error = f"vector search unavailable ({str(exc)[:120] or type(exc).__name__})"
         keyword_hits = self.store.keyword_search(query, self.candidates)
         vector_rank = {h["id"]: i for i, h in enumerate(vector_hits, start=1)}
         keyword_rank = {h["id"]: i for i, h in enumerate(keyword_hits, start=1)}

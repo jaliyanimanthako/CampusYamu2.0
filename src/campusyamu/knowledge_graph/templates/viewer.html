@@ -392,8 +392,8 @@ function bubble(kind, html) { const d = document.createElement("div"); d.classNa
 function intro() {
   msgs.innerHTML = "";
   if (!chatReady) {
-    bubble("bot", `<div class="offline">${CHAT_SERVED ? "The server is running but has no OpenAI key (set OPENAI_API_KEY in .env and restart)." :
-      "The assistant needs the local chat server (it keeps your OpenAI key off this page). Start it and open the address it prints:"}
+    bubble("bot", `<div class="offline">${CHAT_SERVED ? "The server is running but has no language-model key (set OPENAI_API_KEY or GEMINI_API_KEY in .env, to match llm.provider in config/settings.yaml, and restart)." :
+      "The assistant needs the local chat server (it keeps your API key off this page). Start it and open the address it prints:"}
       <code>uv run python -m campusyamu.knowledge_graph.chat_server</code></div>`);
     return;
   }

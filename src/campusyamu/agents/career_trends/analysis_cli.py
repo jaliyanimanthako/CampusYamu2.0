@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 from pathlib import Path
 from typing import Any, Sequence
@@ -44,10 +43,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         web_result = json.loads(args.evidence.read_text())
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         parser.error(str(exc))
-    if not os.getenv("OPENAI_API_KEY"):
-        parser.error("OPENAI_API_KEY is missing from the environment or .env file")
-    if not os.getenv("OPENAI_MODEL"):
-        parser.error("OPENAI_MODEL is missing from the environment or .env file")
+    from campusyamu.core import llm
+
+    if not llm.available():
+        parser.error(f"{llm.key_name()} is missing from the environment or .env file")
 
     progress = None if args.quiet else show_progress
     try:

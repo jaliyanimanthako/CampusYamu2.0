@@ -1,0 +1,14 @@
+{
+  "name": "campusyamu-ui-mockup",
+  "version": "0.1.0",
+  "private": true,
+  "description": "UI mockup for the CampusYamu /v1 API: navy, royal blue, lavender and mustard.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "live": "CAMPUSYAMU_API=http://127.0.0.1:8780 node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

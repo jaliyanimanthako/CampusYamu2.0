@@ -15,6 +15,8 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
+from campusyamu.core import settings
+
 from .models import SearchQuery, WebDocument
 
 
@@ -39,7 +41,7 @@ class ApifyRedditClient:
         self.api_token = api_token or os.getenv("APIFY_API_TOKEN")
         if not self.api_token:
             raise ValueError("Set APIFY_API_TOKEN before using the Reddit collector")
-        self.actor_id = actor_id or os.getenv("APIFY_REDDIT_ACTOR") or DEFAULT_ACTOR
+        self.actor_id = actor_id or settings.get("career.reddit_actor") or DEFAULT_ACTOR
         self.base_url = base_url.rstrip("/")
         self.timeout_seconds = timeout_seconds
         self.comments_per_post = comments_per_post

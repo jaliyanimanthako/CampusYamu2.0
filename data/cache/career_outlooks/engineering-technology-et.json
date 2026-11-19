@@ -1,0 +1,525 @@
+{
+ "course": "Engineering Technology (ET)",
+ "region": "Sri Lanka",
+ "generated_at": "2026-11-14T05:46:57.013363+00:00",
+ "status": "success",
+ "model": "gpt-4o-mini",
+ "web_source": "TavilyClient",
+ "horizon_years": 5,
+ "collection": {
+  "retained_after_deduplication": 29,
+  "trusted_sources": 8,
+  "career_paths": [
+   "it project manager",
+   "full stack developer",
+   "enterprise architect",
+   "software engineer",
+   "data analyst",
+   "civil engineer",
+   "production engineer",
+   "project engineer"
+  ],
+  "emerging_areas": [
+   "ai integration",
+   "sustainable design",
+   "digital twins"
+  ]
+ },
+ "analysis": {
+  "course": "Engineering Technology (ET)",
+  "status": "success",
+  "analysis_context": {
+   "analysis_year": 2026,
+   "expected_entry_year": 2031,
+   "horizon_years": 5,
+   "evidence_collected_at": "2026-11-14T05:45:43.959186+00:00",
+   "confidence_ratings_lowered": 2,
+   "specificity_problems_found": 7,
+   "revised": true,
+   "generic_items_dropped": 2,
+   "advice_or_advert_sentences_removed": 0,
+   "remaining_problems": []
+  },
+  "evidence_synthesis": [
+   {
+    "theme": "Job Demand and Opportunities",
+    "key_details": [
+     "In 2026, the demand for IT professionals, especially in roles such as full-stack developers and project managers, is projected to grow due to increasing IT investments in Sri Lanka (E002).",
+     "Recent trends indicate a rise in remote job opportunities, particularly for software development roles, both locally and abroad (E005, E013)."
+    ],
+    "takeaway": "The demand for IT roles in Sri Lanka is expected to increase as companies continue to invest in technology, leading to more opportunities for graduates in the field.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E002",
+     "E005",
+     "E013"
+    ]
+   },
+   {
+    "theme": "Skill Gaps and Challenges",
+    "key_details": [
+     "There are reports of hiring freezes and over-saturation in the IT job market, creating competitive challenges for new graduates (E003, E012).",
+     "Employers increasingly seek specialized skills such as cloud computing and AI integration (E013, E018)."
+    ],
+    "takeaway": "While job opportunities are growing, there is significant competition and a need for specialized skills, posing challenges for entry-level positions and internships.",
+    "agreement": "mixed",
+    "evidence_refs": [
+     "E003",
+     "E012",
+     "E013",
+     "E018"
+    ]
+   },
+   {
+    "theme": "Career Path and Growth",
+    "key_details": [
+     "Graduates from Engineering Technology can progress into roles such as IT project managers, full-stack developers, and data analysts, providing a clear career path (E006, E009).",
+     "Higher-level roles, such as enterprise architects and specialized engineering positions, are emerging as industries evolve towards digital transformation (E007, E019)."
+    ],
+    "takeaway": "The career trajectory for Engineering Technology graduates is diverse, with multiple pathways depending on skill acquisition and specialization in emerging technologies.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E006",
+     "E007",
+     "E009",
+     "E019"
+    ]
+   },
+   {
+    "theme": "Further Education and Certifications",
+    "key_details": [
+     "Postgraduate qualifications are becoming increasingly relevant, with many professionals pursuing master's degrees to stand out in the competitive job market (E020, E016).",
+     "Certifications in areas like ISO 50001 and blockchain are gaining traction among employers, highlighting the importance of continuing education (E024, E025)."
+    ],
+    "takeaway": "Further study and certifications appear essential for advancing in the engineering technology field, enabling professionals to stay competitive and relevant.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E016",
+     "E020",
+     "E024",
+     "E025"
+    ]
+   },
+   {
+    "theme": "Emerging Specializations",
+    "key_details": [
+     "Areas such as AI integration and blockchain engineering are increasingly important, responding to industry demands for modern solutions and more efficient project management (E021, E022).",
+     "ISO 50001 certification is crucial for firms focusing on sustainability, which is rapidly becoming a requirement in engineering sectors (E024, E025)."
+    ],
+    "takeaway": "Emerging specializations in AI, blockchain, and sustainability are critical for future success in engineering technology, as they are in high demand across industries.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E021",
+     "E022",
+     "E024",
+     "E025"
+    ]
+   }
+  ],
+  "course_introduction": {
+   "overview": "The Engineering Technology (ET) program equips students with practical skills in engineering and technology, focusing on traditional and modern techniques in fields like mechanics and design. It prepares graduates for application of technology in various industries and project setups.",
+   "career_paths": [
+    {
+     "role": "IT Project Manager",
+     "what_you_do": "Oversee technology projects from inception to completion, coordinating resources and timelines."
+    },
+    {
+     "role": "Full Stack Developer",
+     "what_you_do": "Develop both front-end and back-end web applications, working on both the server and client sides."
+    },
+    {
+     "role": "Data Analyst",
+     "what_you_do": "Analyze complex data sets to help inform business decisions and strategies."
+    },
+    {
+     "role": "Civil Engineer",
+     "what_you_do": "Design and oversee construction projects, ensuring compliance with safety regulations."
+    },
+    {
+     "role": "Production Engineer",
+     "what_you_do": "Optimize production processes to increase efficiency and reduce waste."
+    },
+    {
+     "role": "Project Engineer",
+     "what_you_do": "Manage engineering projects, ensuring they adhere to specifications and timelines."
+    }
+   ],
+   "evidence_refs": [
+    "E006",
+    "E002"
+   ]
+  },
+  "future_swot": {
+   "strengths": [
+    {
+     "course_specifics": [
+      "Strong local job demand for engineers familiar with regulations and technologies.",
+      "Diverse career paths including IT project management and engineering design."
+     ],
+     "finding": "Graduates from the ET program can pursue various roles in high-demand sectors, such as IT project management and civil engineering, with specific local needs like knowledge of the Building Regulations in Sri Lanka.",
+     "evidence_refs": [
+      "E006",
+      "E027"
+     ],
+     "reasoning_type": "direct_evidence",
+     "confidence": "medium"
+    }
+   ],
+   "weaknesses": [
+    {
+     "course_specifics": [
+      "Heavy competition due to saturation in the job market for entry-level positions.",
+      "Potential need for additional certifications like ISO 50001 or specialized degrees."
+     ],
+     "finding": "The job market is saturated, leading to increased competition for positions, which may require graduates to pursue further certifications or education like ISO 50001 to stand out.",
+     "evidence_refs": [
+      "E003",
+      "E020"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    },
+    {
+     "course_specifics": [
+      "Current emphasis on emerging technologies such as AI and blockchain.",
+      "Need for continuous learning in engineering technology to keep up with market needs."
+     ],
+     "finding": "As the engineering landscape evolves, there may be challenges in updating curricula to include emerging technologies such as AI integration and blockchain, impacting graduate readiness for certain roles.",
+     "evidence_refs": [
+      "E021",
+      "E022"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    }
+   ],
+   "opportunities": [
+    {
+     "course_specifics": [
+      "Growing demand in AI integration and blockchain engineering fields.",
+      "Strengthening sustainability practices through certifications like ISO 50001."
+     ],
+     "finding": "Emerging fields like AI and blockchain are gaining traction, representing significant opportunities for ET graduates to specialize and enhance employability, especially with ISO 50001 certification becoming a standard in sustainable engineering.",
+     "evidence_refs": [
+      "E021",
+      "E024",
+      "E025"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    },
+    {
+     "course_specifics": [
+      "Increased remote job opportunities in IT roles both regionally and globally.",
+      "Advancement of digital platforms allowing for remote work across various countries."
+     ],
+     "finding": "The growing trend of remote work offers expanded job opportunities for graduates, allowing them to explore positions beyond local borders, particularly in tech roles.",
+     "evidence_refs": [
+      "E005",
+      "E012"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "high"
+    }
+   ],
+   "threats": [
+    {
+     "course_specifics": [
+      "Potential influence of automation and technological displacement in engineering roles.",
+      "Demand for continuous skill development to counteract job losses."
+     ],
+     "finding": "The rise of automation and AI solutions in engineering may challenge traditional roles, emphasizing the necessity for graduates to continuously adapt and learn in response to technological evolution.",
+     "evidence_refs": [
+      "E017",
+      "E019"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    }
+   ]
+  },
+  "local_vs_overseas": {
+   "label": "balanced",
+   "explanation": "Local job opportunities in IT and engineering are promising, but there are also significant openings abroad for graduates, especially in software and specialized engineering roles.",
+   "evidence_refs": [
+    "E005",
+    "E006"
+   ]
+  },
+  "further_study": {
+   "role": "helpful",
+   "explanation": "While further study is not essential, pursuing master's degrees or professional certifications can enhance job prospects and specialization opportunities, particularly in competitive fields.",
+   "evidence_refs": [
+    "E020",
+    "E016"
+   ]
+  },
+  "niche_specialisations": [
+   {
+    "area": "Blockchain Engineering",
+    "why_it_matters": "This area focuses on developing decentralized applications, increasingly vital in various industries, including construction and engineering.",
+    "evidence_refs": [
+     "E021",
+     "E022"
+    ]
+   },
+   {
+    "area": "ISO 50001 Energy Management Certification",
+    "why_it_matters": "This certification showcases expertise in energy management, essential for companies striving for sustainability in engineering.",
+    "evidence_refs": [
+     "E024",
+     "E025"
+    ]
+   }
+  ],
+  "overall_outlook": {
+   "label": "mixed",
+   "summary": "The job market for Engineering Technology graduates includes growing demand in technology sectors, particularly for skills in AI and blockchain. However, challenges include high competition for roles and a need for continuous learning to remain competitive. Current local hiring dynamics may offer solid opportunities, but graduates must adapt to rapid industry changes.",
+   "evidence_refs": [
+    "E002",
+    "E003",
+    "E021"
+   ],
+   "confidence": "medium"
+  },
+  "limitations": [
+   "The extent of competition in the job market could vary based on economic conditions and is not fully captured in the current data.",
+   "Local hiring trends may not reflect future shifts resulting from technological advancements or policy changes in Sri Lanka.",
+   "Community discussions provide limited perspectives on broader employment trends and may not represent the entire job market."
+  ]
+ },
+ "evidence_index": [
+  {
+   "evidence_id": "E001",
+   "title": "IT Job Search & Hiring | The IT Job Board of Sri Lanka – ITPro.lk",
+   "url": "https://itpro.lk",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_live_jobs"
+  },
+  {
+   "evidence_id": "E002",
+   "title": "Sri Lanka Labour Demand Survey 2017",
+   "url": "https://www.statistics.gov.lk/Resource/en/Industry/Other_Tables_Reports/ReportLabourDemandSurvey-2017Revised.pdf",
+   "source_tier": "local_official",
+   "trusted": true,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E003",
+   "title": "The \"Intern Crisis\" in Sri Lanka isn't just the market or AI. It's ...",
+   "url": "https://www.reddit.com/r/srilanka/comments/1qgeo5t/unpopular_opinion_the_intern_crisis_in_sri_lanka",
+   "source_tier": "community_discussion",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E004",
+   "title": "What Is an IT Project Manager? And How to Become One | Coursera",
+   "url": "https://www.coursera.org/articles/it-project-manager",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "global_outlook"
+  },
+  {
+   "evidence_id": "E005",
+   "title": "Remote Full Stack Developer Jobs in Sri Lanka",
+   "url": "https://dailyremote.com/remote-full-stack-developer-jobs-in-sri-lanka",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "international_pathways"
+  },
+  {
+   "evidence_id": "E006",
+   "title": "Engineering Technology - ET",
+   "url": "https://tuteclass.com/government-degree/view/167/engineering-technology---et-sabaragamuwa-university-of-sri-lanka",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "further_study"
+  },
+  {
+   "evidence_id": "E007",
+   "title": "Future of Engineering: AI, Digital Twins, Sustainability | Md Abdul ...",
+   "url": "https://www.linkedin.com/posts/mdabdulhamidid_engineering-innovation-futureofengineering-activity-7489560002198945792--ujx",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E008",
+   "title": "National Engineering Education Policy Draft",
+   "url": "https://iesl.lk/SLEN/57/img/National%20Engineering%20Education%20Policy%20Draft.pdf",
+   "source_tier": "local_professional_body",
+   "trusted": true,
+   "query_category": "field_sources"
+  },
+  {
+   "evidence_id": "E009",
+   "title": "Graduate Engineering Trainee at HCLTech Sri Lanka — Colombo, Western Province, Sri Lanka | LinkedIn Jobs",
+   "url": "https://lk.linkedin.com/jobs/view/graduate-engineering-trainee-at-hcltech-sri-lanka-4468706129",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "career_paths"
+  },
+  {
+   "evidence_id": "E010",
+   "title": "IT roles in Sri Lanka paying 600K+ take-home?",
+   "url": "https://www.reddit.com/r/DevLK/comments/1vkafaw/it_roles_in_sri_lanka_paying_600k_takehome/",
+   "source_tier": "community_discussion",
+   "trusted": false,
+   "query_category": "community_signals"
+  },
+  {
+   "evidence_id": "E011",
+   "title": "Internship Jobs | IT, Software & Tech Careers in Sri Lanka - ITPro.lk",
+   "url": "https://itpro.lk/jobs/internship",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_live_jobs"
+  },
+  {
+   "evidence_id": "E012",
+   "title": "Enhancing STEM Education and Careers in Sri Lanka",
+   "url": "https://documents1.worldbank.org/curated/en/099061325093513105/pdf/P177660-068ee237-a31c-4d4b-a311-51abc2a68dbe.pdf",
+   "source_tier": "global_official",
+   "trusted": true,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E013",
+   "title": "Top IT Skills in Demand in Sri Lanka in 2026: Jobs, Pay & Learning Paths | Hashtag Coders",
+   "url": "https://hashtagcoders.lk/blogs/top-it-skills-demand-sri-lanka-2026",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E014",
+   "title": "Full Stack Developer Career Path 2026 - KORE1",
+   "url": "https://www.kore1.com/full-stack-developer-career-path",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "global_outlook"
+  },
+  {
+   "evidence_id": "E015",
+   "title": "Full Stack Software Engineer Salary & Jobs in Sri Lanka ...",
+   "url": "https://www.paths.lk/career-paths/full-stack-software-engineer",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "international_pathways"
+  },
+  {
+   "evidence_id": "E016",
+   "title": "26 Master's degrees in Engineering & Technology in Sri Lanka | Mastersportal",
+   "url": "https://www.mastersportal.com/search/master/engineering-technology/sri-lanka",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "further_study"
+  },
+  {
+   "evidence_id": "E017",
+   "title": "Engineering Technology Trends",
+   "url": "https://www.linkedin.com/top-content/engineering/engineering-career-advancement-strategies/engineering-technology-trends",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E018",
+   "title": "Institution of Engineers, Sri Lanka",
+   "url": "https://iesl.lk/index.php?option=com_content&amp%3Bview=article&amp%3Bid=140&amp%3BItemid=417&amp%3Blang=en",
+   "source_tier": "local_professional_body",
+   "trusted": true,
+   "query_category": "field_sources"
+  },
+  {
+   "evidence_id": "E019",
+   "title": "Career Opportunities in Sri Lanka | Find Your Spark",
+   "url": "https://careers.hcltech.com/go/Sri-Lanka/9555555",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "career_paths"
+  },
+  {
+   "evidence_id": "E020",
+   "title": "Choosing a Master’s Degree in the IT Field – Looking for Advice",
+   "url": "https://www.reddit.com/r/srilanka/comments/1q183go/choosing_a_masters_degree_in_the_it_field_looking/",
+   "source_tier": "community_discussion",
+   "trusted": false,
+   "query_category": "community_signals"
+  },
+  {
+   "evidence_id": "E021",
+   "title": "Blockchain in Construction: Building Trust, Traceability and Intelligence into the Project Lifecycle – Tech Speak – Tata Consulting Engineers' Blog",
+   "url": "https://www.tataconsultingengineers.com/blogs/blockchain-in-construction-building-trust-traceability-and-intelligence-into-the-project-lifecycle",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E022",
+   "title": "15-1299.07 - Blockchain Engineers",
+   "url": "https://www.onetonline.org/link/summary/15-1299.07",
+   "source_tier": "global_official",
+   "trusted": true,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E023",
+   "title": "What Is a Blockchain Engineer? A Career Guide | Coursera",
+   "url": "https://www.coursera.org/articles/blockchain-engineer",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E024",
+   "title": "ISO 50001: Meaning, Standard and Requirements - Greenly",
+   "url": "https://greenly.earth/en-us/blog/company-guide/iso-50001-meaning-standard-and-requirements",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E025",
+   "title": "ISO 50001 Implementation & Requirements Explained",
+   "url": "https://enity.io/en/blog-en/iso-50001-implementation-guide",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E026",
+   "title": "ISO 50001 Requirements: What it means and how it impacts businesses (2026) | Konfirmity",
+   "url": "https://www.konfirmity.com/glossary/iso-50001-requirements",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E027",
+   "title": "Building Regulations in Sri Lanka — 2026 Standards",
+   "url": "https://enormousbuildings.com/building-regulations/sri-lanka",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E028",
+   "title": "Government Launches National Initiative to Establish Sri ...",
+   "url": "https://www.defence.lk/Article/view_article/29358",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E029",
+   "title": "Building Approval in Sri Lanka: The Complete 2026 Guide – Structa Engineering",
+   "url": "https://housedesign.lk/guides/building-approval-sri-lanka-2026-guide",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_challenges"
+  }
+ ]
+}

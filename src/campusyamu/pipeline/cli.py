@@ -8,9 +8,9 @@
 
     uv run python -m campusyamu.pipeline            # asks the questions
 
---prefer is free text (first = most liked). It is read by one small OpenAI call
-(OPENAI_API_KEY from .env; model PREFERENCE_MODEL, else OPENAI_MODEL, else
-gpt-4o-mini). Without a key, or with --no-llm, keyword matching is used.
+--prefer is free text (first = most liked). It is read by one small language-model call
+(llm.provider in config/settings.yaml: OpenAI, Gemini, OpenRouter or Groq, key OPENAI_API_KEY / GEMINI_API_KEY / OPENROUTER_API_KEY in .env;
+model models.<provider>.preference). Without a key, or with --no-llm, keyword matching is used.
 """
 
 from __future__ import annotations
@@ -249,7 +249,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--no-llm", action="store_true", help="Read --prefer with keyword matching only")
     parser.add_argument("--min-mark", type=int, default=5, choices=range(1, 11), metavar="1-10",
                         help="List a course under an interest when its mark is at least this (default 5)")
-    parser.add_argument("--env-file", type=Path, help="Load OPENAI_API_KEY etc. from this file (default ./.env)")
+    parser.add_argument("--env-file", type=Path, help="Load API keys etc. from this file (default ./.env)")
     parser.add_argument("--limit", type=int, default=10, help="Rows per band (default 10)")
     parser.add_argument("--all", action="store_true", help="Show every row")
     parser.add_argument("--sort", choices=["travel", "margin"], default="travel",

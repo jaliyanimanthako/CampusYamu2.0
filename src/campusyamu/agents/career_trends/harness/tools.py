@@ -31,7 +31,7 @@ class ToolRegistry:
         return tuple(self._tools)
 
     def schemas(self) -> list[dict[str, Any]]:
-        """Function-tool definitions in the OpenAI Responses API format."""
+        """Function-tool definitions in the Responses API format (translated for Gemini by core.llm)."""
 
         return [
             {

@@ -3,8 +3,10 @@
     uv run python -m campusyamu.web              # http://127.0.0.1:8770
     uv run python -m campusyamu.web --port 8771
 
-GET /   serves the built React app (frontend/dist/) when present, falling back
+GET /           serves the built React app (frontend/dist/) when present, falling back
         to the legacy static page (src/campusyamu/web/static/index.html).
+GET /config.js  the page's public settings from .env: SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY
+                (sign-in), CAMPUSYAMU_API_BASE_URL (optional). Only these public values, never secrets.
 
 The page gets all its data from the CampusYamu API (campusyamu.api, `make api`,
 port 8780), the same /v1 endpoints the mobile app uses, so run both.
@@ -14,6 +16,8 @@ from __future__ import annotations
 
 import argparse
 import errno
+import json
+import os
 import mimetypes
 import os
 import sys
@@ -29,6 +33,14 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 FRONTEND_DIST = Path(os.getenv("CAMPUSYAMU_HOME", str(REPO_ROOT))) / "frontend" / "dist"
 DEFAULT_PORT = settings.get("web.port", 8770)
 API_PORT = settings.get("api.port", 8780)
+
+
+def page_config() -> dict[str, str | None]:
+    """Public settings for the page. The publishable key is meant for browsers; secrets never go here."""
+
+    return {"supabaseUrl": os.getenv("SUPABASE_URL") or None,
+            "supabaseKey": os.getenv("SUPABASE_PUBLISHABLE_KEY") or os.getenv("SUPABASE_ANON_KEY") or None,
+            "apiBaseUrl": os.getenv("CAMPUSYAMU_API_BASE_URL") or None}
 
 MIME_OVERRIDES = {
     ".html": "text/html; charset=utf-8",
@@ -124,6 +136,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--host", default=settings.get("web.host", "127.0.0.1"))
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
     args = parser.parse_args(argv)
+    from campusyamu.knowledge_graph.handbook_prose import _load_env
+
+    try:
+        _load_env(None)                                 # .env: SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY
+    except Exception as exc:
+        print(f"warning: could not load .env: {exc}", file=sys.stderr)
     try:
         server = ThreadingHTTPServer((args.host, args.port), PageHandler)
     except OSError as exc:
