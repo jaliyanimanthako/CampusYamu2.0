@@ -38,10 +38,47 @@ Run with no flags to be asked the questions. `--no-llm` keeps everything offline
 
 ### Docker
 
+#### Backend for frontend development
+
+Runs the API in Docker against your own Neo4j instance (Neo4j Desktop); the frontend
+(`frontend/`, `npm run dev`) calls http://127.0.0.1:8780. Needs Docker Desktop (or Docker Engine
+with compose v2) and a Neo4j 5+ instance. From a fresh clone:
+
 ```bash
-docker compose up --build -d                    # web app
-docker compose --profile neo4j up --build -d    # + Neo4j for handbook search in the chat
+cp .env.example .env     # then fill in .env (below)
+                         # start your instance in Neo4j Desktop
+make docker-backend      # build, load your Neo4j from data/, start the API, wait until healthy
 ```
+
+It prints `backend ready` when the API answers. The first build takes a few minutes; later runs
+take under a minute. Loading Neo4j uses only files in the repo (no API calls) and replaces only
+the app's own nodes. Re-run it after pulling changes (it rebuilds and reloads Neo4j).
+
+`.env` for the backend:
+
+| Key | For |
+|---|---|
+| The key of `llm.provider` in `config/settings.yaml`: `GEMINI_API_KEY`, `GROQ_API_KEY`, `OPENAI_API_KEY` or `OPENROUTER_API_KEY` | chat, recommendations with AI, research |
+| The key of `llm.embedding_provider` (handbook search) | one small embedding call per chat question |
+| `GEMINI_API_KEY` | the chat's scope check (skipped without it) |
+| `NEO4J_PASSWORD` (your instance's password), `NEO4J_DATABASE=neo4j`; keep `NEO4J_URI_DOCKER=bolt://host.docker.internal:7687` (how a container reaches Neo4j Desktop on your machine) | your Neo4j instance |
+| `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_DB_URL` (from the backend owner) | sign-in and chat memory. With `SUPABASE_URL` set, every endpoint except `/v1/health` needs `Authorization: Bearer <Supabase access token>`; leave it empty for an open API without memory |
+| `TAVILY_API_KEY` (optional) | web research for careers and university websites |
+
+What the frontend uses:
+
+- API: http://127.0.0.1:8780; interactive docs at `/docs`; the OpenAPI file at `/openapi.json`
+  (regenerate typed clients from it); endpoints, errors and sign-in in [docs/API.md](docs/API.md).
+- Health: `curl http://127.0.0.1:8780/v1/health`.
+- CORS allows any origin (`api.cors_origins` in settings.yaml, or `API_CORS_ORIGINS` in `.env`).
+
+Day to day: keep the Neo4j instance started; `make docker-logs` (API logs), `make docker-down`
+(stop). Settings (`config/settings.yaml`) are mounted: edit, then `docker compose restart api`.
+Without make, the same steps are listed at the top of `docker-compose.yml`. On Linux, Neo4j must
+listen beyond localhost for the container to reach it (`server.default_listen_address=0.0.0.0`);
+Docker Desktop on Mac and Windows needs nothing.
+
+`make docker-demo`: the backend plus the built-in web page on http://127.0.0.1:8770.
 
 ## Project structure
 

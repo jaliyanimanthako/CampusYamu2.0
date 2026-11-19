@@ -1,59 +1,61 @@
-# CampusYamu — local / single-host deployment
+# CampusYamu — the backend in Docker, using your own Neo4j (e.g. Neo4j Desktop on this machine)
 #
-#   docker compose up --build -d                    web app -> http://127.0.0.1:8770, API -> http://127.0.0.1:8780/docs
-#   docker compose --profile neo4j up --build -d    + Neo4j for the handbook search in the course chat
-#   docker compose logs -f web | docker compose down
+#   make docker-backend     load your Neo4j from data/, start the API, wait until healthy
+#                           -> API http://127.0.0.1:8780 (docs /docs, OpenAPI /openapi.json)
+#   make docker-demo        the same plus the built-in web page on http://127.0.0.1:8770
 #
-# Keys come from .env (see .env.example). The web app reaches Neo4j at NEO4J_URI_DOCKER:
-# the bundled service (neo4j://neo4j:7687) or Neo4j Desktop on the host (host.docker.internal).
+# Without make (same steps):
+#   docker compose build api
+#   docker compose run --rm seed          # load the graph, travel times, handbook search into Neo4j
+#   docker compose up -d --wait api
+#   docker compose logs -f api | docker compose --profile web down
+#
+# Keys come from .env (see .env.example); nothing secret is baked into the image. Neo4j:
+# NEO4J_URI_DOCKER (default bolt://host.docker.internal:7687 = Neo4j Desktop on this machine),
+# NEO4J_PASSWORD, NEO4J_DATABASE. Start the instance before the backend. `seed` makes no API
+# calls and is safe to re-run (each step replaces only its own nodes).
+
+x-app: &app
+  build:
+    context: .
+    dockerfile: docker/Dockerfile
+  image: campusyamu-web
+  env_file:
+    - .env
+  environment:
+    CAMPUSYAMU_HOME: /app
+    NEO4J_URI: ${NEO4J_URI_DOCKER:-bolt://host.docker.internal:7687}
+  extra_hosts:
+    - "host.docker.internal:host-gateway"   # Linux; Docker Desktop (Mac, Windows) has it already
+  volumes:
+    - ./config:/app/config:ro            # edit settings.yaml without rebuilding (restart the container)
+    - ./data/cache:/app/data/cache        # career and university research survives restarts
+    - ./data/memory:/app/data/memory      # chat memory when SUPABASE_DB_URL is not set
+    - ./outputs:/app/outputs
 
 services:
-  web:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    image: campusyamu-web
-    env_file:
-      - .env
-    environment:
-      CAMPUSYAMU_HOME: /app
-      NEO4J_URI: ${NEO4J_URI_DOCKER:-neo4j://host.docker.internal:7687}
-    ports:
-      - "8770:8770"
-    volumes:
-      - ./config:/app/config:ro          # edit settings.yaml without rebuilding
-      - ./data/cache:/app/data/cache      # career research survives restarts
-      - ./outputs:/app/outputs
-    restart: unless-stopped
-
-  api:
-    image: campusyamu-web                 # same image as the web app, different command
-    depends_on:
-      - web                               # web builds the image
-    env_file:
-      - .env
-    environment:
-      CAMPUSYAMU_HOME: /app
-      NEO4J_URI: ${NEO4J_URI_DOCKER:-neo4j://host.docker.internal:7687}
+  api:                                    # the backend: every /v1 endpoint
+    <<: *app
     command: ["uv", "run", "--no-sync", "python", "-m", "campusyamu.api", "--host", "0.0.0.0", "--port", "8780"]
     ports:
       - "8780:8780"
-    volumes:
-      - ./config:/app/config:ro
-      - ./data/cache:/app/data/cache
-      - ./outputs:/app/outputs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8780/v1/health', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      start_period: 20s
+      retries: 24
     restart: unless-stopped
 
-  neo4j:
-    profiles: ["neo4j"]
-    image: neo4j:5.26.0
-    environment:
-      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:?set NEO4J_PASSWORD in .env}
+  web:                                    # the built-in web page (not needed for frontend work)
+    <<: *app
+    profiles: ["web"]
     ports:
-      - "7474:7474"
-      - "7687:7687"
-    volumes:
-      - neo4j_data:/data
+      - "8770:8770"
+    restart: unless-stopped
 
-volumes:
-  neo4j_data:
+  seed:                                   # one-off: docker compose run --rm seed
+    <<: *app
+    profiles: ["seed"]
+    command: ["uv", "run", "--no-sync", "python", "-m", "campusyamu.neo4j_seed"]
+    restart: "no"
