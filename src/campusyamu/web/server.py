@@ -1,10 +1,12 @@
 """Serves the CampusYamu web page. It has no data endpoints.
 
-    uv run python -m campusyamu.web              # http://127.0.0.1:8770
+    uv run python -m campusyamu.web --page builtin   # make web: the built-in page, http://127.0.0.1:8770
+    uv run python -m campusyamu.web                  # make web-react: the React build when present
     uv run python -m campusyamu.web --port 8771
 
-GET /           serves the built React app (frontend/dist/) when present, falling back
-        to the legacy static page (src/campusyamu/web/static/index.html).
+GET /           --page auto (default): the built React app (frontend/dist/) when present, falling
+        back to the built-in page (src/campusyamu/web/static/index.html); --page builtin: always
+        the built-in page.
 GET /config.js  the page's public settings from .env: SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY
                 (sign-in), CAMPUSYAMU_API_BASE_URL (optional). Only these public values, never secrets.
 
@@ -56,8 +58,11 @@ MIME_OVERRIDES = {
 }
 
 
+PAGE = "auto"          # --page: auto = the React build when present, else the built-in page; builtin = always the built-in page
+
+
 def _active_web_root() -> Path:
-    if (FRONTEND_DIST / "index.html").is_file():
+    if PAGE != "builtin" and (FRONTEND_DIST / "index.html").is_file():
         return FRONTEND_DIST
     return LEGACY_STATIC
 
@@ -135,7 +140,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--host", default=settings.get("web.host", "127.0.0.1"))
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
+    parser.add_argument("--page", choices=("auto", "builtin"), default="auto",
+                        help="builtin: always the built-in page (src/campusyamu/web/static); "
+                             "auto: the React build (frontend/dist) when present")
     args = parser.parse_args(argv)
+    global PAGE
+    PAGE = args.page
     from campusyamu.knowledge_graph.handbook_prose import _load_env
 
     try:

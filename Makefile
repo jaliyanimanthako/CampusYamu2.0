@@ -10,7 +10,7 @@ API_PORT ?= 8780
 COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
-.PHONY: llm-check help install install-rerank frontend-install frontend-build test web api student kg kg-refresh kg-viewer kg-chat neo4j-push \
+.PHONY: llm-check help install install-rerank frontend-install frontend-build test web web-react api student kg kg-refresh kg-viewer kg-chat neo4j-push \
         search-chunk search-embed search-load travel-db career research clean docker-build docker-up docker-down docker-logs \
         neo4j-seed docker-demo docker-seed docker-backend
 
@@ -20,7 +20,8 @@ help:
 	@echo "  make install-rerank   also install the local cross-encoder reranker (large)"
 	@echo "Run"
 	@echo "  make api              the API on http://127.0.0.1:$(API_PORT)/docs (used by the web page and the mobile app)"
-	@echo "  make web              build the React frontend, then serve it on http://127.0.0.1:$(PORT) (run make api too)"
+	@echo "  make web              built-in web page on http://127.0.0.1:$(PORT) (API: make api or make docker-backend)"
+	@echo "  make web-react        build the React frontend, then serve it on http://127.0.0.1:$(PORT)"
 	@echo "  make student          student pipeline in the terminal (asks the questions)"
 	@echo "  make test             run the test suite"
 	@echo "  make llm-check        three tiny calls to the llm.provider model: JSON, tool call, embedding (paid, ~free)"
@@ -65,7 +66,10 @@ test:
 llm-check:
 	$(RUN) python -m campusyamu.core.llm --check
 
-web: frontend-build
+web:
+	$(RUN) python -m campusyamu.web --port $(PORT) --page builtin
+
+web-react: frontend-build
 	$(RUN) python -m campusyamu.web --port $(PORT)
 
 api:
