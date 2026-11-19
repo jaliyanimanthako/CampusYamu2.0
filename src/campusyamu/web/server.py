@@ -97,6 +97,11 @@ class PageHandler(BaseHTTPRequestHandler):
         raw_path = unquote(urlparse(self.path).path)
         rel_path = raw_path.lstrip("/")
 
+        if rel_path == "config.js":                     # public sign-in settings for whichever page is served
+            self._send(200, f"window.CAMPUSYAMU_CONFIG = {json.dumps(page_config())};\n".encode(),
+                       "text/javascript; charset=utf-8", "no-store")
+            return
+
         if not rel_path or rel_path == "index.html":
             index_file = root / "index.html"
             self._send(200, index_file.read_bytes(), "text/html; charset=utf-8", "no-store")
@@ -116,8 +121,10 @@ class PageHandler(BaseHTTPRequestHandler):
             self._send(200, candidate.read_bytes(), _guess_content_type(candidate), cache_control)
             return
 
-        # SPA fallback for client routes without a file extension
-        if "." not in Path(rel_path).name:
+        # React client routes (no file extension) get the app; API-looking paths and the built-in
+        # page get a plain 404 (data lives in the API on port 8780)
+        if (root == FRONTEND_DIST.resolve() and "." not in Path(rel_path).name
+                and not rel_path.startswith(("api/", "v1/"))):
             index_file = root / "index.html"
             if index_file.is_file():
                 self._send(200, index_file.read_bytes(), "text/html; charset=utf-8", "no-store")
