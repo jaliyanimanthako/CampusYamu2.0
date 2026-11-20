@@ -17,7 +17,7 @@ import type {
 } from "../api/types.ts";
 import { hasLocalAccountToken, isAuthEnabled } from "../auth/supabase.ts";
 import { BANDS, courseArea, fmtMinutes, sanitizeDisplayText } from "../utils/course.ts";
-import { BackIcon } from "./BrandMark.tsx";
+import { BackIcon, FigureImg } from "./BrandMark.tsx";
 
 interface CourseDetailViewProps {
   report: RecommendationReport;
@@ -358,9 +358,7 @@ export function CourseDetailView({
           </div>
         </div>
         <div className="side fig-side">
-          <div className="fig">
-            <img src={`/figures/area-${area}.webp`} alt="" />
-          </div>
+          <FigureImg name={`area-${area}`} />
         </div>
       </section>
 

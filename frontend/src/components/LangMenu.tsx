@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { LANGS, useMockupI18n, type LangId } from "../i18n/mockupI18n.tsx";
+import { ENABLED_LANGS, useMockupI18n, type LangId } from "../i18n/mockupI18n.tsx";
 
 export function LangMenu() {
+  if (ENABLED_LANGS.length <= 1) return null;
   const { lang, setLanguage, t } = useMockupI18n();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -23,7 +24,7 @@ export function LangMenu() {
     };
   }, []);
 
-  const current = LANGS.find((l) => l.id === lang) ?? LANGS[2];
+  const current = ENABLED_LANGS.find((l) => l.id === lang) ?? ENABLED_LANGS[0];
 
   return (
     <div ref={rootRef} className={`lang-menu ${open ? "open" : ""}`}>
@@ -51,7 +52,7 @@ export function LangMenu() {
         <span lang={current.id}>{current.short}</span>
       </button>
       <div className="lang-pop" role="menu">
-        {LANGS.map((l) => (
+        {ENABLED_LANGS.map((l) => (
           <button
             key={l.id}
             type="button"

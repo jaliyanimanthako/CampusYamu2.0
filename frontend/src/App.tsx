@@ -25,6 +25,7 @@ import {
 import { AccountView } from "./components/AccountView.tsx";
 import { AnalysingView } from "./components/AnalysingView.tsx";
 import { AVATARS, loadSavedAvatar, saveAvatar, type AvatarId } from "./components/AnimalAvatar.tsx";
+import { AvatarPickerModal } from "./components/AvatarPickerModal.tsx";
 import { CourseDetailView } from "./components/CourseDetailView.tsx";
 import { DEFAULT_FORM_STATE, FormWizard, type FormState } from "./components/FormWizard.tsx";
 import { HomeView } from "./components/HomeView.tsx";
@@ -114,6 +115,7 @@ function AppShell() {
     if (localAv && AVATARS.some((a) => a.id === localAv)) return localAv;
     return loadSavedAvatar(supabaseEnabled ? null : (getLocalAuthUser()?.email ?? null));
   });
+  const [showAvatarPopup, setShowAvatarPopup] = useState(false);
   const [hashState, setHashState] = useState(() => parseHash());
   const [report, setReport] = useState<RecommendationReport | null>(() => loadReport());
   const [restoringResults, setRestoringResults] = useState<boolean>(
@@ -157,15 +159,22 @@ function AppShell() {
         setAvatarId(av);
         saveAvatar(av);
       }
+      if (user && !user.user_metadata?.avatar_locked) {
+        setShowAvatarPopup(true);
+      }
     });
 
     const { data: sub } = sb.auth.onAuthStateChange((_event, session) => {
-      setHasAccount(Boolean(session?.user));
-      setUserEmail(session?.user?.email ?? null);
-      const av = session?.user?.user_metadata?.avatar as AvatarId | undefined;
+      const user = session?.user ?? null;
+      setHasAccount(Boolean(user));
+      setUserEmail(user?.email ?? null);
+      const av = user?.user_metadata?.avatar as AvatarId | undefined;
       if (av && AVATARS.some((a) => a.id === av)) {
         setAvatarId(av);
         saveAvatar(av);
+      }
+      if (user && !user.user_metadata?.avatar_locked) {
+        setShowAvatarPopup(true);
       }
     });
     return () => sub.subscription.unsubscribe();
@@ -248,7 +257,7 @@ function AppShell() {
     activeRoute = "lang";
   } else if (!signedIn && activeRoute !== "lang" && activeRoute !== "home" && activeRoute !== "signin") {
     activeRoute = "home";
-  } else if (signedIn && activeRoute === "home") {
+  } else if (signedIn && (activeRoute === "home" || activeRoute === "signin")) {
     activeRoute = report ? "results" : "form";
   }
 
@@ -286,12 +295,15 @@ function AppShell() {
     return (
       <>
         <SignInView
-          onSignedIn={(signedInEmail, signedInAvatar) => {
+          onSignedIn={(signedInEmail, signedInAvatar, isNewAccount) => {
             setHasAccount(true);
             if (signedInEmail) setUserEmail(signedInEmail);
             if (signedInAvatar && AVATARS.some((a) => a.id === signedInAvatar)) {
               setAvatarId(signedInAvatar);
               saveAvatar(signedInAvatar);
+            }
+            if (isNewAccount) {
+              setShowAvatarPopup(true);
             }
             navigate("#/form");
           }}
@@ -415,6 +427,16 @@ function AppShell() {
       <Shell active={activeRoute} me={me} avatarId={avatarId} onNavigate={navigate}>
         {content}
       </Shell>
+      {showAvatarPopup && (
+        <AvatarPickerModal
+          initialAvatar={avatarId}
+          onSaved={(chosen) => {
+            setAvatarId(chosen);
+            setShowAvatarPopup(false);
+          }}
+          onToast={showToast}
+        />
+      )}
       <div id="toast" className={toastMsg ? "show" : ""} role="status">
         {toastMsg ?? ""}
       </div>

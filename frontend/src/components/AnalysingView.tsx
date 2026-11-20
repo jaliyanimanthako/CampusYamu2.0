@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ANALYSING_AGENTS, pad2 } from "../utils/course.ts";
+import { FigureImg } from "./BrandMark.tsx";
 
 interface AnalysingViewProps {
   isDone: boolean;
@@ -96,9 +97,7 @@ export function AnalysingView({ isDone, onCompleteAnimation }: AnalysingViewProp
           </div>
         </div>
         <div className="side fig-side">
-          <div className="fig">
-            <img src="/figures/analysing.webp" alt="" />
-          </div>
+          <FigureImg name="analysing" />
         </div>
       </div>
     </section>

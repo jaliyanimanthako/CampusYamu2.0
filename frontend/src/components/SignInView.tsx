@@ -7,12 +7,12 @@ import {
 } from "../auth/supabase.ts";
 import { useMockupI18n } from "../i18n/mockupI18n.tsx";
 import { ThemeToggleButton } from "../theme/appTheme.tsx";
-import { AnimalAvatar, AVATARS, type AvatarId } from "./AnimalAvatar.tsx";
-import { ArrowRightIcon, BrandMark } from "./BrandMark.tsx";
+import { type AvatarId } from "./AnimalAvatar.tsx";
+import { ArrowRightIcon, BrandMark, FigureImg } from "./BrandMark.tsx";
 import { LangMenu } from "./LangMenu.tsx";
 
 interface SignInViewProps {
-  onSignedIn: (email?: string, avatar?: AvatarId) => void;
+  onSignedIn: (email?: string, avatar?: AvatarId, isNewAccount?: boolean) => void;
   onContinueGuest?: () => void;
   onBackHome: () => void;
   onToast: (msg: string) => void;
@@ -29,7 +29,6 @@ export function SignInView({
 
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [name, setName] = useState("");
-  const [avatar, setAvatar] = useState<AvatarId>("fox");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -75,17 +74,14 @@ export function SignInView({
             return;
           }
           const metaAvatar = data.user?.user_metadata?.avatar as AvatarId | undefined;
-          onSignedIn(data.user?.email ?? trimmedEmail, metaAvatar);
+          onSignedIn(data.user?.email ?? trimmedEmail, metaAvatar, false);
         } else {
           const { data, error } = await sb.auth.signUp({
             email: trimmedEmail,
             password,
             options: {
               emailRedirectTo: window.location.origin + window.location.pathname,
-              data: {
-                ...(name.trim() ? { full_name: name.trim() } : {}),
-                avatar,
-              },
+              data: name.trim() ? { full_name: name.trim() } : undefined,
             },
           });
           if (error) {
@@ -93,7 +89,7 @@ export function SignInView({
             return;
           }
           if (data.session) {
-            onSignedIn(data.user?.email ?? trimmedEmail, avatar);
+            onSignedIn(data.user?.email ?? trimmedEmail, undefined, true);
           } else {
             setNotice(
               `Account created! Check ${trimmedEmail} for a confirmation link, then sign in.`,
@@ -111,10 +107,9 @@ export function SignInView({
                 email: trimmedEmail,
                 password,
                 name: name.trim(),
-                avatar,
               });
         setLocalAuthSession(res.access_token, res.user);
-        onSignedIn(res.user.email, (res.user.avatar as AvatarId | undefined) ?? avatar);
+        onSignedIn(res.user.email, res.user.avatar as AvatarId | undefined, mode === "signup");
       }
     } catch (err) {
       onToast(err instanceof Error ? err.message : t("error"));
@@ -126,6 +121,28 @@ export function SignInView({
   const switchMode = (next: "signin" | "signup") => {
     setMode(next);
     setNotice(null);
+  };
+
+  const handleGoogleSignIn = async () => {
+    const sb = getSupabase();
+    if (!sb) return;
+    setBusy(true);
+    setNotice(null);
+    try {
+      const { error } = await sb.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin + window.location.pathname,
+        },
+      });
+      if (error) {
+        onToast(error.message);
+        setBusy(false);
+      }
+    } catch (err) {
+      onToast(err instanceof Error ? err.message : t("error"));
+      setBusy(false);
+    }
   };
 
   return (
@@ -167,38 +184,18 @@ export function SignInView({
 
             <form onSubmit={handleSubmit} noValidate>
               {mode === "signup" && (
-                <>
-                  <div className="field">
-                    <span className="flabel">Choose your avatar</span>
-                    <div className="avatar-grid" role="group" aria-label="Choose your animal avatar">
-                      {AVATARS.map((av) => (
-                        <button
-                          key={av.id}
-                          type="button"
-                          className="avatar-opt"
-                          aria-pressed={avatar === av.id}
-                          onClick={() => setAvatar(av.id)}
-                        >
-                          <AnimalAvatar id={av.id} size={42} />
-                          <span>{av.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                    <span className="hint">Pick one now — it cannot be changed later.</span>
-                  </div>
-                  <div className="field">
-                    <label htmlFor="name">Name (optional)</label>
-                    <input
-                      className="input"
-                      id="name"
-                      type="text"
-                      autoComplete="name"
-                      placeholder="Your name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                  </div>
-                </>
+                <div className="field">
+                  <label htmlFor="name">Name (optional)</label>
+                  <input
+                    className="input"
+                    id="name"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Your name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
               )}
 
               <div className="field">
@@ -301,6 +298,35 @@ export function SignInView({
 
               <div className="divider">{t("or")}</div>
 
+              {supabaseOn && (
+                <button
+                  className="btn outline block"
+                  type="button"
+                  disabled={busy}
+                  onClick={() => void handleGoogleSignIn()}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      fill="#4285F4"
+                      d="M23.52 12.27c0-.85-.08-1.68-.22-2.48H12v4.69h6.46a5.52 5.52 0 0 1-2.39 3.62v3.01h3.87c2.26-2.08 3.58-5.15 3.58-8.84z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 24c3.24 0 5.95-1.07 7.94-2.91l-3.87-3.01c-1.07.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.1A12 12 0 0 0 12 24z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.27 14.27A7.2 7.2 0 0 1 4.89 12c0-.79.14-1.56.38-2.27v-3.1H1.27A12 12 0 0 0 0 12c0 1.94.46 3.77 1.27 5.37l4-3.1z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 4.77c1.76 0 3.34.61 4.58 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.27 6.63l4 3.1C6.22 6.88 8.87 4.77 12 4.77z"
+                    />
+                  </svg>
+                  Continue with Google
+                </button>
+              )}
+
               {mode === "signin" ? (
                 <button
                   className="btn outline block"
@@ -340,9 +366,7 @@ export function SignInView({
             </form>
           </div>
           <div className="side fig-side">
-            <div className="fig">
-              <img src="/figures/signin.webp" alt="" />
-            </div>
+            <FigureImg name="signin" />
           </div>
         </div>
       </section>

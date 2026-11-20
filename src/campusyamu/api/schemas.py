@@ -214,3 +214,7 @@ class AuthResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: AuthUser
+
+
+class SetAvatarRequest(BaseModel):
+    avatar: str = Field(min_length=1, max_length=32)
