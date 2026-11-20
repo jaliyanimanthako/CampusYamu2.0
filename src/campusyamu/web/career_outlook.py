@@ -24,7 +24,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Sequence
 
-from campusyamu.core import settings
+from campusyamu.core import settings, tracing
 
 from campusyamu.core.paths import CACHE_DIR
 
@@ -133,7 +133,8 @@ class CareerResearchJobs:
     def status(self, course: str) -> dict[str, Any] | None:
         return self.jobs.get(slug(course))
 
-    def start(self, course: str, offering: dict[str, Any] | None = None) -> tuple[bool, str]:
+    def start(self, course: str, offering: dict[str, Any] | None = None,
+              user_id: str | None = None) -> tuple[bool, str]:
         full = bool(offering and offering.get("uni_code") and self.websites is not None and self.websites.enabled)
         with self.lock:
             busy = [j for j in self.jobs.values() if j["state"] == "running"]
@@ -143,7 +144,15 @@ class CareerResearchJobs:
                    "scope": "course" if full else "career"}
             self.jobs[slug(course)] = job
         target, args = (self._run_full, (dict(offering), job)) if full else (self._run, (course, job))
-        threading.Thread(target=target, args=args, daemon=True).start()
+
+        def traced() -> None:                           # one "career research" trace per job
+            with tracing.observe("career research", as_type="agent", user_id=user_id,
+                                 input={"course": course, **({"offering": offering} if full else {})}) as trace:
+                target(*args)
+                trace.update(output={k: job.get(k) for k in ("state", "message", "parts") if job.get(k)},
+                             level="ERROR" if job.get("state") == "failed" else None)
+
+        threading.Thread(target=traced, daemon=True).start()
         return True, "started"
 
     def _run_full(self, offering: dict[str, Any], job: dict[str, Any]) -> None:

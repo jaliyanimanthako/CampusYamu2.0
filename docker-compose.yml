@@ -25,6 +25,7 @@ x-app: &app
   environment:
     CAMPUSYAMU_HOME: /app
     NEO4J_URI: ${NEO4J_URI_DOCKER:-bolt://host.docker.internal:7687}
+    LANGFUSE_HOST: ${LANGFUSE_HOST_DOCKER:-http://host.docker.internal:3000}   # tracing only with LANGFUSE_* keys
   extra_hosts:
     - "host.docker.internal:host-gateway"   # Linux; Docker Desktop (Mac, Windows) has it already
   volumes:

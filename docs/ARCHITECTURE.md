@@ -104,6 +104,12 @@ replies translated back, so callers never branch. Keys live in `.env`; models ar
 `models.<provider>.<role>` in `config/settings.yaml`. Handbook search keeps every provider's vectors
 (one Neo4j index each) and queries the `llm.embedding_provider` one (Groq has no embeddings).
 
+Tracing (`core/tracing.py`, optional): with `LANGFUSE_*` keys in `.env`, `llm.post_responses`,
+`llm.chat_completions`, the embedders and Gemini Decision each record one Langfuse generation
+(named from the caller's user agent, e.g. `CourseChat: course_answer`; tokens and cost included),
+nested under one trace per API request (`chat`, `recommendations`, `career research`) that carries
+the student's id. Thread pools hand work over with `tracing.bind(fn)` so it stays in that trace.
+
 ## API and web page
 
 `python -m campusyamu.api` (port 8780) is the only backend: a FastAPI service

@@ -90,7 +90,7 @@ class FakeJobs:
     def __init__(self) -> None:
         self.started: list[str] = []
 
-    def start(self, course, offering=None):
+    def start(self, course, offering=None, user_id=None):
         self.started.append(course)
         return True, "started"
 

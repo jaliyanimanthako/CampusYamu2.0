@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from typing import Any, Callable
 
+from campusyamu.core import tracing
 from .analysis_guardrails import drop_items, specificity_problems, strip_offending
 from .analytics_evidence import (
     build_evidence_packet,
@@ -70,7 +71,7 @@ class FutureCareerAnalyticsAgent:
                     {"event": "course_started", "course": course_name},
                 )
                 future = executor.submit(
-                    self._analyze_course,
+                    tracing.bind(self._analyze_course),
                     course,
                     web_result.get("generated_at"),
                     region,

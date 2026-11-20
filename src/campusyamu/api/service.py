@@ -13,7 +13,7 @@ from typing import Any
 
 from campusyamu.agents.course_finder.finder import AL_GRADES, OL_GRADES, CourseFinder
 from campusyamu.agents.preference import engine_available, preference_engine
-from campusyamu.core import llm
+from campusyamu.core import llm, tracing
 from campusyamu.knowledge_graph.al_clause_parsers import canonical_subject
 from campusyamu.knowledge_graph.handbook_prose import OWNER_INTERPRETATIONS
 from campusyamu.memory import ChatMemory
@@ -155,14 +155,25 @@ class AdvisorService:
             return 400, {"errors": ["Career research needs " + ", ".join(missing) + " in .env"]}
         if over := self.limits.check(user_id, "research"):
             return 429, {"errors": [over]}
-        started, message = self.career_jobs.start(course)
+        started, message = self.career_jobs.start(course, user_id=user_id)
         if started:
             self.limits.record(user_id, "research")
         return (202 if started else 409), {"message": message, **self.career(course)}
 
     def ask(self, body: dict[str, Any], user_id: str | None = None) -> tuple[int, dict[str, Any]]:
-        """One chat question. With user_id (a signed-in student) the server's memory replaces `history`."""
+        """One chat question. With user_id (a signed-in student) the server's memory replaces `history`.
+        Traced as one "chat" trace per question (Langfuse, when configured); session = student + course."""
 
+        uni = str(body.get("uni_code") or (body.get("course") or {}).get("uni_code") or "")
+        with tracing.observe("chat", user_id=user_id, session_id=f"{user_id}:{uni}" if user_id and uni else None,
+                             input=body.get("question"), metadata={"uni_code": uni or None}) as trace:
+            status, result = self._ask(body, user_id)
+            trace.update(output=result.get("answer") if status == 200 else result,
+                         metadata={"uni_code": uni or None, "http_status": status, "status": result.get("status")},
+                         level="WARNING" if status >= 400 else None)
+            return status, result
+
+    def _ask(self, body: dict[str, Any], user_id: str | None) -> tuple[int, dict[str, Any]]:
         if not self.options["llm_available"]:
             return 400, {"errors": [f"The course chat needs {llm.key_name()} in .env"]}
         course = body.get("course") or {}
@@ -191,7 +202,7 @@ class AdvisorService:
                 result["notes"].append(over)
             else:                                       # careers + the university website + specialisations
                 offering = {k: course.get(k) for k in ("uni_code", "course_code", "course_name", "university")}
-                started, message = self.career_jobs.start(name, offering)
+                started, message = self.career_jobs.start(name, offering, user_id=user_id)
                 if started:
                     self.limits.record(user_id, "research")
                 else:
@@ -267,7 +278,13 @@ class AdvisorService:
             suggestions = 20
         if use_llm and (over := self.limits.check(user_id, "ai_recommendations")):
             return 429, {"errors": [over + " Untick \"Use AI\" to search without it."]}
-        state = run_pipeline(inputs, self.pipeline(use_llm, suggestions))
+        with tracing.observe("recommendations", as_type="chain", user_id=user_id,
+                             input={k: v for k, v in inputs.items() if k != "preferences"} | {
+                                 "preferences": inputs["preferences"] or None, "use_llm": use_llm}) as trace:
+            state = run_pipeline(inputs, self.pipeline(use_llm, suggestions))
+            trace.update(output={"errors": state.get("errors") or None,
+                                 "counts": (state.get("report") or {}).get("counts")},
+                         level="WARNING" if state.get("errors") else None)
         if state.get("errors"):
             return 400, {"errors": state["errors"]}
         if use_llm:

@@ -100,7 +100,7 @@ class StartOnRequestTests(unittest.TestCase):
 
     def setUp(self) -> None:
         self.started = []
-        self.web.career_jobs.start = lambda course, offering=None: (self.started.append((course, offering))
+        self.web.career_jobs.start = lambda course, offering=None, user_id=None: (self.started.append((course, offering))
                                                                     or (True, "started"))
         self.web.career_jobs.status = lambda course: None
 

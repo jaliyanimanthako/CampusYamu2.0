@@ -22,6 +22,7 @@ from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any
 
+from campusyamu.core import tracing
 from campusyamu.core.paths import CACHE_DIR
 
 from .firecrawl import WebSearchCrawler
@@ -118,8 +119,8 @@ class CareerDiscovery:
                 )
 
         with ThreadPoolExecutor(max_workers=3) as pool:
-            careers = pool.submit(self._pages, discovery_query(course, region))
-            trends = [pool.submit(self._pages, query) for query in trends_queries(course)]
+            careers = pool.submit(tracing.bind(self._pages), discovery_query(course, region))
+            trends = [pool.submit(tracing.bind(self._pages), query) for query in trends_queries(course)]
             documents = careers.result()
             for future in trends:
                 try:
