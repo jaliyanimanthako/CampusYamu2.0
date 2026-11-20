@@ -141,6 +141,8 @@ b, strong { font-weight: 700; }
 .avatar-opt:hover { transform: translateY(-2px); color: var(--ink); }
 .avatar-opt[aria-pressed="true"] { border-color: var(--blue); color: var(--blue-ink); }
 .profile-head { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.modal-backdrop { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px; background: color-mix(in srgb, #0B0E2B 58%, transparent); backdrop-filter: blur(4px); animation: viewIn .25s var(--ease) both; }
+.modal-card { width: 100%; max-width: 520px; padding: clamp(24px, 4vw, 34px); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow-hover); display: grid; gap: 16px; }
 main.page { padding: 52px 0 120px; }
 
 /* ---------- primitives ---------- */

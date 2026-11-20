@@ -155,6 +155,7 @@ class LocalAuthStore:
                     email TEXT UNIQUE NOT NULL,
                     name TEXT NOT NULL DEFAULT '',
                     avatar TEXT NOT NULL DEFAULT 'fox',
+                    avatar_locked INTEGER NOT NULL DEFAULT 0,
                     password_hash TEXT NOT NULL,
                     created_at TEXT NOT NULL
                 )
@@ -163,6 +164,8 @@ class LocalAuthStore:
             cols = {row["name"] for row in conn.execute("PRAGMA table_info(accounts)").fetchall()}
             if "avatar" not in cols:
                 conn.execute("ALTER TABLE accounts ADD COLUMN avatar TEXT NOT NULL DEFAULT 'fox'")
+            if "avatar_locked" not in cols:
+                conn.execute("ALTER TABLE accounts ADD COLUMN avatar_locked INTEGER NOT NULL DEFAULT 0")
 
     def _issue_token(self, user_id: str, email: str, name: str) -> str:
         now = int(time.time())
@@ -223,6 +226,23 @@ class LocalAuthStore:
             "token_type": "bearer",
             "user": {"id": row["id"], "email": row["email"], "name": row["name"], "avatar": row["avatar"]},
         }
+
+    def set_avatar(self, user_id: str, avatar: str) -> dict[str, Any]:
+        clean_avatar = avatar.strip().lower() or "fox"
+        with self._connect() as conn:
+            row = conn.execute(
+                "SELECT id, email, name, avatar, avatar_locked FROM accounts WHERE id = ?",
+                (user_id,),
+            ).fetchone()
+            if row is None:
+                raise AuthError("Account not found")
+            if row["avatar_locked"]:
+                raise AccountExistsError("Avatar has already been set and cannot be changed")
+            conn.execute(
+                "UPDATE accounts SET avatar = ?, avatar_locked = 1 WHERE id = ?",
+                (clean_avatar, user_id),
+            )
+            return {"id": row["id"], "email": row["email"], "name": row["name"], "avatar": clean_avatar}
 
     def user_id(self, token: str) -> str:
         try:

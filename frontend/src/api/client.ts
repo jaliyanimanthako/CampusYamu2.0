@@ -8,6 +8,7 @@ import {
 } from "./mockData.ts";
 import type {
   AuthResponse,
+  AuthUser,
   CareerResearchRequest,
   CareerResearchResponse,
   CareerStatus,
@@ -340,6 +341,14 @@ export function postSignIn(payload: {
     method: "POST",
     includeApiKey: false,
     body: JSON.stringify(payload),
+    timeoutMs: DEFAULT_TIMEOUT_MS,
+  });
+}
+
+export function postSetAvatar(avatar: string): Promise<AuthUser> {
+  return apiRequest<AuthUser>("/v1/auth/avatar", {
+    method: "POST",
+    body: JSON.stringify({ avatar }),
     timeoutMs: DEFAULT_TIMEOUT_MS,
   });
 }

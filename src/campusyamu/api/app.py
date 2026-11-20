@@ -203,6 +203,16 @@ def create_app(service_factory: Callable[[], Any] | None = None, auth: SupabaseA
         except AuthError as exc:
             raise StarletteHTTPException(401, str(exc)) from exc
 
+    @v1.post("/auth/avatar", response_model=s.AuthUser, tags=["auth"])
+    async def auth_set_avatar(body: s.SetAvatarRequest, user: str = Depends(signed_in_user)) -> dict[str, Any]:
+        """Set the local student's avatar once after account creation."""
+        try:
+            return app.state.local_auth.set_avatar(user, body.avatar)
+        except AccountExistsError as exc:
+            raise StarletteHTTPException(409, str(exc)) from exc
+        except AuthError as exc:
+            raise StarletteHTTPException(401, str(exc)) from exc
+
     @v1.get("/options", response_model=s.Options, tags=["form"])
     async def options() -> dict[str, Any]:
         """Values for the student form. Load once at app start."""

@@ -7,12 +7,12 @@ import {
 } from "../auth/supabase.ts";
 import { useMockupI18n } from "../i18n/mockupI18n.tsx";
 import { ThemeToggleButton } from "../theme/appTheme.tsx";
-import { AnimalAvatar, AVATARS, type AvatarId } from "./AnimalAvatar.tsx";
+import { type AvatarId } from "./AnimalAvatar.tsx";
 import { ArrowRightIcon, BrandMark } from "./BrandMark.tsx";
 import { LangMenu } from "./LangMenu.tsx";
 
 interface SignInViewProps {
-  onSignedIn: (email?: string, avatar?: AvatarId) => void;
+  onSignedIn: (email?: string, avatar?: AvatarId, isNewAccount?: boolean) => void;
   onContinueGuest?: () => void;
   onBackHome: () => void;
   onToast: (msg: string) => void;
@@ -29,7 +29,6 @@ export function SignInView({
 
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [name, setName] = useState("");
-  const [avatar, setAvatar] = useState<AvatarId>("fox");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -75,17 +74,14 @@ export function SignInView({
             return;
           }
           const metaAvatar = data.user?.user_metadata?.avatar as AvatarId | undefined;
-          onSignedIn(data.user?.email ?? trimmedEmail, metaAvatar);
+          onSignedIn(data.user?.email ?? trimmedEmail, metaAvatar, false);
         } else {
           const { data, error } = await sb.auth.signUp({
             email: trimmedEmail,
             password,
             options: {
               emailRedirectTo: window.location.origin + window.location.pathname,
-              data: {
-                ...(name.trim() ? { full_name: name.trim() } : {}),
-                avatar,
-              },
+              data: name.trim() ? { full_name: name.trim() } : undefined,
             },
           });
           if (error) {
@@ -93,7 +89,7 @@ export function SignInView({
             return;
           }
           if (data.session) {
-            onSignedIn(data.user?.email ?? trimmedEmail, avatar);
+            onSignedIn(data.user?.email ?? trimmedEmail, undefined, true);
           } else {
             setNotice(
               `Account created! Check ${trimmedEmail} for a confirmation link, then sign in.`,
@@ -111,10 +107,9 @@ export function SignInView({
                 email: trimmedEmail,
                 password,
                 name: name.trim(),
-                avatar,
               });
         setLocalAuthSession(res.access_token, res.user);
-        onSignedIn(res.user.email, (res.user.avatar as AvatarId | undefined) ?? avatar);
+        onSignedIn(res.user.email, res.user.avatar as AvatarId | undefined, mode === "signup");
       }
     } catch (err) {
       onToast(err instanceof Error ? err.message : t("error"));
@@ -167,38 +162,18 @@ export function SignInView({
 
             <form onSubmit={handleSubmit} noValidate>
               {mode === "signup" && (
-                <>
-                  <div className="field">
-                    <span className="flabel">Choose your avatar</span>
-                    <div className="avatar-grid" role="group" aria-label="Choose your animal avatar">
-                      {AVATARS.map((av) => (
-                        <button
-                          key={av.id}
-                          type="button"
-                          className="avatar-opt"
-                          aria-pressed={avatar === av.id}
-                          onClick={() => setAvatar(av.id)}
-                        >
-                          <AnimalAvatar id={av.id} size={42} />
-                          <span>{av.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                    <span className="hint">Pick one now — it cannot be changed later.</span>
-                  </div>
-                  <div className="field">
-                    <label htmlFor="name">Name (optional)</label>
-                    <input
-                      className="input"
-                      id="name"
-                      type="text"
-                      autoComplete="name"
-                      placeholder="Your name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                  </div>
-                </>
+                <div className="field">
+                  <label htmlFor="name">Name (optional)</label>
+                  <input
+                    className="input"
+                    id="name"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Your name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
               )}
 
               <div className="field">
