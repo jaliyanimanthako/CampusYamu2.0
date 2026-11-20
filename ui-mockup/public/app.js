@@ -157,12 +157,15 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape") $$(".lang-
 // Drop illustrations into public/figures/ as <name>.webp, .png or .svg (see figures/README.md).
 // The server lists what exists (/figures.json), so only real files are requested. Missing
 // required slots show a labelled placeholder; missing optional ones (course cards) render nothing.
+// A <name>.dark.webp next to a figure replaces it in dark mode (CSS picks which one shows).
 let FIGS = {};
 const fig = (name, label, { optional = false } = {}) => {
-  const file = FIGS[name];
+  const file = FIGS[name], dark = FIGS[name + ".dark"]; // <name>.dark.webp shows in dark mode
   if (!file && optional) return "";
   return file
-    ? `<div class="fig"><img src="/figures/${esc(file)}" alt="" loading="lazy"></div>`
+    ? dark
+      ? `<div class="fig has-dark"><img class="fig-l" src="/figures/${esc(file)}" alt="" loading="lazy"><img class="fig-d" src="/figures/${esc(dark)}" alt="" loading="lazy"></div>`
+      : `<div class="fig"><img src="/figures/${esc(file)}" alt="" loading="lazy"></div>`
     : `<div class="fig missing"><div class="fig-ph"><span class="spot"></span><b>${esc(label)}</b><span class="mono">figures/${name}.webp</span></div></div>`;
 };
 // which course-area figure a course gets

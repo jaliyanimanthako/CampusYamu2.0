@@ -17,6 +17,12 @@ figure panels, so images blend in. About 1500 px wide, `.webp`, `.png` or `.svg`
 | `area-arts` | 3:2 | Arts, law, languages, media… |
 | `area-science` | 3:2 | Everything else (physical/biological science, agriculture…) |
 
+Dark mode: each figure has a `<name>.dark.webp` copy, the same drawing on a flat royal-blue
+`#6880EE` background. In dark mode the app shows that copy on a `#6880EE` panel (`--fig-bg-dk`
+in `../styles.css`). Only the copy for the current mode is downloaded. A figure without a
+`.dark` copy keeps its lilac version, slightly dimmed. A new dark copy must use exactly
+`#6880EE` for its background, or change `--fig-bg-dk` to match.
+
 A missing figure shows a placeholder (hidden on course cards). The server lists what
 exists at `/figures.json`. The course-to-area mapping is `area()` in `../app.js`.
 
