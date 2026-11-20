@@ -281,22 +281,21 @@ views.home = async () => {
       </section>
     </div>
 
-    <section class="l-how" id="l-how"><div class="wrap">
-      <span class="label reveal">${t("l.nav.how")}</span>
-      <h2 class="reveal" style="--i:1">${pair("l.howH")}</h2>
+    <section class="l-how" id="l-how" style="--n:${steps.length}"><div class="l-how-pin"><div class="wrap">
+      <span class="label">${t("l.nav.how")}</span>
+      <h2>${pair("l.howH")}</h2>
       <div class="l-how-grid">
         <div class="l-how-visual"><div class="card l-stage">
           <div class="l-stage-figs">${STEP_FIGS.map((f, i) => `<div class="l-stage-fig ${i === 0 ? "on" : ""}">${fig(f, f)}</div>`).join("")}</div>
           <div class="l-progress">${steps.map((_, i) => `<i class="${i === 0 ? "on" : ""}"><b></b></i>`).join("")}</div>
         </div></div>
         <div class="l-steps">${steps.map(([k, d], i) => `
-          <article class="l-step ${i === 0 ? "on" : ""}" data-i="${i}">
-            <div class="l-step-fig">${fig(STEP_FIGS[i], STEP_FIGS[i])}</div>
+          <article class="l-step ${i === 0 ? "on" : ""}" data-i="${i}" ${i === 0 ? "" : 'aria-hidden="true"'}>
             <span class="l-step-n"><span class="rule"></span>${t("step", { n: pad2(i + 1) })}</span>
             <h3>${k}</h3><p>${d}</p>
           </article>`).join("")}</div>
       </div>
-    </div></section>
+    </div></div></section>
 
     <section class="l-stats"><div class="wrap">
       <h2 class="reveal">${pair("l.statsH")}</h2>
@@ -357,15 +356,33 @@ views.home = async () => {
   // scroll buttons (the app uses the hash for routing, so these scroll instead of linking)
   $$("[data-scroll]").forEach((b) => b.addEventListener("click", () => $("#" + b.dataset.scroll)?.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" })));
 
-  // "how it works": the step in the middle of the screen picks the figure and the progress bar
-  const stepEls = $$(".l-step"), figEls = $$(".l-stage-fig"), bars = $$(".l-progress i");
+  // "how it works": the section is pinned to the screen while you scroll through it. How far you
+  // have scrolled picks the step; the new step slides up into place and the old one slides out above.
+  const how = $("#l-how"), stepEls = $$(".l-step"), figEls = $$(".l-stage-fig"), bars = $$(".l-progress i");
+  let cur = -1;
   const setStep = (n) => {
-    stepEls.forEach((el, i) => el.classList.toggle("on", i === n));
+    stepEls.forEach((el, i) => {
+      el.classList.toggle("on", i === n);
+      el.classList.toggle("past", i < n);
+      el.toggleAttribute("aria-hidden", i !== n);
+    });
     figEls.forEach((el, i) => el.classList.toggle("on", i === n));
-    bars.forEach((el, i) => { el.classList.toggle("done", i < n); el.classList.toggle("on", i === n); });
   };
-  const stepObs = new IntersectionObserver((entries) => entries.forEach((e) => e.isIntersecting && setStep(Number(e.target.dataset.i))), { rootMargin: "-45% 0px -45% 0px" });
-  stepEls.forEach((el) => stepObs.observe(el));
+  const onScroll = () => {
+    if (!how.isConnected) { removeEventListener("scroll", onScroll); removeEventListener("resize", onScroll); return; }
+    const r = how.getBoundingClientRect(), total = r.height - innerHeight;
+    const x = Math.min(1, Math.max(0, -r.top / total)) * stepEls.length; // 0 … number of steps
+    const n = Math.min(stepEls.length - 1, Math.floor(x));
+    if (n !== cur) { cur = n; setStep(n); }
+    // the current step's bar fills as you scroll through it; earlier bars are full
+    bars.forEach((el, i) => {
+      el.classList.toggle("done", i < n);
+      el.firstElementChild.style.width = i < n ? "100%" : i === n ? `${Math.max(6, Math.min(1, x - n) * 100)}%` : "0";
+    });
+  };
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  onScroll();
 
   // big numbers count up the first time they come into view
   const statObs = new IntersectionObserver((entries) => entries.forEach((e) => {
