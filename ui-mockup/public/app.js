@@ -107,7 +107,7 @@ function chooseLang(id) {
   setLang(id);
   langChosen = true;
   try { localStorage.setItem("cy.lang", id); } catch {}
-  if (location.hash.startsWith("#/lang")) location.hash = state.signedIn ? "#/results" : "#/signin";
+  if (location.hash.startsWith("#/lang")) location.hash = state.signedIn ? "#/results" : "#/home";
   else route();
 }
 document.addEventListener("click", (e) => {
@@ -239,10 +239,156 @@ views.lang = async () => {
   reveal();
 };
 
+// ----- landing page: what CampusYamu is, before sign-in. Sign in is a button, not a wall.
+// Numbers are real counts from the knowledge graph (data/processed/knowledge_graph/graph_data.json).
+const LANDING_STATS = [126, 261, 20, 25, 6, 3];
+const AREA_IDS = ["engineering", "medicine", "it", "management", "arts", "science"];
+const STEP_FIGS = ["signin", "analysing", "area-engineering", "empty-chats"];
+views.home = async () => {
+  const [hA, hB] = [t("l.h1a"), t("l.h1b")];
+  const pair = (k) => headline(...t(k));
+  const steps = t("l.steps"), areas = t("l.areas"), stats = t("l.stats");
+  app.innerHTML = `
+  <div class="landing view-enter">
+    <div class="wrap">
+      <header class="topbar"><div class="nav-inner">
+        ${brand("#/home")}
+        <nav class="nav">
+          <button type="button" data-scroll="l-how">${t("l.nav.how")}</button>
+          <button type="button" data-scroll="l-areas">${t("l.nav.areas")}</button>
+          <button type="button" data-scroll="l-faq">${t("l.nav.faq")}</button>
+        </nav>
+        <div class="nav-right">${langMenu()}<a class="btn sm" href="#/signin">${t("signin.btn")}</a></div>
+      </div></header>
+
+      <section class="l-hero">
+        <div class="l-hero-text">
+          <span class="l-kicker reveal">${I.spark}${t("l.kicker")}</span>
+          <h1 class="reveal" style="--i:1">${esc(hA)}<br><span class="accent">${esc(hB)}</span></h1>
+          <p class="l-sub reveal" style="--i:2">${t("l.sub")}</p>
+          <div class="l-cta reveal" style="--i:3">
+            <a class="btn" href="#/signin">${t("l.start")} ${I.ne}</a>
+            <button type="button" class="btn outline" data-scroll="l-how">${t("l.how")} ${I.down}</button>
+          </div>
+          <ul class="l-trust reveal" style="--i:4">${t("l.trust").map((x) => `<li>${I.check}${x}</li>`).join("")}</ul>
+        </div>
+        <div class="l-hero-art reveal" style="--i:2">
+          ${fig("signin", "Sign-in figure")}
+          <span class="float f1"><span class="chip blue">${t("chance", { band: bandLabel("strong") })}</span></span>
+          <span class="float f2"><b class="num">Z 1.5600</b></span>
+          <span class="float f3">${I.spark}<span>${t("min", { n: 19 })}</span></span>
+        </div>
+      </section>
+    </div>
+
+    <section class="l-how" id="l-how"><div class="wrap">
+      <span class="label reveal">${t("l.nav.how")}</span>
+      <h2 class="reveal" style="--i:1">${pair("l.howH")}</h2>
+      <div class="l-how-grid">
+        <div class="l-how-visual"><div class="card l-stage">
+          <div class="l-stage-figs">${STEP_FIGS.map((f, i) => `<div class="l-stage-fig ${i === 0 ? "on" : ""}">${fig(f, f)}</div>`).join("")}</div>
+          <div class="l-progress">${steps.map((_, i) => `<i class="${i === 0 ? "on" : ""}"><b></b></i>`).join("")}</div>
+        </div></div>
+        <div class="l-steps">${steps.map(([k, d], i) => `
+          <article class="l-step ${i === 0 ? "on" : ""}" data-i="${i}">
+            <div class="l-step-fig">${fig(STEP_FIGS[i], STEP_FIGS[i])}</div>
+            <span class="l-step-n"><span class="rule"></span>${t("step", { n: pad2(i + 1) })}</span>
+            <h3>${k}</h3><p>${d}</p>
+          </article>`).join("")}</div>
+      </div>
+    </div></section>
+
+    <section class="l-stats"><div class="wrap">
+      <h2 class="reveal">${pair("l.statsH")}</h2>
+      <div class="l-bento">${LANDING_STATS.map((n, i) => `
+        <div class="card l-tile t${i} reveal" style="--i:${i}"><span class="dash"></span>
+          <b class="num" data-to="${n}">0</b><span>${stats[i]}</span>${i === 5 ? `<span class="l-langs">${LANGS.map((l) => `<span lang="${l.id}">${l.name}</span>`).join("")}</span>` : ""}</div>`).join("")}</div>
+    </div></section>
+
+    <section class="l-areas" id="l-areas"><div class="wrap">
+      <span class="label reveal">${t("l.nav.areas")}</span>
+      <h2 class="reveal" style="--i:1">${pair("l.areasH")}</h2>
+      <div class="l-area-row reveal" style="--i:2">${AREA_IDS.map((id, i) => `
+        <button type="button" class="l-area ${i === 0 ? "on" : ""}" data-area="${id}">
+          ${fig("area-" + id, id)}
+          <span class="l-area-text"><b>${areas[id][0]}</b><span>${areas[id][1]}</span></span>
+        </button>`).join("")}</div>
+    </div></section>
+
+    <section class="l-chat"><div class="wrap l-chat-grid">
+      <div>
+        <span class="label reveal">${t("l.chatLabel")}</span>
+        <h2 class="reveal" style="--i:1">${pair("l.chatH")}</h2>
+        <p class="l-sub reveal" style="--i:2">${t("l.chatP")}</p>
+        <ul class="l-promises">${t("l.promises").map(([k, d], i) => `
+          <li class="reveal" style="--i:${i + 3}"><span class="glyph g-${["si", "ta", "en"][i]}">${[I.check, I.spark, I.chat][i]}</span><div><b>${k}</b><span>${d}</span></div></li>`).join("")}</ul>
+      </div>
+      <div class="card l-chat-demo reveal" style="--i:2">
+        <div class="chat-head"><span class="bot-av">${I.spark}</span>
+          <div><b style="font-weight:600">${t("chat.title")}</b><div class="faint">${t("chat.sub")}</div></div></div>
+        <div class="l-chat-body">
+          <div class="msg user">${t("l.demoQ")}</div>
+          <div class="msg bot"><span class="who mono" lang="en">CampusYamu</span>
+            <div class="text" lang="en">Yes. Architecture needs a practical aptitude test before selection <span class="cite">S1</span>. Your Z-score is 0.08 above this year's estimated cut-off for your district <span class="cite">S2</span>.</div>
+            <div class="sources" lang="en"><span class="chip plain"><b class="mono">S1</b> Handbook · Architecture</span><span class="chip"><b class="mono">S2</b> Your saved search</span></div>
+            ${t("enOnly") ? `<div class="faint" style="margin-top:8px">${t("enOnly")}</div>` : ""}
+          </div>
+        </div>
+        <div class="composer"><textarea rows="1" disabled placeholder="${esc(t("ask.ph"))}" aria-label="${esc(t("ask.aria"))}"></textarea><span class="btn" aria-hidden="true">${I.send}</span></div>
+      </div>
+    </div></section>
+
+    <section class="l-faq" id="l-faq"><div class="wrap">
+      <h2 class="reveal">${pair("l.faqH")}</h2>
+      <div class="l-faq-list">${t("l.faq").map(([q, a], i) => `
+        <details class="reveal" style="--i:${i}" ${i === 0 ? "open" : ""}><summary>${q}<span class="pm" aria-hidden="true"></span></summary><p>${a}</p></details>`).join("")}</div>
+    </div></section>
+
+    <div class="wrap">
+      <section class="l-final reveal">
+        <div><h2>${t("l.ctaH")}</h2><p>${t("l.ctaP")}</p></div>
+        <a class="btn mustard" href="#/signin">${t("l.start")} ${I.ne}</a>
+      </section>
+      <footer class="l-foot">${brand("#/home")}<span class="faint">${t("l.foot")}</span></footer>
+    </div>
+  </div>`;
+  reveal();
+
+  // scroll buttons (the app uses the hash for routing, so these scroll instead of linking)
+  $$("[data-scroll]").forEach((b) => b.addEventListener("click", () => $("#" + b.dataset.scroll)?.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" })));
+
+  // "how it works": the step in the middle of the screen picks the figure and the progress bar
+  const stepEls = $$(".l-step"), figEls = $$(".l-stage-fig"), bars = $$(".l-progress i");
+  const setStep = (n) => {
+    stepEls.forEach((el, i) => el.classList.toggle("on", i === n));
+    figEls.forEach((el, i) => el.classList.toggle("on", i === n));
+    bars.forEach((el, i) => { el.classList.toggle("done", i < n); el.classList.toggle("on", i === n); });
+  };
+  const stepObs = new IntersectionObserver((entries) => entries.forEach((e) => e.isIntersecting && setStep(Number(e.target.dataset.i))), { rootMargin: "-45% 0px -45% 0px" });
+  stepEls.forEach((el) => stepObs.observe(el));
+
+  // big numbers count up the first time they come into view
+  const statObs = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    statObs.unobserve(e.target);
+    const el = e.target, to = Number(el.dataset.to);
+    if (REDUCED) { el.textContent = to; return; }
+    const t0 = performance.now(), dur = 900 + Math.min(700, to * 4);
+    const tick = (now) => { const p = Math.min(1, (now - t0) / dur); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 4))); if (p < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  }), { threshold: 0.6 });
+  $$(".l-tile b[data-to]").forEach((el) => statObs.observe(el));
+
+  // course areas: the card under the pointer (or focused) widens
+  const areaEls = $$(".l-area");
+  const openArea = (el) => areaEls.forEach((x) => x.classList.toggle("on", x === el));
+  areaEls.forEach((el) => { el.addEventListener("mouseenter", () => openArea(el)); el.addEventListener("focus", () => openArea(el)); el.addEventListener("click", () => openArea(el)); });
+};
+
 views.signin = async () => {
   app.innerHTML = `
   <div class="wrap"><section class="auth view-enter">
-    <div class="auth-top">${brand()}${langMenu()}</div>
+    <div class="auth-top">${brand("#/home")}${langMenu()}</div>
     <div class="card split">
       <div class="side">
         <span class="label">${t("signin.kicker")}</span>
@@ -837,7 +983,7 @@ views.me = async () => {
   afterPaint(() => $$(".meter .track i").forEach((el) => (el.style.width = `${el.dataset.w * 100}%`)));
   $("#signout").addEventListener("click", () => {
     state.signedIn = false; try { sessionStorage.removeItem("cy.signed"); } catch {}
-    location.hash = "#/signin";
+    location.hash = "#/home";
   });
 };
 
@@ -845,8 +991,9 @@ views.me = async () => {
 async function route() {
   const [, name = "", arg] = location.hash.split("/");
   if (!langChosen && name !== "lang") { location.hash = "#/lang"; return; }
-  if (name !== "lang" && !state.signedIn && name !== "signin") { location.hash = "#/signin"; return; }
-  const view = views[name] || (state.signedIn ? views.results : views.signin);
+  if (!state.signedIn && !["lang", "home", "signin"].includes(name)) { location.hash = "#/home"; return; }
+  if (state.signedIn && name === "home") { location.hash = "#/results"; return; } // signed in: straight to courses
+  const view = views[name] || (state.signedIn ? views.results : views.home);
   scrollTo({ top: 0 });
   try { await view(arg && decodeURIComponent(arg)); }
   catch (e) { console.error(e); toast(e.message || t("error")); }
