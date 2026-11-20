@@ -47,11 +47,23 @@ services:
       retries: 24
     restart: unless-stopped
 
-  web:                                    # the built-in web page (not needed for frontend work)
+  web:                                    # the React frontend (serves frontend/dist + /config.js)
     <<: *app
-    profiles: ["web"]
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      CAMPUSYAMU_HOME: /app
+      NEO4J_URI: ${NEO4J_URI_DOCKER:-bolt://host.docker.internal:7687}
+      CAMPUSYAMU_API_BASE_URL: ${CAMPUSYAMU_API_BASE_URL:-http://127.0.0.1:8780}
     ports:
       - "8770:8770"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8770/config.js', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      start_period: 10s
+      retries: 12
     restart: unless-stopped
 
   seed:                                   # one-off: docker compose run --rm seed

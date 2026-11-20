@@ -1,0 +1,542 @@
+{
+ "course": "Information and Communication Technology (ICT)",
+ "region": "Sri Lanka",
+ "generated_at": "2026-11-19T18:00:06.491727+00:00",
+ "status": "success",
+ "model": "gemini-3.5-flash",
+ "web_source": "TavilyClient",
+ "horizon_years": 5,
+ "collection": {
+  "retained_after_deduplication": 29,
+  "trusted_sources": 9,
+  "career_paths": [
+   "software developer",
+   "software engineer",
+   "network engineer",
+   "business analyst",
+   "systems analyst",
+   "applications programmer",
+   "database administrator"
+  ],
+  "emerging_areas": [
+   "artificial intelligence",
+   "generative ai",
+   "prompt engineering",
+   "cybersecurity",
+   "data engineering",
+   "internet of things"
+  ]
+ },
+ "analysis": {
+  "course": "Information and Communication Technology (ICT)",
+  "status": "success",
+  "analysis_context": {
+   "analysis_year": 2026,
+   "expected_entry_year": 2031,
+   "horizon_years": 5,
+   "evidence_collected_at": "2026-11-19T17:59:03.468101+00:00",
+   "confidence_ratings_lowered": 2,
+   "specificity_problems_found": 2,
+   "revised": true,
+   "generic_items_dropped": 0,
+   "advice_or_advert_sentences_removed": 0,
+   "remaining_problems": []
+  },
+  "evidence_synthesis": [
+   {
+    "theme": "Entry-Level Hiring Bottlenecks and AI Automation",
+    "key_details": [
+     "BLS projects software developer growth while entry-level job postings shrink",
+     "AI code generators like GitHub Copilot automate routine testing and boilerplate coding",
+     "Community discussions in Sri Lanka describe difficulty finding entry-level tech internships"
+    ],
+    "takeaway": "While general technology employment expands globally, automated tools handle basic coding tasks, narrowing traditional entry points for junior developers in Sri Lanka and globally.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E011",
+     "E012",
+     "E015"
+    ]
+   },
+   {
+    "theme": "Export Sector Growth and Foreign Currency Remote Work",
+    "key_details": [
+     "Sri Lanka EDB lists ICT/BPM as the second largest export earner",
+     "Over 500 tech companies operate locally",
+     "Remote platforms list opportunities paying in foreign currencies such as USD and GBP"
+    ],
+    "takeaway": "Sri Lanka's IT export industry offers opportunities to work for foreign clients or remote overseas employers earning foreign currency while living locally.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E005",
+     "E013",
+     "E018",
+     "E021"
+    ]
+   },
+   {
+    "theme": "Data Protection Regulatory Mandates",
+    "key_details": [
+     "Personal Data Protection Act (PDPA) No. 9 of 2022",
+     "Gazette Extraordinary No. 2498/16 sets enforcement for 1 January 2027",
+     "Requires Data Protection Officers (DPOs) and Data Protection Impact Assessments (DPIAs)"
+    ],
+    "takeaway": "Enforcement of Sri Lanka's PDPA creates legal requirements for tech organisations to hire specialists in data privacy management and compliance auditing.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E027",
+     "E028",
+     "E029"
+    ]
+   },
+   {
+    "theme": "Enterprise Software and Systems Integration Demand",
+    "key_details": [
+     "Local job boards feature openings for Oracle Fusion, SAP SD, Salesforce, and IFS ERP",
+     "Employers search for Business Analysts and Functional Consultants"
+    ],
+    "takeaway": "Sri Lankan tech employers regularly seek professionals proficient in implementing enterprise platforms alongside traditional software development.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E001",
+     "E009"
+    ]
+   },
+   {
+    "theme": "State University Seat Competition vs. Alternative Pathways",
+    "key_details": [
+     "UGC Sri Lanka statistics show fewer than 3,000 state university seats for CS and IT",
+     "State admissions rely on district Z-scores",
+     "Private universities offer UGC-approved and foreign franchised IT degrees"
+    ],
+    "takeaway": "Admission to state university ICT programmes remains highly competitive due to seat limits, leading many students to pursue private or transnational degree options.",
+    "agreement": "consistent",
+    "evidence_refs": [
+     "E006",
+     "E014"
+    ]
+   }
+  ],
+  "course_introduction": {
+   "overview": "Information and Communication Technology (ICT) focuses on software development, network infrastructure, database architecture, and digital system integration. Students learn to build applications, design computer networks, manage enterprise data, and solve computational problems across industries.",
+   "career_paths": [
+    {
+     "role": "Software Engineer",
+     "what_you_do": "Designs, writes, tests, and maintains application code and software systems."
+    },
+    {
+     "role": "Business Analyst",
+     "what_you_do": "Translates business requirements into technical specifications for software developers and enterprise systems."
+    },
+    {
+     "role": "Network Engineer",
+     "what_you_do": "Configures, maintains, and secures computer communication network infrastructure."
+    },
+    {
+     "role": "Cybersecurity Analyst",
+     "what_you_do": "Monitors systems for security threats, runs compliance checks, and protects digital assets."
+    },
+    {
+     "role": "Data Engineer",
+     "what_you_do": "Builds and manages automated data pipelines, databases, and analytical storage solutions."
+    }
+   ],
+   "evidence_refs": [
+    "E001",
+    "E004",
+    "E014",
+    "E016",
+    "E020"
+   ]
+  },
+  "future_swot": {
+   "strengths": [
+    {
+     "course_specifics": [
+      "EDB Sri Lanka",
+      "BPM export sector"
+     ],
+     "finding": "The national ICT sector functions as a major export earner according to EDB Sri Lanka, maintaining an established base of tech firms servicing global markets.",
+     "evidence_refs": [
+      "E018",
+      "E021"
+     ],
+     "reasoning_type": "direct_evidence",
+     "confidence": "medium"
+    },
+    {
+     "course_specifics": [
+      "Oracle Fusion",
+      "IFS ERP",
+      "Salesforce"
+     ],
+     "finding": "Strong local demand exists for technical roles supporting enterprise platforms like Oracle Fusion, IFS ERP, and Salesforce across multinational services.",
+     "evidence_refs": [
+      "E001",
+      "E009"
+     ],
+     "reasoning_type": "direct_evidence",
+     "confidence": "high"
+    }
+   ],
+   "weaknesses": [
+    {
+     "course_specifics": [
+      "GitHub Copilot",
+      "AI code tools"
+     ],
+     "finding": "Automated coding assistants like GitHub Copilot execute routine coding tasks, narrowing entry-level positions for junior graduates lacking system architecture experience.",
+     "evidence_refs": [
+      "E012",
+      "E015"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    },
+    {
+     "course_specifics": [
+      "UGC district Z-score",
+      "State university ICT seats"
+     ],
+     "finding": "State university seats for computer science and IT degrees are capped tightly relative to the annual candidate pool due to UGC district Z-score limits.",
+     "evidence_refs": [
+      "E006"
+     ],
+     "reasoning_type": "direct_evidence",
+     "confidence": "medium"
+    }
+   ],
+   "opportunities": [
+    {
+     "course_specifics": [
+      "Personal Data Protection Act (PDPA)",
+      "Data Protection Officer (DPO)"
+     ],
+     "finding": "Enforcement of Sri Lanka's Personal Data Protection Act (PDPA) starting 2027 requires businesses to engage technical professionals for Data Protection Officer (DPO) compliance.",
+     "evidence_refs": [
+      "E027",
+      "E028",
+      "E029"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "high"
+    },
+    {
+     "course_specifics": [
+      "USD/GBP remote jobs",
+      "DailyRemote"
+     ],
+     "finding": "International remote working platforms allow Sri Lanka-based developers to secure roles paying in foreign currencies such as USD or GBP.",
+     "evidence_refs": [
+      "E005",
+      "E013"
+     ],
+     "reasoning_type": "direct_evidence",
+     "confidence": "medium"
+    }
+   ],
+   "threats": [
+    {
+     "course_specifics": [
+      "Junior IT internships",
+      "DevOps"
+     ],
+     "finding": "Entry-level tech candidates face intense local competition for initial internships in software development and DevOps engineering, making early career entry challenging.",
+     "evidence_refs": [
+      "E011",
+      "E012"
+     ],
+     "reasoning_type": "forward_inference",
+     "confidence": "medium"
+    }
+   ]
+  },
+  "local_vs_overseas": {
+   "label": "overseas_stronger",
+   "explanation": "Global markets and remote international employers offer wider vacancy volumes and foreign currency pay compared to local Sri Lankan hiring limits.",
+   "evidence_refs": [
+    "E004",
+    "E005",
+    "E012",
+    "E013"
+   ]
+  },
+  "further_study": {
+   "role": "helpful",
+   "explanation": "Specialised certifications or postgraduate studies in cloud security and data engineering open higher-tier technical and compliance roles.",
+   "evidence_refs": [
+    "E015",
+    "E023"
+   ]
+  },
+  "niche_specialisations": [
+   {
+    "area": "Data Protection and Privacy Compliance (Sri Lanka PDPA)",
+    "why_it_matters": "Enforcement of Personal Data Protection Act No. 9 of 2022 from 2027 obliges Sri Lankan entities to manage legal data compliance and appoint Data Protection Officers.",
+    "evidence_refs": [
+     "E027",
+     "E028",
+     "E029"
+    ]
+   },
+   {
+    "area": "AI Data Infrastructure and Cloud Security",
+    "why_it_matters": "Growth in enterprise cloud adoption and regional AI infrastructure projects increases demand for zero-trust cybersecurity and system architecture expertise.",
+    "evidence_refs": [
+     "E022",
+     "E023",
+     "E026"
+    ]
+   }
+  ],
+  "overall_outlook": {
+   "label": "mixed",
+   "summary": "Based on what I found, entering the job market by 2031 offers foreign currency remote opportunities and emerging regulatory roles under Sri Lanka's Personal Data Protection Act (PDPA). However, entry-level candidates face pressure from automated tools like GitHub Copilot. Based on what I found, overseas opportunities are stronger than local ones. Current hiring patterns represent a snapshot of today that may shift before 2031.",
+   "evidence_refs": [
+    "E005",
+    "E012",
+    "E015",
+    "E027"
+   ],
+   "confidence": "medium"
+  },
+  "limitations": [
+   "Community forum findings regarding local internship challenges reflect small self-selected user experiences rather than comprehensive sector surveys.",
+   "Long-term local vacancy volume projections for specific software roles through 2031 remain unavailable in official national statistics."
+  ]
+ },
+ "evidence_index": [
+  {
+   "evidence_id": "E001",
+   "title": "Application System Analyst Jobs in Sri Lanka (466 Open Roles) | LinkedIn",
+   "url": "https://lk.linkedin.com/jobs/application-system-analyst-jobs?op=%2Fjobs%2Finformation-technology-application-analyst-jobs&countryRedirected=1",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "local_live_jobs"
+  },
+  {
+   "evidence_id": "E002",
+   "title": "Future of Work in Sri Lanka - ILO Research Repository",
+   "url": "https://researchrepository.ilo.org/esploro/fulltext/book/Future-of-work-in-Sri-Lanka/995219354202676?repId=12100697620002676&mId=13100779340002676&institution=41ILO_INST",
+   "source_tier": "global_official",
+   "trusted": true,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E003",
+   "title": "topjobs | Vacancy Browse",
+   "url": "https://www.topjobs.lk/applicant/vacancybyfunctionalarea.jsp?FA=SDQ",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E004",
+   "title": "Which Tech Career Path Is Right for You? Security vs Dev",
+   "url": "https://online.uwa.edu/news/cybersecurity-vs-software-engineering-career",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "global_outlook"
+  },
+  {
+   "evidence_id": "E005",
+   "title": "Remote Software Engineer Jobs in Sri Lanka | DailyRemote",
+   "url": "https://dailyremote.com/remote-software-engineer-jobs-in-sri-lanka",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "international_pathways"
+  },
+  {
+   "evidence_id": "E006",
+   "title": "After A/L ICT Results: The Sri Lanka Degree & Career Guide",
+   "url": "https://readclub.me/al-ict-degree-career-guide-sri-lanka",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "further_study"
+  },
+  {
+   "evidence_id": "E007",
+   "title": "78% of ICT jobs demand AI tech skills | Nebius Academy - LinkedIn",
+   "url": "https://www.linkedin.com/posts/nebius-academy_78-of-ict-jobs-demand-ai-tech-skills-activity-7401935031058984960-pbrg",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E008",
+   "title": "Career Opportunities in Sri Lanka | Find Your Spark",
+   "url": "https://careers.hcltech.com/go/Sri-Lanka/9555555",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "career_paths"
+  },
+  {
+   "evidence_id": "E009",
+   "title": "IT Job Search & Hiring | The IT Job Board of Sri Lanka – ITPro.lk",
+   "url": "https://itpro.lk",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_live_jobs"
+  },
+  {
+   "evidence_id": "E010",
+   "title": "(PDF) Changing Patterns of ICT Related Occupations in Labour Market of Sri Lanka",
+   "url": "https://www.academia.edu/29679067/Changing_Patterns_of_ICT_Related_Occupations_in_Labour_Market_of_Sri_Lanka",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E011",
+   "title": "The \"Intern Crisis\" in Sri Lanka isn't just the market or AI. It's ...",
+   "url": "https://www.reddit.com/r/srilanka/comments/1qgeo5t/unpopular_opinion_the_intern_crisis_in_sri_lanka",
+   "source_tier": "community_discussion",
+   "trusted": false,
+   "query_category": "local_challenges"
+  },
+  {
+   "evidence_id": "E012",
+   "title": "Will AI Replace Software Engineers? What the 2026 Data Shows | Extern",
+   "url": "https://www.extern.com/post/will-ai-replace-software-engineers-guide",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "global_outlook"
+  },
+  {
+   "evidence_id": "E013",
+   "title": "Remote Jobs for Sri Lankan Professionals",
+   "url": "https://www.imet.lk/blog/remote-jobs-for-sri-lankan-professionals",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "international_pathways"
+  },
+  {
+   "evidence_id": "E014",
+   "title": "Best IT Degrees in Sri Lanka | Study at NSBM Green University",
+   "url": "https://www.nsbm.ac.lk/best-it-degrees-in-sri-lanka",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "further_study"
+  },
+  {
+   "evidence_id": "E015",
+   "title": "Top Emerging Skills in Information Technology",
+   "url": "https://www.linkedin.com/top-content/technology/tech-skills-for-future-jobs/top-emerging-skills-in-information-technology",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E016",
+   "title": "IT and Network Industry Jobs in Sri Lanka [73+ Job Vacancies] | ikmanJobs",
+   "url": "https://ikman.lk/en/ads/sri-lanka/it-and-network-industry-jobs",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "career_paths"
+  },
+  {
+   "evidence_id": "E017",
+   "title": "Internship Jobs | IT, Software & Tech Careers in Sri Lanka - ITPro.lk",
+   "url": "https://itpro.lk/jobs/internship",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_live_jobs"
+  },
+  {
+   "evidence_id": "E018",
+   "title": "ICT Industry Information - Service Providers in Sri Lanka - EDB",
+   "url": "https://www.srilankabusiness.com/ict-services/about",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "local_market"
+  },
+  {
+   "evidence_id": "E019",
+   "title": "[February 2026] Tech Job Market Trends Monthly | Zero To Mastery",
+   "url": "https://zerotomastery.io/blog/tech-job-market-trends-monthly-february-2026",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "global_outlook"
+  },
+  {
+   "evidence_id": "E020",
+   "title": "Information Technology Jobs in Sri Lanka | PayScale",
+   "url": "https://www.payscale.com/research/LK/Job/Information-Technology",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "international_pathways"
+  },
+  {
+   "evidence_id": "E021",
+   "title": "Digital Transformation Service Offerings in KPO from Sri Lanka",
+   "url": "https://www.srilankabusiness.com/blog/digital-transformation-service-in-sri-lanka.html",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E022",
+   "title": "Huawei Unveils AI-Ready Infrastructure at Sri Lanka IT ...",
+   "url": "https://www.linkedin.com/posts/lankatalks_huawei-unveils-ai-ready-digital-infrastructure-activity-7440379579732758528-kHks",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E023",
+   "title": "Asia Cloud & Cyber Security Summit 2026",
+   "url": "https://accssummit.com",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E024",
+   "title": "Factum Perspectives: Data Centers, Climate Change, and Sri ...",
+   "url": "https://factum.lk/climate-and-environment/factum-perspectives-data-centers-climate-change-and-sri-lankas-digital-infrastructure-crossroads",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E025",
+   "title": "Sri Lanka's AI Data Centre Ambition: Resource Reality Check",
+   "url": "https://www.linkedin.com/posts/centre-for-a-smart-future_new-policy-note-a-resource-reality-check-activity-7417076830764953600-B9Pn",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E026",
+   "title": "AI Data Centers in Sri Lanka",
+   "url": "https://www.linkedin.com/pulse/ai-data-centers-sri-lanka-lakmal-embuldeniya-cluac",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E027",
+   "title": "Sri Lanka's PDPA Key Provisions to Come into Operation in 2027 | Adeona Technologies posted on the topic | LinkedIn",
+   "url": "https://www.linkedin.com/posts/adeona-technologies_the-data-protection-authority-of-sri-lanka-activity-7487800722051244035-Y0RT",
+   "source_tier": "local_live_jobs",
+   "trusted": true,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E028",
+   "title": "Sri Lanka PDPA 2027: Website Compliance Checklist",
+   "url": "https://microweb.global/sri-lanka-pdpa-website-compliance",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  },
+  {
+   "evidence_id": "E029",
+   "title": "Sri Lanka's PDPA Takes Effect January 1, 2027: What Global Enterprises Need to Know - Concentric AI",
+   "url": "https://concentric.ai/sri-lankas-pdpa-takes-effect-january-1-2027-what-global-enterprises-need-to-know",
+   "source_tier": "other",
+   "trusted": false,
+   "query_category": "emerging_specialisations"
+  }
+ ]
+}

@@ -133,18 +133,18 @@ docker-backend:
 	@echo "backend ready: http://127.0.0.1:8780   docs: http://127.0.0.1:8780/docs   OpenAPI: /openapi.json"
 
 docker-demo: docker-backend
-	$(COMPOSE) --profile web up -d web
-	@echo "web page: http://127.0.0.1:8770"
+	$(COMPOSE) up -d --wait web
+	@echo "frontend: http://127.0.0.1:8770"
 
 docker-up:
-	$(COMPOSE) --profile web up --build -d --wait api web
-	@echo "API: http://127.0.0.1:8780/docs   web page: http://127.0.0.1:8770"
+	$(COMPOSE) up --build -d --wait api web
+	@echo "API: http://127.0.0.1:8780/docs   frontend: http://127.0.0.1:8770"
 
 docker-seed:
 	$(COMPOSE) run --rm seed
 
 docker-down:
-	$(COMPOSE) --profile web down
+	$(COMPOSE) down
 
 docker-logs:
 	$(COMPOSE) logs -f api

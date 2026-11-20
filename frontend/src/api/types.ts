@@ -4,16 +4,26 @@ export type SubjectGrade = components["schemas"]["SubjectGrade"];
 export type RecommendationRequest = components["schemas"]["RecommendationRequest"];
 export type ChatTurn = components["schemas"]["ChatTurn"];
 export type ChatCourse = components["schemas"]["ChatCourse"];
-export type ChatRequest = components["schemas"]["ChatRequest"];
+export type ChatRequest = Omit<components["schemas"]["ChatRequest"], "course"> & {
+  course?: ChatCourse | null;
+  uni_code?: string | null;
+};
 export type CareerOutlookSummary = components["schemas"]["CareerOutlookSummary"];
 export type CareerJob = components["schemas"]["CareerJob"];
 export type CareerStatus = components["schemas"]["CareerStatus"];
 export type CareerResearchRequest = components["schemas"]["CareerResearchRequest"];
 export type CareerResearchResponse = components["schemas"]["CareerResearchResponse"];
 export type ChatSource = components["schemas"]["ChatSource"];
-export type ChatResponse = components["schemas"]["ChatResponse"];
+export type ChatResponse = Omit<components["schemas"]["ChatResponse"], "status"> & {
+  status: "answered" | "partly_answered" | "not_in_sources" | "out_of_scope";
+  usage?: Usage | null;
+};
 export type StreamHint = components["schemas"]["StreamHint"];
-export type Options = components["schemas"]["Options"];
+export type Options = components["schemas"]["Options"] & {
+  llm_provider?: string;
+  preference_engine?: string;
+  preference_ai_available?: boolean;
+};
 export type Health = components["schemas"]["Health"];
 export type ErrorResponse = components["schemas"]["ErrorResponse"];
 
@@ -56,6 +66,7 @@ export interface CourseRow {
   same_district?: boolean;
   preference_score?: number | null;
   details_block?: number | null;
+  forecast_year?: string | null;
   [key: string]: unknown;
 }
 
@@ -192,4 +203,64 @@ export interface CareerOverall {
   summary?: string;
   confidence?: string;
   evidence_refs?: string[];
+}
+
+export interface Usage {
+  used: number;
+  limit: number;
+}
+
+export interface Me {
+  user_id: string;
+  usage: Record<string, Usage>;
+}
+
+export interface ChatSummary {
+  uni_code: string;
+  course_code: string;
+  course_name: string;
+  university: string;
+  messages: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface StoredMessage {
+  seq: number;
+  role: "user" | "assistant";
+  content: string;
+  sources: ChatSource[];
+  created_at: string;
+}
+
+export interface ChatHistory {
+  uni_code: string;
+  course_code: string;
+  course_name: string;
+  university: string;
+  messages: StoredMessage[];
+  has_more: boolean;
+}
+
+export interface SavedResults {
+  form: RecommendationRequest;
+  report: RecommendationReport;
+  used_llm: boolean;
+  saved_at: string;
+}
+
+export interface Deleted {
+  deleted: string;
+}
+
+export interface RuntimeConfig {
+  supabaseUrl?: string | null;
+  supabaseKey?: string | null;
+  apiBaseUrl?: string | null;
+}
+
+declare global {
+  interface Window {
+    CAMPUSYAMU_CONFIG?: RuntimeConfig;
+  }
 }
