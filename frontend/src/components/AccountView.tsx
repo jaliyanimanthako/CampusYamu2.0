@@ -88,13 +88,38 @@ export function AccountView({
       </section>
 
       <h3 style={{ marginTop: 40 }}>Appearance</h3>
-      <div className="lang-opts">
+      <div className="theme-opts">
+        <button
+          type="button"
+          aria-pressed={theme === "system"}
+          onClick={() => setTheme("system")}
+        >
+          <span className="theme-ic theme-ic-system" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="4" width="18" height="13" rx="3" stroke="#4F6FE8" strokeWidth="2" />
+              <path d="M8 20h8M12 17v3" stroke="#4F6FE8" strokeWidth="2" strokeLinecap="round" />
+              <path d="M12 7.5a3 3 0 1 0 0 6v-6z" fill="#F2B84B" />
+              <path d="M12 7.5a3 3 0 0 1 0 6v-6z" fill="#C9B8F5" />
+            </svg>
+          </span>
+          <span>System</span>
+        </button>
         <button
           type="button"
           aria-pressed={theme === "light"}
           onClick={() => setTheme("light")}
         >
-          <span className="glyph g-en">☀️</span>
+          <span className="theme-ic theme-ic-light" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="4.5" fill="#F2B84B" />
+              <path
+                d="M12 2.5v2.2M12 19.3v2.2M4.93 4.93l1.55 1.55M17.52 17.52l1.55 1.55M2.5 12h2.2M19.3 12h2.2M4.93 19.07l1.55-1.55M17.52 6.48l1.55-1.55"
+                stroke="#4F6FE8"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </span>
           <span>Light</span>
         </button>
         <button
@@ -102,7 +127,18 @@ export function AccountView({
           aria-pressed={theme === "dark"}
           onClick={() => setTheme("dark")}
         >
-          <span className="glyph g-si">🌙</span>
+          <span className="theme-ic theme-ic-dark" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M20.2 14.5A8.2 8.2 0 0 1 9.5 3.8a8.2 8.2 0 1 0 10.7 10.7z"
+                fill="#C9B8F5"
+              />
+              <path
+                d="M17.5 4l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"
+                fill="#F2B84B"
+              />
+            </svg>
+          </span>
           <span>Dark</span>
         </button>
       </div>
