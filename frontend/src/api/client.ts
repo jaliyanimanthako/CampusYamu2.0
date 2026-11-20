@@ -20,6 +20,7 @@ import type {
   Health,
   Me,
   Options,
+  ProgressEvent,
   RecommendationRequest,
   RecommendationResponse,
   SavedResults,
@@ -235,6 +236,119 @@ export function getCourses(): Promise<string[]> {
     method: "GET",
     timeoutMs: DEFAULT_TIMEOUT_MS,
   });
+}
+
+/** The server has no /v1/recommendations/stream (an older backend): use postRecommendations instead. */
+export class StreamUnsupportedError extends Error {}
+
+async function simulateProgress(onProgress: (event: ProgressEvent) => void): Promise<void> {
+  const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
+  onProgress({ step: "eligibility", status: "done", courses_checked: 126, eligible: 55 });
+  onProgress({ step: "travel", status: "done", offerings: 89 });
+  onProgress({ step: "interests", status: "running" });
+  for (let i = 0; i <= 55; i += 11) {
+    onProgress({ step: "zscore", status: "running", done: i, total: 55 });
+    await wait(90);
+  }
+  onProgress({ step: "interests", status: "done" });
+  onProgress({ step: "zscore", status: "done", done: 55, total: 55 });
+  onProgress({ step: "ranking", status: "running" });
+  await wait(250);
+  onProgress({ step: "ranking", status: "done" });
+}
+
+/**
+ * POST /v1/recommendations/stream: the same request, with each pipeline step reported as it finishes
+ * (server-sent events). Resolves with the report; rejects with ApiError like apiRequest, or with
+ * StreamUnsupportedError when the backend predates the endpoint (nothing has run on the server then).
+ */
+export async function postRecommendationsStream(
+  payload: RecommendationRequest,
+  onProgress: (event: ProgressEvent) => void,
+): Promise<RecommendationResponse> {
+  if (isDemoMode()) {
+    await simulateProgress(onProgress);
+    return buildMockRecommendationResponse(payload);
+  }
+  const controller = new AbortController();
+  let timedOut = false;
+  const timerId = window.setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, HEAVY_TIMEOUT_MS);
+  const headers = new Headers({ "Content-Type": "application/json", Accept: "text/event-stream" });
+  const token = await getAccessToken();
+  if (token) headers.set("Authorization", `Bearer ${token}`);
+
+  let response: Response;
+  try {
+    response = await fetch(buildUrl("/v1/recommendations/stream"), {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers,
+      signal: controller.signal,
+    });
+  } catch {
+    window.clearTimeout(timerId);
+    if (timedOut) {
+      throw new ApiError(0, [`Request timed out after ${Math.round(HEAVY_TIMEOUT_MS / 1000)}s. Please try again.`],
+        { isTimeout: true });
+    }
+    throw new ApiError(0, ["Unable to reach the CampusYamu API. Check that the backend server is running."],
+      { isNetwork: true });
+  }
+  if (response.status === 404 || response.status === 405) {
+    window.clearTimeout(timerId);
+    throw new StreamUnsupportedError("No /v1/recommendations/stream on this server");
+  }
+  if (!response.ok || !response.body) {
+    window.clearTimeout(timerId);
+    throw new ApiError(response.status, await parseErrorBody(response));
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  try {
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (value) buffer += decoder.decode(value, { stream: true });
+      let cut: number;
+      while ((cut = buffer.indexOf("\n\n")) >= 0) {
+        const block = buffer.slice(0, cut);
+        buffer = buffer.slice(cut + 2);
+        let kind = "message";
+        let data = "";
+        for (const line of block.split("\n")) {
+          if (line.startsWith("event:")) kind = line.slice(6).trim();
+          else if (line.startsWith("data:")) data += line.slice(5).trim();
+        }
+        if (!data) continue;
+        const parsed = JSON.parse(data) as Record<string, unknown>;
+        if (kind === "progress") {
+          onProgress(parsed as unknown as ProgressEvent);
+        } else if (kind === "result") {
+          const status = Number(parsed.status ?? 500);
+          if (status >= 400) {
+            const errors = Array.isArray(parsed.errors) ? parsed.errors.map(String) : [];
+            throw new ApiError(status, errors.length ? errors : [`Request failed (${status})`]);
+          }
+          return parsed as unknown as RecommendationResponse;
+        }
+      }
+      if (done) break;
+    }
+  } catch (err) {
+    if (err instanceof ApiError) throw err;
+    if (timedOut) {
+      throw new ApiError(0, [`Request timed out after ${Math.round(HEAVY_TIMEOUT_MS / 1000)}s. Please try again.`],
+        { isTimeout: true });
+    }
+    throw new ApiError(0, ["The connection dropped before the results arrived. Please try again."]);
+  } finally {
+    window.clearTimeout(timerId);
+  }
+  throw new ApiError(0, ["The connection closed before the results arrived. Please try again."]);
 }
 
 export async function postRecommendations(

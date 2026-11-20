@@ -9,7 +9,7 @@ from types import SimpleNamespace
 import jwt
 from cryptography.hazmat.primitives.asymmetric import ec
 
-from campusyamu.api.auth import AuthError, SupabaseAuth
+from campusyamu.api.auth import AuthError, LocalAuthStore, SupabaseAuth, profile_from_claims
 
 URL = "https://proj.supabase.co"
 
@@ -76,3 +76,45 @@ class SupabaseAuthTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ProfileTests(unittest.TestCase):
+    """The greeting name: first word of the sign-in name; never the email."""
+
+    def test_first_name_from_the_full_name(self) -> None:
+        cases = {
+            "Jaliya Nimantha": ("Jaliya Nimantha", "Jaliya"),        # two names -> the first
+            "  Jaliya   Nimantha  Ko ": ("Jaliya Nimantha Ko", "Jaliya"),
+            "Jaliya": ("Jaliya", "Jaliya"),
+        }
+        for full, expected in cases.items():
+            p = profile_from_claims({"user_metadata": {"full_name": full}})
+            self.assertEqual((p["display_name"], p["first_name"]), expected, full)
+
+    def test_fallbacks(self) -> None:
+        self.assertEqual(profile_from_claims({"user_metadata": {"name": "Kamal Perera"}})["first_name"], "Kamal")
+        self.assertEqual(profile_from_claims({"name": "Nimal Silva"})["first_name"], "Nimal")      # local accounts
+        empty = profile_from_claims({"email": "jaliya@example.com", "user_metadata": {"full_name": "  "}})
+        self.assertEqual(empty, {"display_name": None, "first_name": None})
+        self.assertEqual(profile_from_claims({"user_metadata": "not a dict"})["first_name"], None)
+        long = profile_from_claims({"user_metadata": {"full_name": "A" * 200}})
+        self.assertEqual(len(long["display_name"]), 60)
+
+    def test_supabase_google_token(self) -> None:
+        private = ec.generate_private_key(ec.SECP256R1())
+        auth = SupabaseAuth(url=URL, jwt_secret="", jwks_client=FakeJWKS(private.public_key()))
+        token = jwt.encode(claims(user_metadata={"full_name": "Jaliya Nimantha", "name": "Jaliya Nimantha",
+                                                 "avatar_url": "https://x"}),
+                           private, algorithm="ES256", headers={"kid": "k1"})
+        self.assertEqual(auth.profile(token), {"display_name": "Jaliya Nimantha", "first_name": "Jaliya"})
+        with self.assertRaises(AuthError):
+            auth.profile("junk")
+
+    def test_local_account_token(self) -> None:
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as tmp:
+            store = LocalAuthStore(db_path=Path(tmp) / "a.db", secret="s" * 40)
+            token = store.signup("nimal@example.com", "secret1", name="Nimal Silva")["access_token"]
+            self.assertEqual(store.profile(token), {"display_name": "Nimal Silva", "first_name": "Nimal"})
+

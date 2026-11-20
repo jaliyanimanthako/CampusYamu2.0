@@ -47,12 +47,13 @@ export const FORM_STEPS = [
   "Interests",
 ] as const;
 
+/** The analysing screen's steps, in the order the pipeline runs them (POST /v1/recommendations/stream). */
 export const ANALYSING_AGENTS = [
-  { k: "Eligibility", d: "subject rules", msg: "Checking your subjects against every course's rules" },
-  { k: "Z-score", d: "past cut-offs", msg: "Comparing your Z-score with six years of cut-offs" },
-  { k: "Travel", d: "from home", msg: "Measuring the road from your home to each campus" },
-  { k: "Interests", d: "what you like", msg: "Matching courses to what you want to study" },
-  { k: "Ranking", d: "best order", msg: "Balancing chances, interests and distance" },
+  { id: "eligibility", k: "Eligibility", d: "subject rules", msg: "Checking your subjects against every course's rules" },
+  { id: "travel", k: "Travel", d: "from home", msg: "Measuring the road from your home to each campus" },
+  { id: "zscore", k: "Z-score", d: "past cut-offs", msg: "Comparing your Z-score with six years of cut-offs" },
+  { id: "interests", k: "Interests", d: "what you like", msg: "Matching courses to what you want to study" },
+  { id: "ranking", k: "Ranking", d: "best order", msg: "Balancing chances, interests and distance" },
 ] as const;
 
 export const RANKING_MODES = [

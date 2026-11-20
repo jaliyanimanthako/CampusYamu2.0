@@ -12,7 +12,9 @@ mobile app gives it and keeps it fresh). It is checked here, without a call to S
 * the legacy shared secret (HS256): only if SUPABASE_JWT_SECRET is set.
 
 Checked: signature, expiry, audience "authenticated", issuer {SUPABASE_URL}/auth/v1, role "authenticated".
-The student's user id is the token's `sub`.
+The student's user id is the token's `sub`. Their name, for greetings, comes from the same verified token:
+`user_metadata.full_name` (Google sign-in and email sign-up both set it), else `user_metadata.name`; the
+greeting uses the first word of it (see `profile_from_claims`).
 
 Without SUPABASE_URL the API is open (local development only): no sign-in, and the chat has no memory
 (it uses the `history` the client sends).
@@ -39,6 +41,25 @@ LEEWAY_SECONDS = 30
 ASYMMETRIC = ("ES256", "RS256", "EdDSA")
 LOCAL_ISSUER = "campusyamu-local"
 TOKEN_TTL_SECONDS = 60 * 60 * 24 * 30  # 30 days
+
+
+MAX_NAME_CHARS = 60
+
+
+def profile_from_claims(claims: dict[str, Any]) -> dict[str, str | None]:
+    """Display name and first name from verified token claims; None when the token carries no name.
+
+    Supabase puts the provider profile in `user_metadata` (Google: full_name and name); local accounts put
+    the sign-up name in `name`. Only the first word is used to greet: "Jaliya Nimantha" -> "Jaliya".
+    The email is not used as a name.
+    """
+
+    meta = claims.get("user_metadata") if isinstance(claims.get("user_metadata"), dict) else {}
+    for value in (meta.get("full_name"), meta.get("name"), claims.get("name")):
+        full = " ".join(str(value or "").split())[:MAX_NAME_CHARS].strip()
+        if full:
+            return {"display_name": full, "first_name": full.split(" ")[0]}
+    return {"display_name": None, "first_name": None}
 
 
 class AuthError(Exception):
@@ -72,6 +93,16 @@ class SupabaseAuth:
     def user_id(self, token: str) -> str:
         """The signed-in student's id, or AuthError."""
 
+        return str(self.claims(token)["sub"])
+
+    def profile(self, token: str) -> dict[str, str | None]:
+        """The signed-in student's name for greetings (see profile_from_claims), or AuthError."""
+
+        return profile_from_claims(self.claims(token))
+
+    def claims(self, token: str) -> dict[str, Any]:
+        """The token's verified claims, or AuthError."""
+
         try:
             alg = jwt.get_unverified_header(token).get("alg")
             if alg == "HS256":
@@ -92,7 +123,7 @@ class SupabaseAuth:
             raise AuthError("Invalid sign-in token") from exc
         if claims.get("role") != "authenticated" or not claims.get("sub"):
             raise AuthError("Sign in as a student")
-        return str(claims["sub"])
+        return claims
 
 
 def _hash_password(password: str, salt: bytes | None = None) -> str:
@@ -245,6 +276,12 @@ class LocalAuthStore:
             return {"id": row["id"], "email": row["email"], "name": row["name"], "avatar": clean_avatar}
 
     def user_id(self, token: str) -> str:
+        return str(self.claims(token)["sub"])
+
+    def profile(self, token: str) -> dict[str, str | None]:
+        return profile_from_claims(self.claims(token))
+
+    def claims(self, token: str) -> dict[str, Any]:
         try:
             claims = jwt.decode(
                 token,
@@ -261,4 +298,4 @@ class LocalAuthStore:
             raise AuthError("Invalid sign-in token") from exc
         if claims.get("role") != "authenticated" or not claims.get("sub"):
             raise AuthError("Sign in as a student")
-        return str(claims["sub"])
+        return claims

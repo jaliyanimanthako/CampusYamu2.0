@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from campusyamu.agents.course_finder.finder import AL_GRADES, OL_GRADES, CourseFinder
 from campusyamu.agents.preference import engine_available, preference_engine
@@ -245,7 +245,8 @@ class AdvisorService:
             return 404, {"errors": [f"No chat for {uni_code}"]}
         return 200, {"deleted": uni_code}
 
-    def run(self, form: dict[str, Any], user_id: str | None = None) -> tuple[int, dict[str, Any]]:
+    def run(self, form: dict[str, Any], user_id: str | None = None,
+            on_progress: Callable[[dict[str, Any]], None] | None = None) -> tuple[int, dict[str, Any]]:
         try:
             al = [f"{r['subject']}:{r['grade']}" for r in form.get("al", []) if r.get("subject")]
             ol = [f"{r['subject']}:{r['grade']}" for r in form.get("ol", []) if r.get("grade")]
@@ -281,7 +282,7 @@ class AdvisorService:
         with tracing.observe("recommendations", as_type="chain", user_id=user_id,
                              input={k: v for k, v in inputs.items() if k != "preferences"} | {
                                  "preferences": inputs["preferences"] or None, "use_llm": use_llm}) as trace:
-            state = run_pipeline(inputs, self.pipeline(use_llm, suggestions))
+            state = run_pipeline(inputs, self.pipeline(use_llm, suggestions), on_progress)
             trace.update(output={"errors": state.get("errors") or None,
                                  "counts": (state.get("report") or {}).get("counts")},
                          level="WARNING" if state.get("errors") else None)

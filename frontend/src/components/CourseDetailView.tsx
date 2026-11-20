@@ -26,6 +26,8 @@ interface CourseDetailViewProps {
   onUpdateChatUsage: (usage: Usage) => void;
   onBack: () => void;
   onToast: (msg: string) => void;
+  /** Signed-in student's first name from GET /v1/me; null for guests or before it loads. */
+  firstName?: string | null;
 }
 
 interface UiMessage {
@@ -158,6 +160,7 @@ export function CourseDetailView({
   onUpdateChatUsage,
   onBack,
   onToast,
+  firstName = null,
 }: CourseDetailViewProps) {
   const authOn = isAuthEnabled() || hasLocalAccountToken();
   const queryClient = useQueryClient();
@@ -446,8 +449,8 @@ export function CourseDetailView({
             <div className="msg bot">
               <span className="who mono">CampusYamu</span>
               <div className="text">
-                Ask me anything about <b>{course.course_name}</b> at {course.university}: entry
-                rules, your chances, the journey, or careers.
+                {firstName ? `Hi ${firstName}! ` : "Hi! "}Ask me anything about <b>{course.course_name}</b> at{" "}
+                {course.university}: entry rules, your chances, the journey, or careers.
               </div>
             </div>
 
