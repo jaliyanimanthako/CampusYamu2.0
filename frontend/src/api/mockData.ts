@@ -627,16 +627,18 @@ export function startMockCareerResearch(course: string): CareerResearchResponse 
 }
 
 export function buildMockChatResponse(req: ChatRequest): ChatResponse {
-  const courseName = req.course.course_name || req.course.course_code;
+  const courseCode = req.course?.course_code || req.uni_code || "COURSE";
+  const uniCode = (req.course?.uni_code as string | undefined) || req.uni_code || courseCode;
+  const courseName = req.course?.course_name || courseCode;
   const q = req.question.toLowerCase();
 
-  let answer = `Based on the UGC 2024/2025 Student Handbook for **${courseName}** (${req.course.course_code}), you are eligible to apply with your current A/L combination. [S1]`;
+  let answer = `Based on the UGC 2024/2025 Student Handbook for **${courseName}** (${courseCode}), you are eligible to apply with your current A/L combination. [S1]`;
 
   if (q.includes("aptitude")) {
-    const hasAptitude = Boolean(req.course.aptitude_test);
+    const hasAptitude = Boolean(req.course?.aptitude_test);
     answer = hasAptitude
       ? `Yes. **${courseName}** requires passing an aptitude test conducted by the university in addition to your A/L Z-score. [S1]`
-      : `No aptitude test is listed for **${courseName}** (${req.course.uni_code ?? req.course.course_code}) in the handbook section. [S1]`;
+      : `No aptitude test is listed for **${courseName}** (${uniCode}) in the handbook section. [S1]`;
   } else if (q.includes("o/l") || q.includes("ol")) {
     answer = `O/L requirements for **${courseName}** are checked against Science, English, and Mathematics grades. Check the O/L Requirements chips in the Overview tab for your exact status. [S1]`;
   } else if (q.includes("career")) {
@@ -651,7 +653,7 @@ export function buildMockChatResponse(req: ChatRequest): ChatResponse {
         id: "S1",
         kind: "course_section",
         title: courseName,
-        citation: `Handbook §2.2 (${req.course.course_code})`,
+        citation: `Handbook §2.2 (${courseCode})`,
       },
       ...(q.includes("career")
         ? [

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 100" role="img" aria-label="CampusYamu">
+  <rect x="4" y="4" width="92" height="92" rx="26" fill="#4F6FE8"/>
+  <path d="M50 80 V54 M50 54 L31 30 M50 54 L64 37" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M72 15 L75.5 25.5 L86 29 L75.5 32.5 L72 43 L68.5 32.5 L58 29 L68.5 25.5 Z" fill="#F2B84B"/>
+  <text x="118" y="66" font-family="'Plus Jakarta Sans', 'DM Sans', Arial, sans-serif" font-size="46" font-weight="800" letter-spacing="-1.6" fill="#14185C">campus<tspan fill="#4F6FE8">yamu</tspan></text>
+</svg>

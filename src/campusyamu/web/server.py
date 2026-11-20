@@ -54,6 +54,7 @@ MIME_OVERRIDES = {
     ".woff": "font/woff",
     ".woff2": "font/woff2",
     ".png": "image/png",
+    ".webp": "image/webp",
     ".ico": "image/x-icon",
 }
 

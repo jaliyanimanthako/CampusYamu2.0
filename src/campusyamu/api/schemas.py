@@ -189,3 +189,28 @@ class Health(BaseModel):
 
 class ErrorResponse(BaseModel):
     errors: list[str]
+
+
+class SignUpRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=254)
+    password: str = Field(min_length=6, max_length=200)
+    name: str = Field("", max_length=120)
+    avatar: str = Field("fox", max_length=32)
+
+
+class SignInRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=254)
+    password: str = Field(min_length=1, max_length=200)
+
+
+class AuthUser(BaseModel):
+    id: str
+    email: str
+    name: str = ""
+    avatar: str = "fox"
+
+
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: AuthUser
