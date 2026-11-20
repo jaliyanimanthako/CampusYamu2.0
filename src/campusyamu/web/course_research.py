@@ -27,6 +27,7 @@ import time
 from concurrent.futures import Future, ThreadPoolExecutor
 from typing import Any, Callable
 
+from campusyamu.core import tracing
 from .career_outlook import CareerOutlookStore, compact, missing_keys, run_research
 from .university_pages import (PROFILE_VERSION, SPECIALISATION_VERSION, UniversityPages, explore_specialisations,
                                extract_profile, handbook_specialisations)
@@ -124,10 +125,13 @@ class CourseResearch:
 
         def timed(name: str, fn: Callable[..., dict[str, Any]], *args: Any) -> dict[str, Any]:
             t0 = time.perf_counter()
-            try:
-                out = fn(*args)
-            except Exception as exc:                        # one sub-agent failing does not stop the others
-                out = {"state": "failed", "error": str(exc)[:300]}
+            with tracing.observe(f"research: {name}", as_type="agent") as step:
+                try:
+                    out = fn(*args)
+                except Exception as exc:                    # one sub-agent failing does not stop the others
+                    out = {"state": "failed", "error": str(exc)[:300]}
+                step.update(output={k: out.get(k) for k in ("state", "reason", "error") if out.get(k)},
+                            level="ERROR" if out.get("state") == "failed" else None)
             timings[name] = time.perf_counter() - t0
             self._emit(name, f"{out['state']} ({timings[name]:.1f} s)"
                              + (f": {out.get('reason') or out.get('error')}" if out.get("reason") or out.get("error")
@@ -136,13 +140,13 @@ class CourseResearch:
 
         skipped = {"state": "skipped", "reason": "not requested"}
         with ThreadPoolExecutor(max_workers=3, thread_name_prefix="course-research") as pool:
-            career = pool.submit(timed, "career", self._career, offering, refresh) if "career" not in skip else None
-            website = (pool.submit(timed, "website", self._website, offering, cached, refresh)
+            career = pool.submit(tracing.bind(timed), "career", self._career, offering, refresh) if "career" not in skip else None
+            website = (pool.submit(tracing.bind(timed), "website", self._website, offering, cached, refresh)
                        if "website" not in skip else None)
             if website is None:                             # specialisations may need its result: a done stand-in
                 website = Future()
                 website.set_result({"state": "skipped", "record": cached})
-            specs = (pool.submit(timed, "specialisations", self._specialisations, offering, cached, refresh, website)
+            specs = (pool.submit(tracing.bind(timed), "specialisations", self._specialisations, offering, cached, refresh, website)
                      if "specialisations" not in skip else None)
             results = {"career": career.result() if career else skipped,
                        "website": website.result() if "website" not in skip else skipped,

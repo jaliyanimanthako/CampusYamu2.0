@@ -122,7 +122,7 @@ function cannedAnswer(question, row) {
   if (/weather|movie|cricket|song|joke/.test(q)) {
     return { answer: "I can only help with this course and the university selection process. Try asking about entry requirements, your chances, or careers.", status: "out_of_scope", sources: [] };
   }
-  if (/research|career|job|salary|future/.test(q)) {
+  if (/research|career|job|salary|future|රැකියා|වෘත්තීය|தொழில்|வேலை/.test(q)) {
     const course = row.course_name;
     if (!jobs.has(course)) jobs.set(course, { startedAt: Date.now() });
     return {
@@ -130,7 +130,7 @@ function cannedAnswer(question, row) {
       status: "partly_answered", sources: [s1], career: careerFor(course),
     };
   }
-  if (/chance|cut|z-?score|get in/.test(q)) {
+  if (/chance|cut|z-?score|get in|අවස්ථා|කඩඉම|வாய்ப்பு|வெட்டுப்புள்ளி/.test(q)) {
     const m = row.expected_margin;
     const ahead = m != null && m >= 0;
     return {

@@ -48,6 +48,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
+from campusyamu.core import tracing
 from campusyamu.core import settings
 
 from campusyamu.agents.course_details import HandbookCourseIndex
@@ -324,7 +325,7 @@ class CourseChat:
         scope = None
         if self.guard is not None and self.guard.active:  # in parallel with the rewrite and the search
             self._pool = self._pool or ThreadPoolExecutor(2, thread_name_prefix="campusyamu-guard")
-            scope = self._pool.submit(self.guard.check, question, course, list(history or []))
+            scope = self._pool.submit(tracing.bind(self.guard.check), question, course, list(history or []))
         if recall is not None:
             search_question = self.memory.standalone_question(question, recall, course)
         sources, source_notes = self.sources(course, search_question)

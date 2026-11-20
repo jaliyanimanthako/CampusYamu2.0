@@ -43,6 +43,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
 
+from campusyamu.core import tracing
 from campusyamu.core import settings
 from campusyamu.core.paths import CACHE_DIR, REFERENCE_DIR
 
@@ -429,7 +430,7 @@ def search_specialisations(record: dict[str, Any], course: dict[str, Any], names
     if len(wanted) <= 1:
         return [one(n) for n in wanted]
     with ThreadPoolExecutor(max_workers=min(SEARCH_WORKERS, len(wanted))) as pool:
-        return list(pool.map(one, wanted))
+        return list(pool.map(tracing.bind(one), wanted))
 
 
 def specialisation_request(found: list[dict[str, Any]], course: dict[str, Any]

@@ -80,6 +80,30 @@ Docker Desktop on Mac and Windows needs nothing.
 
 `make docker-demo`: the backend plus the built-in web page on http://127.0.0.1:8770.
 
+### Monitoring with Langfuse (optional)
+
+Every AI call (course chat, memory, guardrail, interests, feedback, website and career research,
+embeddings) is traced to a self-hosted [Langfuse](https://langfuse.com): prompt, reply, model,
+provider, tokens, cost, time and errors, grouped per API request (`chat`, `recommendations`,
+`career research`) and tagged with the signed-in student's id (never email or name). Off until the
+keys are set; a Langfuse outage never breaks a request.
+
+1. Run Langfuse (its own Docker setup, separate from this repo; needs about 4 GB RAM):
+   ```bash
+   git clone https://github.com/langfuse/langfuse.git && cd langfuse
+   docker compose up -d          # http://localhost:3000; change the CHANGEME secrets before exposing it
+   ```
+2. In Langfuse: sign up, create a project, then Settings → API keys.
+3. In `.env`: `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_HOST=http://localhost:3000`
+   (the Docker backend reaches it through `LANGFUSE_HOST_DOCKER`, default
+   `http://host.docker.internal:3000`).
+4. `make llm-check`: the three test calls appear as a trace named `llm-check`, and the last line
+   says whether Langfuse accepted the keys.
+
+`tracing:` in `config/settings.yaml`: `capture_content: false` sends no prompts or answers (only
+models, tokens, cost and timings); `prices` sets USD per 1M tokens for models Langfuse has no price
+for (free tiers: 0); `sample_rate`, `environment`.
+
 ## Project structure
 
 ```

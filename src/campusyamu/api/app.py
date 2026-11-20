@@ -42,7 +42,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from campusyamu.core import settings
+from campusyamu.core import settings, tracing
 
 from . import schemas as s
 from .auth import AuthError, SupabaseAuth
@@ -133,6 +133,7 @@ def create_app(service_factory: Callable[[], Any] | None = None, auth: SupabaseA
             yield
         finally:
             await service.stop()
+            tracing.flush()                             # send buffered Langfuse traces
 
     app = FastAPI(
         title="CampusYamu API",

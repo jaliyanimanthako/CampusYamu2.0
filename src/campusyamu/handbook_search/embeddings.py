@@ -23,9 +23,9 @@ import hashlib
 import json
 from array import array
 from pathlib import Path
-from typing import Protocol, Sequence
+from typing import Any, Protocol, Sequence
 
-from ..core import llm, settings
+from ..core import llm, settings, tracing
 from ..knowledge_graph.handbook_prose import PROJECT_ROOT, _load_env
 from .chunking import DEFAULT_CHUNKS, load_chunks
 
@@ -79,10 +79,13 @@ class OpenAIEmbedder:
 
     def embed(self, texts: Sequence[str]) -> list[list[float]]:
         payload = {"model": self.model, "input": [t[:MAX_INPUT_CHARS] for t in texts]}
-        body = llm.post_json(f"{self.url}/embeddings", payload, {"Authorization": f"Bearer {self.api_key}"},
-                             self.timeout, "CampusYamu-HandbookSearch/0.1", llm.label(self.provider), attempts=4)
-        if not body.get("data"):
-            raise RuntimeError(f"{llm.label(self.provider)} returned no embeddings: {str(body)[:300]}")
+        with tracing.generation("embedding", as_type="embedding", model=self.model, provider=self.provider,
+                                input=_trace_texts(texts)) as gen:
+            body = llm.post_json(f"{self.url}/embeddings", payload, {"Authorization": f"Bearer {self.api_key}"},
+                                 self.timeout, "CampusYamu-HandbookSearch/0.1", llm.label(self.provider), attempts=4)
+            if not body.get("data"):
+                raise RuntimeError(f"{llm.label(self.provider)} returned no embeddings: {str(body)[:300]}")
+            gen.done(body, output=f"{len(body['data'])} vectors")
         data = sorted(enumerate(body["data"]), key=lambda pair: pair[1].get("index", pair[0]))
         return [item["embedding"] for _, item in data]
 
@@ -118,11 +121,26 @@ class GeminiEmbedder:
                          "content": {"parts": [{"text": t[:MAX_GEMINI_CHARS]}]},
                          **({"outputDimensionality": self.dimensions} if self.dimensions else {})}
                         for t in texts[start:start + self.max_batch]]
-            body = llm.post_json(f"{llm.GEMINI_URL}/models/{self.model}:batchEmbedContents", {"requests": requests},
-                                 {"x-goog-api-key": self.api_key}, self.timeout, "CampusYamu-HandbookSearch/0.1",
-                                 "Gemini", attempts=4)
+            batch = texts[start:start + self.max_batch]
+            with tracing.generation("embedding", as_type="embedding", model=self.model, provider=self.provider,
+                                    input=_trace_texts(batch)) as gen:
+                body = llm.post_json(f"{llm.GEMINI_URL}/models/{self.model}:batchEmbedContents",
+                                     {"requests": requests}, {"x-goog-api-key": self.api_key}, self.timeout,
+                                     "CampusYamu-HandbookSearch/0.1", "Gemini", attempts=4)
+                # Gemini sends no token counts for embeddings: about 4 characters per token
+                gen.done(body, output=f"{len(body['embeddings'])} vectors",
+                         counts={"input": sum(len(t[:MAX_GEMINI_CHARS]) for t in batch) // 4},
+                         metadata={"provider": "gemini", "tokens": "estimated"})
             vectors.extend(item["values"] for item in body["embeddings"])
         return vectors
+
+
+def _trace_texts(texts: Sequence[str]) -> Any:
+    """A search question in full; a batch of chunks as a count and the first one (keeps traces small)."""
+
+    if len(texts) == 1:
+        return texts[0]
+    return {"texts": len(texts), "first": texts[0][:300] if texts else ""}
 
 
 def make_embedder(provider: str | None = None, query: bool = False, model: str | None = None) -> Embedder:

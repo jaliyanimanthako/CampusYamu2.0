@@ -34,7 +34,7 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
-from campusyamu.core import settings
+from campusyamu.core import settings, tracing
 
 from campusyamu.prompts import preference as prompts
 
@@ -60,15 +60,20 @@ def call_decisions(payload: dict[str, Any], api_key: str, timeout: int = 60, url
     request = urllib.request.Request(
         url, data=json.dumps(payload).encode("utf-8"), method="POST",
         headers={"x-goog-api-key": api_key, "Content-Type": "application/json", "User-Agent": user_agent})
-    try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            body = json.loads(response.read().decode("utf-8"))
-    except urllib.error.HTTPError as exc:
-        raise RuntimeError(f"Gemini Decisions HTTP {exc.code}: {exc.read().decode('utf-8', 'replace')[:300]}") from exc
-    except urllib.error.URLError as exc:
-        raise RuntimeError(f"Gemini Decisions request failed: {exc.reason}") from exc
-    if not isinstance(body.get("answers"), dict):
-        raise RuntimeError(f"Gemini Decisions: no answers in response ({str(body)[:200]})")
+    name = tracing.step_name(user_agent)
+    with tracing.generation(name, model=str(payload.get("model") or ""), provider="gemini-decision",
+                            input=payload.get("input"),
+                            as_type="guardrail" if name == "Guardrail" else "generation") as gen:
+        try:
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                body = json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            raise RuntimeError(f"Gemini Decisions HTTP {exc.code}: {exc.read().decode('utf-8', 'replace')[:300]}") from exc
+        except urllib.error.URLError as exc:
+            raise RuntimeError(f"Gemini Decisions request failed: {exc.reason}") from exc
+        if not isinstance(body.get("answers"), dict):
+            raise RuntimeError(f"Gemini Decisions: no answers in response ({str(body)[:200]})")
+        gen.done(body, output=body.get("answers"))
     return body
 
 
@@ -148,7 +153,7 @@ class GeminiDecisionInterpreter:
         answers: dict[str, Any] = {}
         if payloads:
             with ThreadPoolExecutor(max_workers=min(4, len(payloads))) as pool:
-                for body in pool.map(self._call, payloads):
+                for body in pool.map(tracing.bind(self._call), payloads):
                     answers.update(body["answers"])
         return self.parse(text, answers, courses)
 
