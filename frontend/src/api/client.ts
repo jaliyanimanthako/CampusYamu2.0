@@ -1,3 +1,4 @@
+import { getAccessToken, getRuntimeConfig } from "../auth/supabase.ts";
 import {
   buildMockCareerStatus,
   buildMockChatResponse,
@@ -6,24 +7,32 @@ import {
   startMockCareerResearch,
 } from "./mockData.ts";
 import type {
+  AuthResponse,
   CareerResearchRequest,
   CareerResearchResponse,
   CareerStatus,
+  ChatHistory,
   ChatRequest,
   ChatResponse,
+  ChatSummary,
+  Deleted,
   Health,
+  Me,
   Options,
   RecommendationRequest,
   RecommendationResponse,
+  SavedResults,
 } from "./types.ts";
 
-const RAW_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() ||
-  "http://127.0.0.1:8780";
+export function getApiBaseUrl(): string {
+  const configured = getRuntimeConfig().apiBaseUrl;
+  if (configured) return configured.replace(/\/+$/, "");
+  if (import.meta.env.DEV && typeof window !== "undefined" && window.location.port === "5173") {
+    return "";
+  }
+  return "http://127.0.0.1:8780";
+}
 
-export const API_BASE_URL = RAW_BASE_URL.replace(/\/+$/, "");
-
-const API_KEY = (import.meta.env.VITE_API_KEY as string | undefined)?.trim() || "";
 const DEMO_MODE_KEY = "campusyamu_demo_mode";
 
 export function isDemoMode(): boolean {
@@ -79,7 +88,7 @@ interface RequestOptions extends RequestInit {
 
 function buildUrl(path: string): string {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  return `${API_BASE_URL}${normalizedPath}`;
+  return `${getApiBaseUrl()}${normalizedPath}`;
 }
 
 async function parseErrorBody(response: Response): Promise<string[]> {
@@ -148,8 +157,11 @@ export async function apiRequest<T>(
   if (fetchOptions.body && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
-  if (includeApiKey && API_KEY && !headers.has("X-API-Key")) {
-    headers.set("X-API-Key", API_KEY);
+  if (includeApiKey && !headers.has("Authorization")) {
+    const token = await getAccessToken();
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
   }
 
   try {
@@ -269,6 +281,64 @@ export async function postCareerResearch(
   }
   return apiRequest<CareerResearchResponse>("/v1/career-outlook/research", {
     method: "POST",
+    body: JSON.stringify(payload),
+    timeoutMs: DEFAULT_TIMEOUT_MS,
+  });
+}
+
+export function getMe(): Promise<Me> {
+  return apiRequest<Me>("/v1/me", { method: "GET", timeoutMs: DEFAULT_TIMEOUT_MS });
+}
+
+export function getMyResults(): Promise<SavedResults> {
+  return apiRequest<SavedResults>("/v1/me/results", { method: "GET", timeoutMs: DEFAULT_TIMEOUT_MS });
+}
+
+export function getMyChats(): Promise<ChatSummary[]> {
+  return apiRequest<ChatSummary[]>("/v1/me/chats", { method: "GET", timeoutMs: DEFAULT_TIMEOUT_MS });
+}
+
+export function getMyChatHistory(
+  uniCode: string,
+  before?: number,
+  limit = 100,
+): Promise<ChatHistory> {
+  const params = new URLSearchParams({ limit: String(limit) });
+  if (before != null) params.set("before", String(before));
+  return apiRequest<ChatHistory>(
+    `/v1/me/chats/${encodeURIComponent(uniCode)}?${params.toString()}`,
+    { method: "GET", timeoutMs: DEFAULT_TIMEOUT_MS },
+  );
+}
+
+export function deleteMyChat(uniCode: string): Promise<Deleted> {
+  return apiRequest<Deleted>(`/v1/me/chats/${encodeURIComponent(uniCode)}`, {
+    method: "DELETE",
+    timeoutMs: DEFAULT_TIMEOUT_MS,
+  });
+}
+
+export function postSignUp(payload: {
+  email: string;
+  password: string;
+  name?: string;
+  avatar?: string;
+}): Promise<AuthResponse> {
+  return apiRequest<AuthResponse>("/v1/auth/signup", {
+    method: "POST",
+    includeApiKey: false,
+    body: JSON.stringify(payload),
+    timeoutMs: DEFAULT_TIMEOUT_MS,
+  });
+}
+
+export function postSignIn(payload: {
+  email: string;
+  password: string;
+}): Promise<AuthResponse> {
+  return apiRequest<AuthResponse>("/v1/auth/signin", {
+    method: "POST",
+    includeApiKey: false,
     body: JSON.stringify(payload),
     timeoutMs: DEFAULT_TIMEOUT_MS,
   });
