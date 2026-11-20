@@ -1,56 +1,71 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 
-export type ThemeMode = "light" | "dark";
+export type ThemeChoice = "system" | "light" | "dark";
 
 const STORAGE_KEY = "cy.theme";
 
-function readInitialTheme(): ThemeMode {
+function readInitialTheme(): ThemeChoice {
   try {
     const saved = window.localStorage.getItem(STORAGE_KEY);
     if (saved === "light" || saved === "dark") return saved;
   } catch {
     // Ignore storage errors
   }
-  if (typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    return "dark";
-  }
-  return "light";
+  return "system";
 }
 
 interface AppThemeContextValue {
-  theme: ThemeMode;
-  setTheme: (next: ThemeMode) => void;
+  theme: ThemeChoice;
+  effectiveTheme: "light" | "dark";
+  setTheme: (next: ThemeChoice) => void;
   toggleTheme: () => void;
 }
 
 const AppThemeContext = createContext<AppThemeContextValue | null>(null);
 
 export function AppThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeMode>(readInitialTheme);
+  const [theme, setThemeState] = useState<ThemeChoice>(readInitialTheme);
+  const [systemDark, setSystemDark] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.matchMedia("(prefers-color-scheme: dark)").matches : false,
+  );
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) {
-      meta.setAttribute("content", theme === "dark" ? "#0D1036" : "#FAF9FF");
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => setSystemDark(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (theme === "system") {
+      delete document.documentElement.dataset.theme;
+    } else {
+      document.documentElement.dataset.theme = theme;
     }
   }, [theme]);
 
-  const setTheme = useCallback((next: ThemeMode) => {
+  const effectiveTheme: "light" | "dark" =
+    theme === "system" ? (systemDark ? "dark" : "light") : theme;
+
+  const setTheme = useCallback((next: ThemeChoice) => {
     setThemeState(next);
     try {
-      window.localStorage.setItem(STORAGE_KEY, next);
+      if (next === "system") {
+        window.localStorage.removeItem(STORAGE_KEY);
+      } else {
+        window.localStorage.setItem(STORAGE_KEY, next);
+      }
     } catch {
       // Ignore storage errors
     }
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  }, [theme, setTheme]);
+    setTheme(effectiveTheme === "dark" ? "light" : "dark");
+  }, [effectiveTheme, setTheme]);
 
   return (
-    <AppThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
+    <AppThemeContext.Provider value={{ theme, effectiveTheme, setTheme, toggleTheme }}>
       {children}
     </AppThemeContext.Provider>
   );
@@ -63,8 +78,8 @@ export function useAppTheme(): AppThemeContextValue {
 }
 
 export function ThemeToggleButton() {
-  const { theme, toggleTheme } = useAppTheme();
-  const isDark = theme === "dark";
+  const { effectiveTheme, toggleTheme } = useAppTheme();
+  const isDark = effectiveTheme === "dark";
 
   return (
     <button
