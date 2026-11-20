@@ -21,6 +21,13 @@ handbook block, chat with citations and career-research progress) → account (d
   (options, recommendations, chat, career-outlook, me).
 - `mock/report.json`: trimmed copy of `outputs/student_report.json`.
 - `public/styles.css`: the design tokens (`:root`) and components.
+- Dark mode: a deep navy page (`#0B0E2B`) with lifted navy cards and light lavender-white text, in
+  the same flat palette. Main buttons turn lavender with navy text. Navy as a fill (`--navy`, e.g.
+  the advice card, banners, the phone tab bar) is a separate token from navy as text (`--ink`), so
+  both work in either mode. It follows the device until the student picks Light or Dark with the
+  sun/moon button in the top bar or under Appearance on the account page (saved as `cy.theme`;
+  `index.html` applies it before the first paint). Illustrations keep their lilac panel, slightly
+  dimmed. On phones the top bars show the logo mark only, so all the buttons fit.
 - `public/app.js`: the screens; every call uses the real `/v1` request and response shapes.
 - Landing page (`views.home` in `app.js`, `#/home`): hero, a "how it works" panel that stays
   pinned while you scroll and brings the four steps up one at a time (figure and progress bar change with them), big-number tiles, widening course-area cards, a chat preview,

@@ -12,6 +12,7 @@ export const LANGS = [
 const STR = {
   en: {
     language: "Language",
+    theme: "Appearance", "theme.system": "Same as device", "theme.light": "Light", "theme.dark": "Dark", "theme.toLight": "Switch to light mode", "theme.toDark": "Switch to dark mode",
     back: "Back",
     error: "Something went wrong",
     min: "{n} min",
@@ -163,6 +164,7 @@ const STR = {
 
   si: {
     language: "භාෂාව",
+    theme: "පෙනුම", "theme.system": "උපාංගය මෙන්", "theme.light": "ආලෝක", "theme.dark": "අඳුරු", "theme.toLight": "ආලෝක ප්‍රකාරයට මාරු වන්න", "theme.toDark": "අඳුරු ප්‍රකාරයට මාරු වන්න",
     back: "ආපසු",
     error: "යමක් වැරදුණා",
     min: "විනාඩි {n}",
@@ -314,6 +316,7 @@ const STR = {
 
   ta: {
     language: "மொழி",
+    theme: "தோற்றம்", "theme.system": "சாதனத்தைப் போல", "theme.light": "வெளிர்", "theme.dark": "இருண்ட", "theme.toLight": "வெளிர் பயன்முறைக்கு மாறு", "theme.toDark": "இருண்ட பயன்முறைக்கு மாறு",
     back: "பின்செல்",
     error: "ஏதோ தவறு நடந்துவிட்டது",
     min: "{n} நிமி",
