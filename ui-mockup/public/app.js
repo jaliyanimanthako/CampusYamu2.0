@@ -16,6 +16,35 @@ const savedLang = (() => { try { return localStorage.getItem("cy.lang"); } catch
 let langChosen = LANGS.some((l) => l.id === savedLang);
 setLang(langChosen ? savedLang : "en");
 
+// ---------------------------------------------------------------- theme
+// Light or dark. Follows the device until the student picks one (sun/moon button or the account page),
+// then remembers it on this device (cy.theme). index.html applies a saved choice before the first paint.
+const DARK_MQ = matchMedia("(prefers-color-scheme: dark)");
+const getTheme = () => { try { const v = localStorage.getItem("cy.theme"); return v === "light" || v === "dark" ? v : "system"; } catch { return "system"; } };
+const isDark = () => document.documentElement.dataset.theme === "dark" || (!document.documentElement.dataset.theme && DARK_MQ.matches);
+function applyTheme(choice) {
+  if (choice === "system") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.dataset.theme = choice;
+  $$('meta[name="theme-color"]').forEach((m) => (m.content = isDark() ? "#0B0E2B" : "#FAF9FF"));
+  const label = t(isDark() ? "theme.toLight" : "theme.toDark");
+  $$(".theme-btn").forEach((b) => { b.innerHTML = isDark() ? I.sun : I.moon; b.setAttribute("aria-label", label); b.title = label; });
+  $$("[data-theme-opt]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeOpt === choice));
+}
+function setTheme(choice) {
+  try { if (choice === "system") localStorage.removeItem("cy.theme"); else localStorage.setItem("cy.theme", choice); } catch {}
+  applyTheme(choice);
+}
+DARK_MQ.addEventListener("change", () => applyTheme(getTheme()));
+const themeBtn = () => {
+  const label = esc(t(isDark() ? "theme.toLight" : "theme.toDark"));
+  return `<button class="icon-btn theme-btn" type="button" aria-label="${label}" title="${label}">${isDark() ? I.sun : I.moon}</button>`;
+};
+document.addEventListener("click", (e) => {
+  if (e.target.closest(".theme-btn")) { setTheme(isDark() ? "light" : "dark"); return; }
+  const opt = e.target.closest("[data-theme-opt]");
+  if (opt) setTheme(opt.dataset.themeOpt);
+});
+
 // ---------------------------------------------------------------- state
 const state = {
   signedIn: (() => { try { return sessionStorage.getItem("cy.signed") === "1"; } catch { return false; } })(),
@@ -88,6 +117,8 @@ const I = {
   edit: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>',
   grid: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>',
   list: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h1M4 12h1M4 18h1"/></svg>',
+  sun: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>',
+  moon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>',
   globe: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>',
 };
 
@@ -207,7 +238,7 @@ function shell(active, inner) {
       <nav class="nav">${link("#/form", "form", t("nav.results"))}${link("#/results", "results", t("nav.courses"))}${link("#/rankings", "rankings", t("nav.order"))}${link("#/me", "me", t("nav.chats"))}</nav>
       <div class="nav-right">
         ${u ? `<span class="usage" title="${esc(t("usage.title"))}"><span class="bar"><i style="width:${(u.used / u.limit) * 100}%"></i></span><span class="num">${usageText(u)}</span></span>` : ""}
-        ${langMenu()}
+        ${themeBtn()}${langMenu()}
         <a class="avatar" href="#/me" aria-label="${esc(t("account"))}">S</a>
       </div>
     </div></header>
@@ -258,7 +289,7 @@ views.home = async () => {
           <button type="button" data-scroll="l-areas">${t("l.nav.areas")}</button>
           <button type="button" data-scroll="l-faq">${t("l.nav.faq")}</button>
         </nav>
-        <div class="nav-right">${langMenu()}<a class="btn sm" href="#/signin">${t("signin.btn")}</a></div>
+        <div class="nav-right">${themeBtn()}${langMenu()}<a class="btn sm" href="#/signin">${t("signin.btn")}</a></div>
       </div></header>
 
       <section class="l-hero">
@@ -405,7 +436,7 @@ views.home = async () => {
 views.signin = async () => {
   app.innerHTML = `
   <div class="wrap"><section class="auth view-enter">
-    <div class="auth-top">${brand("#/home")}${langMenu()}</div>
+    <div class="auth-top">${brand("#/home")}<div class="nav-right">${themeBtn()}${langMenu()}</div></div>
     <div class="card split">
       <div class="side">
         <span class="label">${t("signin.kicker")}</span>
@@ -982,6 +1013,8 @@ views.me = async () => {
     </section>
     <h3 style="margin-top:48px">${t("language")}</h3>
     <div class="lang-opts reveal">${LANGS.map((l) => `<button type="button" data-lang="${l.id}" lang="${l.id}" aria-pressed="${l.id === getLang()}"><span class="glyph g-${l.id}">${esc(l.short)}</span>${esc(l.name)}</button>`).join("")}</div>
+    <h3 style="margin-top:40px">${t("theme")}</h3>
+    <div class="theme-opts reveal">${["system", "light", "dark"].map((v) => `<button type="button" data-theme-opt="${v}" aria-pressed="${v === getTheme()}"><span class="sw sw-${v}" aria-hidden="true"></span>${esc(t("theme." + v))}</button>`).join("")}</div>
     <h3 style="margin-top:40px">${t("todaysUse")}</h3>
     <div class="me-grid">
       ${meter(t("m.chat"), me.usage.chat.used, me.usage.chat.limit, 1)}
