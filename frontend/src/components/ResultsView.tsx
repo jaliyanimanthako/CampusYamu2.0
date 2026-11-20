@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { BandKey, CourseRow, RecommendationReport } from "../api/types.ts";
 import { abbrevSubject, BANDS, courseArea, fmtMinutes, pad2 } from "../utils/course.ts";
-import { ArrowRightIcon } from "./BrandMark.tsx";
+import { ArrowRightIcon, FigureImg } from "./BrandMark.tsx";
 
 interface ResultsViewProps {
   report: RecommendationReport;
@@ -243,13 +243,7 @@ export function ResultsView({
                     if (e.key === "Enter") onOpenCourse(row.uni_code);
                   }}
                 >
-                  <div className="fig">
-                    <img
-                      src={`/figures/area-${courseArea(row.course_name)}.webp`}
-                      alt=""
-                      loading="lazy"
-                    />
-                  </div>
+                  <FigureImg name={`area-${courseArea(row.course_name)}`} lazy />
                   <div className="body">
                     <div className="meta mono">
                       <span>

@@ -8,7 +8,7 @@ import {
 import { useMockupI18n } from "../i18n/mockupI18n.tsx";
 import { ThemeToggleButton } from "../theme/appTheme.tsx";
 import { type AvatarId } from "./AnimalAvatar.tsx";
-import { ArrowRightIcon, BrandMark } from "./BrandMark.tsx";
+import { ArrowRightIcon, BrandMark, FigureImg } from "./BrandMark.tsx";
 import { LangMenu } from "./LangMenu.tsx";
 
 interface SignInViewProps {
@@ -366,9 +366,7 @@ export function SignInView({
             </form>
           </div>
           <div className="side fig-side">
-            <div className="fig">
-              <img src="/figures/signin.webp" alt="" />
-            </div>
+            <FigureImg name="signin" />
           </div>
         </div>
       </section>

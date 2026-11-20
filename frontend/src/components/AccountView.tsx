@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { getMyChats } from "../api/client.ts";
 import type { ChatSummary, Me } from "../api/types.ts";
 import { hasLocalAccountToken, isAuthEnabled } from "../auth/supabase.ts";
-import { LANGS, useMockupI18n, type LangId } from "../i18n/mockupI18n.tsx";
+import { ENABLED_LANGS, useMockupI18n, type LangId } from "../i18n/mockupI18n.tsx";
 import { useAppTheme } from "../theme/appTheme.tsx";
 import { pad2 } from "../utils/course.ts";
 import { AnimalAvatar, type AvatarId } from "./AnimalAvatar.tsx";
+import { FigureImg } from "./BrandMark.tsx";
 
 interface AccountViewProps {
   me: Me | null;
@@ -143,21 +144,25 @@ export function AccountView({
         </button>
       </div>
 
-      <h3 style={{ marginTop: 40 }}>{t("language")}</h3>
-      <div className="lang-opts">
-        {LANGS.map((l) => (
-          <button
-            key={l.id}
-            type="button"
-            aria-pressed={l.id === lang}
-            lang={l.id}
-            onClick={() => setLanguage(l.id as LangId)}
-          >
-            <span className={`glyph g-${l.id}`}>{l.short}</span>
-            <span>{l.name}</span>
-          </button>
-        ))}
-      </div>
+      {ENABLED_LANGS.length > 1 && (
+        <>
+          <h3 style={{ marginTop: 40 }}>{t("language")}</h3>
+          <div className="lang-opts">
+            {ENABLED_LANGS.map((l) => (
+              <button
+                key={l.id}
+                type="button"
+                aria-pressed={l.id === lang}
+                lang={l.id}
+                onClick={() => setLanguage(l.id as LangId)}
+              >
+                <span className={`glyph g-${l.id}`}>{l.short}</span>
+                <span>{l.name}</span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
 
       {authOn && (
         <>
@@ -214,9 +219,7 @@ export function AccountView({
         </div>
       ) : (
         <div className="card empty reveal">
-          <div className="fig">
-            <img src="/figures/empty-chats.webp" alt="" />
-          </div>
+          <FigureImg name="empty-chats" />
           <p style={{ margin: 0 }}>No chats yet. Open a course and ask a question.</p>
         </div>
       )}

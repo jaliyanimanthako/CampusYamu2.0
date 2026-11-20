@@ -3,18 +3,10 @@ import { LANGS, STR, type LangId } from "./mockupData.ts";
 
 export { LANGS, type LangId };
 
-const STORAGE_KEY = "cy.lang";
+export const ENABLED_LANGS = LANGS.filter((l) => l.id === "en");
 
 function readInitialLang(): { lang: LangId; chosen: boolean } {
-  try {
-    const saved = window.localStorage.getItem(STORAGE_KEY);
-    if (saved === "en" || saved === "si" || saved === "ta") {
-      return { lang: saved, chosen: true };
-    }
-  } catch {
-    // Ignore storage errors
-  }
-  return { lang: "en", chosen: false };
+  return { lang: "en", chosen: true };
 }
 
 interface I18nContextValue {
@@ -36,15 +28,10 @@ export function MockupI18nProvider({ children }: { children: ReactNode }) {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  const setLanguage = useCallback((id: LangId) => {
-    setLang(id);
+  const setLanguage = useCallback((_id: LangId) => {
+    setLang("en");
     setLangChosen(true);
-    document.documentElement.lang = id;
-    try {
-      window.localStorage.setItem(STORAGE_KEY, id);
-    } catch {
-      // Ignore storage errors
-    }
+    document.documentElement.lang = "en";
   }, []);
 
   const tRaw = useCallback(

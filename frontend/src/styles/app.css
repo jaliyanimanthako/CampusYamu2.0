@@ -28,6 +28,9 @@
   --fig-bg: #ECE4FD;
   --shadow-c: var(--ink);
   --fig-filter: none;
+  --fig-bg-dk: var(--fig-bg);
+  --fig-l: block;
+  --fig-d: none;
 
   --r-sm: 10px;
   --r: 18px;
@@ -64,6 +67,9 @@
   --on-primary: var(--navy-0);
   --shadow-c: #000;
   --fig-filter: brightness(.86);
+  --fig-bg-dk: #6880EE;
+  --fig-l: none;
+  --fig-d: block;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -88,6 +94,9 @@
     --on-primary: var(--navy-0);
     --shadow-c: #000;
     --fig-filter: brightness(.86);
+    --fig-bg-dk: #6880EE;
+    --fig-l: none;
+    --fig-d: block;
   }
 }
 
@@ -197,6 +206,10 @@ textarea.input { height: auto; min-height: 100px; padding: 14px 16px; resize: ve
 .fig { position: relative; overflow: hidden; display: grid; place-items: center; min-height: 200px; background: var(--fig-bg); border-radius: var(--r); }
 .fig img { display: block; width: 100%; height: 100%; object-fit: cover; filter: var(--fig-filter); animation: drift 8s ease-in-out infinite alternate; }
 @keyframes drift { from { transform: scale(1.02); } to { transform: scale(1.05) translateY(-6px); } }
+.fig.has-dark { background: var(--fig-bg-dk); }
+.fig.has-dark img { filter: none; }
+.fig.has-dark .fig-l { display: var(--fig-l); }
+.fig.has-dark .fig-d { display: var(--fig-d); }
 .fig .fig-ph { display: none; }
 .fig.missing img { display: none; }
 .fig.missing .fig-ph { display: grid; place-items: center; align-content: center; gap: 8px; width: 100%; height: 100%; min-height: inherit; color: var(--faint); text-align: center; padding: 20px; }

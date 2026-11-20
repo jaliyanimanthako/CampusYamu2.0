@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { isAuthEnabled } from "../auth/supabase.ts";
-import { LANGS, useMockupI18n } from "../i18n/mockupI18n.tsx";
+import { ENABLED_LANGS, useMockupI18n } from "../i18n/mockupI18n.tsx";
 import { ThemeToggleButton } from "../theme/appTheme.tsx";
 import { pad2 } from "../utils/course.ts";
-import { ArrowRightIcon, BrandMark } from "./BrandMark.tsx";
+import { ArrowRightIcon, BrandMark, FigureImg } from "./BrandMark.tsx";
 import { LangMenu } from "./LangMenu.tsx";
 
 interface HomeViewProps {
@@ -200,9 +200,7 @@ export function HomeView({ onStart }: HomeViewProps) {
             </ul>
           </div>
           <div className="l-hero-art reveal" style={{ ["--i" as string]: 2 }}>
-            <div className="fig">
-              <img src="/figures/signin.webp" alt="" />
-            </div>
+            <FigureImg name="signin" />
             <span className="float f1">
               <span className="chip blue">
                 {t("chance", { band: bands.strong?.[0] ?? "Strong" })}
@@ -235,9 +233,7 @@ export function HomeView({ onStart }: HomeViewProps) {
                   <div className="l-stage-figs">
                     {STEP_FIGS.map((figName, i) => (
                       <div key={figName} className={`l-stage-fig ${i === activeStep ? "on" : ""}`}>
-                        <div className="fig">
-                          <img src={`/figures/${figName}.webp`} alt="" />
-                        </div>
+                        <FigureImg name={figName} />
                       </div>
                     ))}
                   </div>
@@ -286,7 +282,7 @@ export function HomeView({ onStart }: HomeViewProps) {
                 <span>{statsLabels[i]}</span>
                 {i === 5 && (
                   <span className="l-langs">
-                    {LANGS.map((l) => (
+                    {ENABLED_LANGS.map((l) => (
                       <span key={l.id} lang={l.id}>
                         {l.name}
                       </span>
@@ -315,9 +311,7 @@ export function HomeView({ onStart }: HomeViewProps) {
                 onFocus={() => setActiveArea(id)}
                 onClick={() => setActiveArea(id)}
               >
-                <div className="fig">
-                  <img src={`/figures/area-${id}.webp`} alt="" loading="lazy" />
-                </div>
+                <FigureImg name={`area-${id}`} lazy />
                 <span className="l-area-text">
                   <b>{areas[id]?.[0]}</b>
                   <span>{areas[id]?.[1]}</span>

@@ -86,3 +86,19 @@ export const BackIcon = () => (
     <path d="M15 18l-6-6 6-6" />
   </svg>
 );
+
+export function FigureImg({
+  name,
+  lazy = false,
+}: {
+  name: string;
+  lazy?: boolean;
+}) {
+  const loading = lazy ? "lazy" : undefined;
+  return (
+    <div className="fig has-dark">
+      <img className="fig-l" src={`/figures/${name}.webp`} alt="" loading={loading} />
+      <img className="fig-d" src={`/figures/${name}.dark.webp`} alt="" loading={loading} />
+    </div>
+  );
+}
