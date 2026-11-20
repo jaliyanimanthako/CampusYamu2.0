@@ -26,6 +26,7 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
+from campusyamu.core import tracing
 from campusyamu.core import settings
 from campusyamu.core import llm
 from campusyamu.prompts import memory as prompts
@@ -192,7 +193,7 @@ class ChatMemory:
                 return
             self._busy.add(user_id)
         self._futures = [f for f in self._futures if not f.done()]
-        self._futures.append(self._executor.submit(self._work, user_id, uni_code))
+        self._futures.append(self._executor.submit(tracing.bind(self._work), user_id, uni_code))
 
     def _work(self, user_id: str, uni_code: str) -> None:
         pending = {uni_code}

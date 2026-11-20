@@ -31,9 +31,9 @@ import uuid
 from collections import OrderedDict
 from typing import Any
 
-from . import settings
+from . import settings, tracing
 
-PROVIDERS = ("openai", "gemini", "openrouter", "groq")
+PROVIDERS =("openai", "gemini", "openrouter", "groq")
 EMBEDDING_PROVIDERS = ("openai", "gemini", "openrouter")          # Groq serves no embedding models
 KEY_NAMES = {"openai": "OPENAI_API_KEY", "gemini": "GEMINI_API_KEY", "openrouter": "OPENROUTER_API_KEY",
              "groq": "GROQ_API_KEY"}
@@ -97,9 +97,25 @@ def label(name: str | None = None) -> str:
 # --- Responses-shaped calls -----------------------------------------------------------------
 def post_responses(payload: dict[str, Any], *, api_key: str | None = None, timeout: int = 60,
                    user_agent: str = "CampusYamu/0.1", name: str | None = None) -> dict[str, Any]:
-    """Send a Responses API payload to the configured provider; return a Responses-shaped reply."""
+    """Send a Responses API payload to the configured provider; return a Responses-shaped reply.
+    Traced in Langfuse (when configured) as one generation named after the caller's user agent."""
 
     name = name or provider()
+    model = payload.get("model") or settings.model("chat", provider=name)
+    params = {k: payload[k] for k in ("max_output_tokens", "temperature") if payload.get(k) is not None}
+    if payload.get("tools"):
+        params["tools"] = [t.get("name") for t in payload["tools"] if isinstance(t, dict)]
+    with tracing.generation(tracing.step_name(user_agent, payload), model=model, provider=name,
+                            input=tracing.responses_input(payload), model_parameters=params or None) as gen:
+        body = _post_responses(payload, api_key, timeout, user_agent, name)
+        gen.done(body, output=tracing.responses_output(body),
+                 **({"level": "WARNING", "status_message": f"status {body.get('status')}"}
+                    if body.get("status") not in (None, "completed") else {}))
+        return body
+
+
+def _post_responses(payload: dict[str, Any], api_key: str | None, timeout: int, user_agent: str,
+                    name: str) -> dict[str, Any]:
     key = api_key or require_key(name)
     if name == "openai":
         return post_json(f"{OPENAI_URL}/responses", payload, {"Authorization": f"Bearer {key}"},
@@ -155,8 +171,13 @@ def chat_completions(payload: dict[str, Any], *, api_key: str | None = None, tim
 
     name = name or provider()
     key = api_key or require_key(name)
-    url = CHAT_URLS[name]
-    return post_json(url, payload, {"Authorization": f"Bearer {key}"}, timeout, user_agent, label(name))
+    model = str(payload.get("model") or "")
+    with tracing.generation(tracing.step_name(user_agent, payload), model=model, provider=name,
+                            input=payload.get("messages")) as gen:
+        body = post_json(CHAT_URLS[name], payload, {"Authorization": f"Bearer {key}"}, timeout, user_agent, label(name))
+        choices = body.get("choices") or [{}]
+        gen.done(body, output=(choices[0] or {}).get("message"))
+        return body
 
 
 # --- HTTP -----------------------------------------------------------------------------------
@@ -458,12 +479,7 @@ def _check() -> int:
 
     schema = {"type": "object", "additionalProperties": False, "required": ["answer"],
               "properties": {"answer": {"type": "string"}}}
-    step(f"1. structured JSON ({model})", lambda: call_structured(
-        {"model": model, "max_output_tokens": 50,
-         "input": [{"role": "system", "content": "Reply in JSON."}, {"role": "user", "content": "Say ok."}],
-         "text": {"format": {"type": "json_schema", "name": "check", "strict": True, "schema": schema}}}))
-
-    tool = {"type": "function", "name": "get_time", "description": "Current time in a city", "strict": True,
+    tool ={"type": "function", "name": "get_time", "description": "Current time in a city", "strict": True,
             "parameters": {"type": "object", "additionalProperties": False, "required": ["city"],
                            "properties": {"city": {"type": "string"}}}}
     agent = settings.model("career_agent")
@@ -479,8 +495,6 @@ def _check() -> int:
                                "output": json.dumps({"time": "10:30"})}]})
         return f"{calls[0]['name']}{calls[0]['arguments']} -> {response_text(second)[:100]!r}"
 
-    step(f"2. tool call ({agent})", tool_round_trip)
-
     def embedding() -> str:
         embedder = make_embedder(query=True)
         return f"{embedder.cache_id}: {len(embedder.embed(['z-score'])[0])} dimensions"
@@ -489,7 +503,25 @@ def _check() -> int:
         source = embedding_provider()
     except ValueError:
         source = "none"
-    step(f"3. embedding ({source})", embedding)
+    with tracing.observe("llm-check", tags=["check"]):        # the three calls as one Langfuse trace
+        step(f"1. structured JSON ({model})", lambda: call_structured(
+            {"model": model, "max_output_tokens": 50,
+             "input": [{"role": "system", "content": "Reply in JSON."}, {"role": "user", "content": "Say ok."}],
+             "text": {"format": {"type": "json_schema", "name": "check", "strict": True, "schema": schema}}}))
+        step(f"2. tool call ({agent})", tool_round_trip)
+        step(f"3. embedding ({source})", embedding)
+
+    host = os.getenv("LANGFUSE_HOST") or "Langfuse cloud"
+    if tracing.enabled() and tracing.client() is not None:
+        try:
+            ok = tracing.client().auth_check()
+            print(f"tracing: Langfuse at {host}: " + ("OK, the check is a trace named llm-check" if ok
+                                                     else "FAILED (keys rejected)"))
+        except Exception as exc:
+            print(f"tracing: Langfuse at {host}: FAILED  {str(exc)[:200]} (is it running? LANGFUSE_HOST?)")
+        tracing.flush()
+    else:
+        print("tracing: off (no LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY in .env)")
     if failed:
         print(f"\n{failed} of 3 failed. HTTP 503/429 = {label()} busy or rate-limited: try again in a few "
               f"minutes, or set another model in models.{name} (settings.yaml). HTTP 400 = a request the model "
