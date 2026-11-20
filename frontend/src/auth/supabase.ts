@@ -1,5 +1,8 @@
 import { createClient, type Session, type SupabaseClient, type User } from "@supabase/supabase-js";
-import type { RuntimeConfig } from "../api/types.ts";
+import type { AuthUser, RuntimeConfig } from "../api/types.ts";
+
+const LOCAL_TOKEN_KEY = "cy.auth_token";
+const LOCAL_USER_KEY = "cy.auth_user";
 
 export function getRuntimeConfig(): RuntimeConfig {
   const winCfg = typeof window !== "undefined" ? window.CAMPUSYAMU_CONFIG : undefined;
@@ -32,15 +35,62 @@ export function getSupabase(): SupabaseClient | null {
   return cachedClient;
 }
 
-export function isAuthEnabled(): boolean {
+export function isSupabaseEnabled(): boolean {
   return getSupabase() !== null;
+}
+
+/** Backwards-compatible alias: true when Supabase Auth is configured. */
+export function isAuthEnabled(): boolean {
+  return isSupabaseEnabled();
+}
+
+export function getLocalAuthToken(): string | null {
+  try {
+    return window.localStorage.getItem(LOCAL_TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function getLocalAuthUser(): AuthUser | null {
+  try {
+    const raw = window.localStorage.getItem(LOCAL_USER_KEY);
+    return raw ? (JSON.parse(raw) as AuthUser) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setLocalAuthSession(token: string, user: AuthUser): void {
+  try {
+    window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
+    window.localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(user));
+  } catch {
+    // Ignore storage errors
+  }
+}
+
+export function clearLocalAuthSession(): void {
+  try {
+    window.localStorage.removeItem(LOCAL_TOKEN_KEY);
+    window.localStorage.removeItem(LOCAL_USER_KEY);
+  } catch {
+    // Ignore storage errors
+  }
+}
+
+/** True if the user has a Supabase session OR a local backend account token. */
+export function hasLocalAccountToken(): boolean {
+  return Boolean(getLocalAuthToken());
 }
 
 export async function getAccessToken(): Promise<string | null> {
   const sb = getSupabase();
-  if (!sb) return null;
-  const { data } = await sb.auth.getSession();
-  return data.session?.access_token ?? null;
+  if (sb) {
+    const { data } = await sb.auth.getSession();
+    return data.session?.access_token ?? null;
+  }
+  return getLocalAuthToken();
 }
 
 export async function getCurrentSession(): Promise<Session | null> {

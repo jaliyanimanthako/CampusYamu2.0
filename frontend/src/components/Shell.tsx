@@ -1,22 +1,35 @@
 import type { ReactNode } from "react";
 import type { Me } from "../api/types.ts";
+import { useMockupI18n } from "../i18n/mockupI18n.tsx";
+import { ThemeToggleButton } from "../theme/appTheme.tsx";
+import { AnimalAvatar, type AvatarId } from "./AnimalAvatar.tsx";
 import { BrandMark } from "./BrandMark.tsx";
+import { LangMenu } from "./LangMenu.tsx";
 
-export type AppRoute = "signin" | "form" | "analysing" | "results" | "rankings" | "course" | "me";
+export type AppRoute =
+  | "lang"
+  | "home"
+  | "signin"
+  | "form"
+  | "analysing"
+  | "results"
+  | "rankings"
+  | "course"
+  | "me";
 
 interface ShellProps {
   active: AppRoute;
   me: Me | null;
-  userEmail: string | null;
+  avatarId: AvatarId;
   onNavigate: (hash: string) => void;
   children: ReactNode;
 }
 
-const NAV_ITEMS: { id: AppRoute; hash: string; label: string; mobileLabel: string }[] = [
-  { id: "form", hash: "#/form", label: "My results", mobileLabel: "Results" },
-  { id: "results", hash: "#/results", label: "Courses", mobileLabel: "Courses" },
-  { id: "rankings", hash: "#/rankings", label: "Ranked order", mobileLabel: "Order" },
-  { id: "me", hash: "#/me", label: "Chats", mobileLabel: "Chats" },
+const NAV_ITEMS: { id: AppRoute; hash: string; navKey: string; tabKey: string }[] = [
+  { id: "form", hash: "#/form", navKey: "nav.results", tabKey: "tab.results" },
+  { id: "results", hash: "#/results", navKey: "nav.courses", tabKey: "tab.courses" },
+  { id: "rankings", hash: "#/rankings", navKey: "nav.order", tabKey: "tab.order" },
+  { id: "me", hash: "#/me", navKey: "nav.chats", tabKey: "tab.chats" },
 ];
 
 function MobileIcon({ id }: { id: AppRoute }) {
@@ -51,10 +64,10 @@ function MobileIcon({ id }: { id: AppRoute }) {
   }
 }
 
-export function Shell({ active, me, userEmail, onNavigate, children }: ShellProps) {
+export function Shell({ active, me, avatarId, onNavigate, children }: ShellProps) {
+  const { t } = useMockupI18n();
   const chatUsage = me?.usage?.chat;
   const pct = chatUsage && chatUsage.limit > 0 ? Math.min(100, (chatUsage.used / chatUsage.limit) * 100) : 0;
-  const initial = (userEmail?.[0] ?? "S").toUpperCase();
 
   return (
     <>
@@ -75,32 +88,34 @@ export function Shell({ active, me, userEmail, onNavigate, children }: ShellProp
                       onNavigate(item.hash);
                     }}
                   >
-                    {item.label}
+                    {t(item.navKey)}
                   </a>
                 );
               })}
             </nav>
             <div className="nav-right">
+              <ThemeToggleButton />
+              <LangMenu />
               {chatUsage && chatUsage.limit > 0 && (
-                <span className="usage" title="Chat questions used today">
+                <span className="usage" title={t("usage.title")}>
                   <span className="bar">
                     <i style={{ width: `${pct}%` }} />
                   </span>
                   <span className="num">
-                    {chatUsage.used}/{chatUsage.limit} today
+                    {t("usage.today", { used: chatUsage.used, limit: chatUsage.limit })}
                   </span>
                 </span>
               )}
               <a
                 className="avatar"
                 href="#/me"
-                aria-label="Account"
+                aria-label={t("account")}
                 onClick={(e) => {
                   e.preventDefault();
                   onNavigate("#/me");
                 }}
               >
-                {initial}
+                <AnimalAvatar id={avatarId} size={40} />
               </a>
             </div>
           </div>
@@ -124,7 +139,7 @@ export function Shell({ active, me, userEmail, onNavigate, children }: ShellProp
               <span className="ic">
                 <MobileIcon id={item.id} />
               </span>
-              <span>{item.mobileLabel}</span>
+              <span>{t(item.tabKey)}</span>
             </a>
           );
         })}

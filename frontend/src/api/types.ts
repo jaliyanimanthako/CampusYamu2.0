@@ -253,6 +253,19 @@ export interface Deleted {
   deleted: string;
 }
 
+export interface AuthUser {
+  id: string;
+  email: string;
+  name?: string;
+  avatar?: string;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  user: AuthUser;
+}
+
 export interface RuntimeConfig {
   supabaseUrl?: string | null;
   supabaseKey?: string | null;

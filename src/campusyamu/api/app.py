@@ -45,7 +45,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from campusyamu.core import settings, tracing
 
 from . import schemas as s
-from .auth import AuthError, SupabaseAuth
+from .auth import AccountExistsError, AuthError, LocalAuthStore, SupabaseAuth
 
 try:
     VERSION = version("campusyamu")
@@ -71,11 +71,17 @@ def cors_origins() -> list[str]:
 
 def current_user(request: Request,
                  credentials: HTTPAuthorizationCredentials | None = Depends(_bearer)) -> str | None:
-    """The signed-in student's id; None when sign-in is off (no SUPABASE_URL: local development)."""
+    """The signed-in student's id; None when sign-in is off and no local token was sent."""
 
     auth: SupabaseAuth = request.app.state.auth
     if not auth.enabled:
-        return None
+        if credentials is None:
+            return None
+        local_auth: LocalAuthStore = request.app.state.local_auth
+        try:
+            return local_auth.user_id(credentials.credentials)
+        except AuthError as exc:
+            raise StarletteHTTPException(401, str(exc)) from exc
     if credentials is None:
         raise StarletteHTTPException(401, "Sign in first: send Authorization: Bearer <Supabase access token>")
     try:
@@ -145,6 +151,7 @@ def create_app(service_factory: Callable[[], Any] | None = None, auth: SupabaseA
     )
     app.state.service = service
     app.state.auth = auth or SupabaseAuth()
+    app.state.local_auth = LocalAuthStore()
     app.add_middleware(CORSMiddleware, allow_origins=cors_origins(), allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
                        allow_headers=["Content-Type", "Authorization"])
 
@@ -177,6 +184,24 @@ def create_app(service_factory: Callable[[], Any] | None = None, auth: SupabaseA
         web = service.app
         return {"ok": web is not None, "version": VERSION,
                 "llm_available": bool(web and web.options.get("llm_available"))}
+
+    @public.post("/auth/signup", response_model=s.AuthResponse, status_code=201, tags=["auth"])
+    async def auth_signup(body: s.SignUpRequest) -> dict[str, Any]:
+        """Create a local student account (when Supabase Auth is not configured)."""
+        try:
+            return app.state.local_auth.signup(body.email, body.password, body.name, body.avatar)
+        except AccountExistsError as exc:
+            raise StarletteHTTPException(409, str(exc)) from exc
+        except ValueError as exc:
+            raise StarletteHTTPException(422, str(exc)) from exc
+
+    @public.post("/auth/signin", response_model=s.AuthResponse, tags=["auth"])
+    async def auth_signin(body: s.SignInRequest) -> dict[str, Any]:
+        """Sign in with a local student account (when Supabase Auth is not configured)."""
+        try:
+            return app.state.local_auth.signin(body.email, body.password)
+        except AuthError as exc:
+            raise StarletteHTTPException(401, str(exc)) from exc
 
     @v1.get("/options", response_model=s.Options, tags=["form"])
     async def options() -> dict[str, Any]:

@@ -1,19 +1,31 @@
 import { useEffect, useState } from "react";
 import { getMyChats } from "../api/client.ts";
 import type { ChatSummary, Me } from "../api/types.ts";
-import { isAuthEnabled } from "../auth/supabase.ts";
+import { hasLocalAccountToken, isAuthEnabled } from "../auth/supabase.ts";
+import { LANGS, useMockupI18n, type LangId } from "../i18n/mockupI18n.tsx";
+import { useAppTheme } from "../theme/appTheme.tsx";
 import { pad2 } from "../utils/course.ts";
+import { AnimalAvatar, type AvatarId } from "./AnimalAvatar.tsx";
 
 interface AccountViewProps {
   me: Me | null;
   userEmail: string | null;
+  avatarId: AvatarId;
   onOpenCourse: (uniCode: string) => void;
   onSignOut: () => void;
 }
 
-export function AccountView({ me, userEmail, onOpenCourse, onSignOut }: AccountViewProps) {
+export function AccountView({
+  me,
+  userEmail,
+  avatarId,
+  onOpenCourse,
+  onSignOut,
+}: AccountViewProps) {
+  const { lang, setLanguage, t } = useMockupI18n();
+  const { theme, setTheme } = useAppTheme();
   const [chats, setChats] = useState<ChatSummary[]>([]);
-  const authOn = isAuthEnabled();
+  const authOn = isAuthEnabled() || hasLocalAccountToken();
 
   useEffect(() => {
     if (!authOn) return;
@@ -52,15 +64,18 @@ export function AccountView({ me, userEmail, onOpenCourse, onSignOut }: AccountV
   return (
     <>
       <section style={{ display: "flex", alignItems: "end", gap: 20, flexWrap: "wrap" }}>
-        <div>
-          <span className="label reveal">Account</span>
-          <h1
-            className="reveal"
-            style={{ ["--i" as string]: 1, marginTop: 12, fontSize: "clamp(32px, 4.4vw, 52px)" }}
-          >
-            {localPart}
-            {domainPart && <span className="accent">@{domainPart}</span>}
-          </h1>
+        <div className="profile-head">
+          <AnimalAvatar id={avatarId} size={72} />
+          <div>
+            <span className="label reveal">{t("account")}</span>
+            <h1
+              className="reveal"
+              style={{ ["--i" as string]: 1, marginTop: 8, fontSize: "clamp(28px, 4vw, 48px)" }}
+            >
+              {localPart}
+              {domainPart && <span className="accent">@{domainPart}</span>}
+            </h1>
+          </div>
         </div>
         <button
           type="button"
@@ -71,6 +86,42 @@ export function AccountView({ me, userEmail, onOpenCourse, onSignOut }: AccountV
           {authOn ? "Sign out" : "Back to start"}
         </button>
       </section>
+
+      <h3 style={{ marginTop: 40 }}>Appearance</h3>
+      <div className="lang-opts">
+        <button
+          type="button"
+          aria-pressed={theme === "light"}
+          onClick={() => setTheme("light")}
+        >
+          <span className="glyph g-en">☀️</span>
+          <span>Light</span>
+        </button>
+        <button
+          type="button"
+          aria-pressed={theme === "dark"}
+          onClick={() => setTheme("dark")}
+        >
+          <span className="glyph g-si">🌙</span>
+          <span>Dark</span>
+        </button>
+      </div>
+
+      <h3 style={{ marginTop: 40 }}>{t("language")}</h3>
+      <div className="lang-opts">
+        {LANGS.map((l) => (
+          <button
+            key={l.id}
+            type="button"
+            aria-pressed={l.id === lang}
+            lang={l.id}
+            onClick={() => setLanguage(l.id as LangId)}
+          >
+            <span className={`glyph g-${l.id}`}>{l.short}</span>
+            <span>{l.name}</span>
+          </button>
+        ))}
+      </div>
 
       {authOn && (
         <>

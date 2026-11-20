@@ -7,6 +7,7 @@ import {
   startMockCareerResearch,
 } from "./mockData.ts";
 import type {
+  AuthResponse,
   CareerResearchRequest,
   CareerResearchResponse,
   CareerStatus,
@@ -313,6 +314,32 @@ export function getMyChatHistory(
 export function deleteMyChat(uniCode: string): Promise<Deleted> {
   return apiRequest<Deleted>(`/v1/me/chats/${encodeURIComponent(uniCode)}`, {
     method: "DELETE",
+    timeoutMs: DEFAULT_TIMEOUT_MS,
+  });
+}
+
+export function postSignUp(payload: {
+  email: string;
+  password: string;
+  name?: string;
+  avatar?: string;
+}): Promise<AuthResponse> {
+  return apiRequest<AuthResponse>("/v1/auth/signup", {
+    method: "POST",
+    includeApiKey: false,
+    body: JSON.stringify(payload),
+    timeoutMs: DEFAULT_TIMEOUT_MS,
+  });
+}
+
+export function postSignIn(payload: {
+  email: string;
+  password: string;
+}): Promise<AuthResponse> {
+  return apiRequest<AuthResponse>("/v1/auth/signin", {
+    method: "POST",
+    includeApiKey: false,
+    body: JSON.stringify(payload),
     timeoutMs: DEFAULT_TIMEOUT_MS,
   });
 }

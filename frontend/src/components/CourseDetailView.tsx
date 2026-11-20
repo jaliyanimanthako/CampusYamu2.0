@@ -15,7 +15,7 @@ import type {
   RecommendationReport,
   Usage,
 } from "../api/types.ts";
-import { isAuthEnabled } from "../auth/supabase.ts";
+import { hasLocalAccountToken, isAuthEnabled } from "../auth/supabase.ts";
 import { BANDS, courseArea, fmtMinutes, sanitizeDisplayText } from "../utils/course.ts";
 import { BackIcon } from "./BrandMark.tsx";
 
@@ -159,7 +159,7 @@ export function CourseDetailView({
   onBack,
   onToast,
 }: CourseDetailViewProps) {
-  const authOn = isAuthEnabled();
+  const authOn = isAuthEnabled() || hasLocalAccountToken();
   const queryClient = useQueryClient();
   const [localMessages, setLocalMessages] = useState<UiMessage[]>([]);
   const [input, setInput] = useState("");

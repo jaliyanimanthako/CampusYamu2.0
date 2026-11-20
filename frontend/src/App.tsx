@@ -14,16 +14,28 @@ import {
   type RecommendationReport,
   type RecommendationRequest,
 } from "./api/types.ts";
-import { getCurrentUser, getSupabase, isAuthEnabled } from "./auth/supabase.ts";
+import {
+  clearLocalAuthSession,
+  getCurrentUser,
+  getLocalAuthUser,
+  getSupabase,
+  hasLocalAccountToken,
+  isAuthEnabled,
+} from "./auth/supabase.ts";
 import { AccountView } from "./components/AccountView.tsx";
 import { AnalysingView } from "./components/AnalysingView.tsx";
+import { AVATARS, loadSavedAvatar, saveAvatar, type AvatarId } from "./components/AnimalAvatar.tsx";
 import { CourseDetailView } from "./components/CourseDetailView.tsx";
 import { DEFAULT_FORM_STATE, FormWizard, type FormState } from "./components/FormWizard.tsx";
+import { HomeView } from "./components/HomeView.tsx";
+import { LanguageView } from "./components/LanguageView.tsx";
 import { RankingsView } from "./components/RankingsView.tsx";
 import { ResultsView } from "./components/ResultsView.tsx";
 import { Shell, type AppRoute } from "./components/Shell.tsx";
 import { SignInView } from "./components/SignInView.tsx";
+import { MockupI18nProvider, useMockupI18n } from "./i18n/mockupI18n.tsx";
 import { loadReport, resetAllSessionData, saveReport } from "./state/sessionStore.ts";
+import { AppThemeProvider } from "./theme/appTheme.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,6 +50,8 @@ function parseHash(): { route: AppRoute; arg?: string } {
   const raw = window.location.hash.replace(/^#\/?/, "");
   const [head, arg] = raw.split("/");
   switch (head) {
+    case "lang":
+    case "home":
     case "signin":
     case "form":
     case "analysing":
@@ -47,7 +61,7 @@ function parseHash(): { route: AppRoute; arg?: string } {
     case "me":
       return { route: head, arg: arg ? decodeURIComponent(arg) : undefined };
     default:
-      return { route: "form" };
+      return { route: "home" };
   }
 }
 
@@ -85,13 +99,25 @@ function formStateFromSaved(savedForm: RecommendationRequest): FormState {
 }
 
 function AppShell() {
-  const authEnabled = isAuthEnabled();
-  const [signedIn, setSignedIn] = useState<boolean>(() => !authEnabled);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const { langChosen } = useMockupI18n();
+  const supabaseEnabled = isAuthEnabled();
+  const [hasAccount, setHasAccount] = useState<boolean>(
+    () => (supabaseEnabled ? false : hasLocalAccountToken()),
+  );
+  const [guestMode, setGuestMode] = useState<boolean>(false);
+  const signedIn = hasAccount || guestMode;
+  const [userEmail, setUserEmail] = useState<string | null>(() =>
+    supabaseEnabled ? null : (getLocalAuthUser()?.email ?? null),
+  );
+  const [avatarId, setAvatarId] = useState<AvatarId>(() => {
+    const localAv = getLocalAuthUser()?.avatar as AvatarId | undefined;
+    if (localAv && AVATARS.some((a) => a.id === localAv)) return localAv;
+    return loadSavedAvatar(supabaseEnabled ? null : (getLocalAuthUser()?.email ?? null));
+  });
   const [hashState, setHashState] = useState(() => parseHash());
   const [report, setReport] = useState<RecommendationReport | null>(() => loadReport());
   const [restoringResults, setRestoringResults] = useState<boolean>(
-    () => authEnabled && !loadReport(),
+    () => (supabaseEnabled || hasLocalAccountToken()) && !loadReport(),
   );
   const [form, setForm] = useState<FormState>(DEFAULT_FORM_STATE);
   const [me, setMe] = useState<Me | null>(null);
@@ -119,22 +145,31 @@ function AppShell() {
   }, []);
 
   useEffect(() => {
-    if (!authEnabled) return;
+    if (!supabaseEnabled) return;
     const sb = getSupabase();
     if (!sb) return;
 
     getCurrentUser().then((user) => {
-      setSignedIn(Boolean(user));
+      setHasAccount(Boolean(user));
       setUserEmail(user?.email ?? null);
-      if (!user) navigate("#/signin");
+      const av = user?.user_metadata?.avatar as AvatarId | undefined;
+      if (av && AVATARS.some((a) => a.id === av)) {
+        setAvatarId(av);
+        saveAvatar(av);
+      }
     });
 
     const { data: sub } = sb.auth.onAuthStateChange((_event, session) => {
-      setSignedIn(Boolean(session?.user));
+      setHasAccount(Boolean(session?.user));
       setUserEmail(session?.user?.email ?? null);
+      const av = session?.user?.user_metadata?.avatar as AvatarId | undefined;
+      if (av && AVATARS.some((a) => a.id === av)) {
+        setAvatarId(av);
+        saveAvatar(av);
+      }
     });
     return () => sub.subscription.unsubscribe();
-  }, [authEnabled, navigate]);
+  }, [supabaseEnabled]);
 
   const { data: options } = useQuery({
     queryKey: ["options"],
@@ -151,7 +186,10 @@ function AppShell() {
   });
 
   useEffect(() => {
-    if (!signedIn || !authEnabled) return;
+    if (!hasAccount) {
+      setRestoringResults(false);
+      return;
+    }
     getMe()
       .then(setMe)
       .catch(() => {});
@@ -163,7 +201,7 @@ function AppShell() {
       })
       .catch(() => {})
       .finally(() => setRestoringResults(false));
-  }, [signedIn, authEnabled]);
+  }, [hasAccount]);
 
   const runMutation = useMutation({
     mutationFn: async (req: RecommendationRequest) => {
@@ -180,7 +218,7 @@ function AppShell() {
     onSuccess: (res) => {
       saveReport(res.report, res.used_llm);
       setReport(res.report);
-      if (authEnabled) {
+      if (hasAccount) {
         getMe().then(setMe).catch(() => {});
       }
     },
@@ -195,27 +233,77 @@ function AppShell() {
   const handleSignOut = async () => {
     const sb = getSupabase();
     if (sb) await sb.auth.signOut();
+    clearLocalAuthSession();
     resetAllSessionData();
     setReport(null);
     setMe(null);
-    if (authEnabled) {
-      setSignedIn(false);
-      navigate("#/signin");
-    } else {
-      navigate("#/form");
-    }
+    setHasAccount(false);
+    setGuestMode(false);
+    setUserEmail(null);
+    navigate("#/home");
   };
 
-  const activeRoute: AppRoute = !signedIn ? "signin" : hashState.route;
+  let activeRoute: AppRoute = hashState.route;
+  if (!langChosen && activeRoute !== "lang") {
+    activeRoute = "lang";
+  } else if (!signedIn && activeRoute !== "lang" && activeRoute !== "home" && activeRoute !== "signin") {
+    activeRoute = "home";
+  } else if (signedIn && activeRoute === "home") {
+    activeRoute = report ? "results" : "form";
+  }
+
+  if (activeRoute === "lang") {
+    return (
+      <>
+        <LanguageView
+          onSelect={() => {
+            navigate(signedIn ? (report ? "#/results" : "#/form") : "#/home");
+          }}
+        />
+        <div id="toast" className={toastMsg ? "show" : ""} role="status">
+          {toastMsg ?? ""}
+        </div>
+      </>
+    );
+  }
+
+  if (activeRoute === "home") {
+    return (
+      <>
+        <HomeView
+          onStart={() => {
+            navigate(signedIn ? (report ? "#/results" : "#/form") : "#/signin");
+          }}
+        />
+        <div id="toast" className={toastMsg ? "show" : ""} role="status">
+          {toastMsg ?? ""}
+        </div>
+      </>
+    );
+  }
 
   if (activeRoute === "signin") {
     return (
       <>
         <SignInView
-          onSignedIn={() => {
-            setSignedIn(true);
+          onSignedIn={(signedInEmail, signedInAvatar) => {
+            setHasAccount(true);
+            if (signedInEmail) setUserEmail(signedInEmail);
+            if (signedInAvatar && AVATARS.some((a) => a.id === signedInAvatar)) {
+              setAvatarId(signedInAvatar);
+              saveAvatar(signedInAvatar);
+            }
             navigate("#/form");
           }}
+          onContinueGuest={
+            !supabaseEnabled
+              ? () => {
+                  setGuestMode(true);
+                  navigate("#/form");
+                }
+              : undefined
+          }
+          onBackHome={() => navigate("#/home")}
           onToast={showToast}
         />
         <div id="toast" className={toastMsg ? "show" : ""} role="status">
@@ -298,6 +386,7 @@ function AppShell() {
       <AccountView
         me={me}
         userEmail={userEmail}
+        avatarId={avatarId}
         onOpenCourse={(uni) => navigate(`#/course/${encodeURIComponent(uni)}`)}
         onSignOut={() => void handleSignOut()}
       />
@@ -323,7 +412,7 @@ function AppShell() {
 
   return (
     <>
-      <Shell active={activeRoute} me={me} userEmail={userEmail} onNavigate={navigate}>
+      <Shell active={activeRoute} me={me} avatarId={avatarId} onNavigate={navigate}>
         {content}
       </Shell>
       <div id="toast" className={toastMsg ? "show" : ""} role="status">
@@ -335,9 +424,13 @@ function AppShell() {
 
 export function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppShell />
-    </QueryClientProvider>
+    <AppThemeProvider>
+      <MockupI18nProvider>
+        <QueryClientProvider client={queryClient}>
+          <AppShell />
+        </QueryClientProvider>
+      </MockupI18nProvider>
+    </AppThemeProvider>
   );
 }
 
