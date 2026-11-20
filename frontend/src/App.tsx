@@ -159,15 +159,22 @@ function AppShell() {
         setAvatarId(av);
         saveAvatar(av);
       }
+      if (user && !user.user_metadata?.avatar_locked) {
+        setShowAvatarPopup(true);
+      }
     });
 
     const { data: sub } = sb.auth.onAuthStateChange((_event, session) => {
-      setHasAccount(Boolean(session?.user));
-      setUserEmail(session?.user?.email ?? null);
-      const av = session?.user?.user_metadata?.avatar as AvatarId | undefined;
+      const user = session?.user ?? null;
+      setHasAccount(Boolean(user));
+      setUserEmail(user?.email ?? null);
+      const av = user?.user_metadata?.avatar as AvatarId | undefined;
       if (av && AVATARS.some((a) => a.id === av)) {
         setAvatarId(av);
         saveAvatar(av);
+      }
+      if (user && !user.user_metadata?.avatar_locked) {
+        setShowAvatarPopup(true);
       }
     });
     return () => sub.subscription.unsubscribe();
@@ -250,7 +257,7 @@ function AppShell() {
     activeRoute = "lang";
   } else if (!signedIn && activeRoute !== "lang" && activeRoute !== "home" && activeRoute !== "signin") {
     activeRoute = "home";
-  } else if (signedIn && activeRoute === "home") {
+  } else if (signedIn && (activeRoute === "home" || activeRoute === "signin")) {
     activeRoute = report ? "results" : "form";
   }
 
