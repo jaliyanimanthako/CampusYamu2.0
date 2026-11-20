@@ -22,8 +22,8 @@ handbook block, chat with citations and career-research progress) → account (d
 - `mock/report.json`: trimmed copy of `outputs/student_report.json`.
 - `public/styles.css`: the design tokens (`:root`) and components.
 - `public/app.js`: the screens; every call uses the real `/v1` request and response shapes.
-- Landing page (`views.home` in `app.js`, `#/home`): hero, a scrolling "how it works" with a
-  sticky figure and progress bar, big-number tiles, widening course-area cards, a chat preview,
+- Landing page (`views.home` in `app.js`, `#/home`): hero, a "how it works" panel that stays
+  pinned while you scroll and brings the four steps up one at a time (figure and progress bar change with them), big-number tiles, widening course-area cards, a chat preview,
   FAQ and a closing banner. Layout ideas from choreolabs.com, in the app's own style. The numbers
   are real counts from `data/processed/knowledge_graph/graph_data.json` (`LANDING_STATS`).
   Signed-out visitors land here; signed-in students go straight to their courses.
