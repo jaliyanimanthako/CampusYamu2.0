@@ -78,7 +78,7 @@ class FakeChat:
         self.fail, self.research = False, False
         self.asked: list[tuple] = []
 
-    def ask(self, question, course, student, history, user_id=None):
+    def ask(self, question, course, student, history, user_id=None, on_token=None):
         self.asked.append((course, student))
         if self.fail:
             raise RuntimeError("OpenAI down")

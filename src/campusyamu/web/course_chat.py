@@ -27,6 +27,12 @@ Context for each question (numbered sources the answer must cite):
 One language-model call per question (llm.provider: OpenAI, Gemini, OpenRouter or Groq; strict JSON). The model may only cite
 the sources given; unknown ids are dropped.
 
+Streaming (ask(..., on_token=...), POST /v1/chat/stream): the same steps, but the answer call goes through
+LangChain (core/chat_stream.py) and is written as plain text with inline citations, so each piece reaches the
+student as it is generated. The status and start_career_research flags come on a hidden last line
+(<<meta {...}>>, prompts/course_chat.py) that MetaSplitter keeps out of the stream; the sources used are the
+ones the answer cites.
+
 Memory: with a user_id (a signed-in student) the server keeps the chat
 (campusyamu.memory): the student's facts, this chat's running summary and the
 newest turns go into the prompt, a follow-up is rewritten to stand alone for the
@@ -44,15 +50,16 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import time
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any
+from typing import Any, Callable
 
 from campusyamu.core import tracing
 from campusyamu.core import settings
 
 from campusyamu.agents.course_details import HandbookCourseIndex
-from campusyamu.core import llm
+from campusyamu.core import chat_stream, llm
 
 from campusyamu.memory import ChatMemory
 from campusyamu.prompts import guardrail as guard_prompts
@@ -60,6 +67,7 @@ from campusyamu.prompts import guardrail as guard_prompts
 from .career_outlook import CareerOutlookStore
 from .guardrail import ScopeGuard, Verdict
 from .university_pages import UniversityPages
+from campusyamu.prompts.course_chat import COURSE_CHAT_STREAM_FORMAT, STREAM_META_START
 from campusyamu.prompts.course_chat import COURSE_CHAT_SYSTEM as SYSTEM_PROMPT
 
 log = logging.getLogger(__name__)
@@ -132,6 +140,67 @@ def website_sources(record: dict[str, Any] | None, course: dict[str, Any]) -> li
     return out
 
 
+class MetaSplitter:
+    """Separates a streamed answer from its hidden `<<meta {...}>>` last line.
+
+    feed() returns the text that may be shown now; a tail that could be the start of the marker is held back
+    until the next piece shows whether it is. finish() returns what is still held back, then .answer is the
+    whole visible text and .meta the raw marker line ("" if the model did not write one).
+    """
+
+    def __init__(self, mark: str = STREAM_META_START) -> None:
+        self.mark = mark
+        self.held = ""
+        self.meta: str | None = None
+        self.shown: list[str] = []
+
+    def feed(self, piece: str) -> str:
+        if self.meta is not None:
+            self.meta += piece
+            return ""
+        self.held += piece
+        at = self.held.find(self.mark)
+        if at >= 0:
+            out, self.meta, self.held = self.held[:at], self.held[at:], ""
+        else:
+            keep = next((k for k in range(min(len(self.mark) - 1, len(self.held)), 0, -1)
+                         if self.mark.startswith(self.held[-k:])), 0)
+            out, self.held = self.held[:len(self.held) - keep], self.held[len(self.held) - keep:]
+        self.shown.append(out)
+        return out
+
+    def finish(self) -> str:
+        out, self.held = self.held, ""
+        self.shown.append(out)
+        return out
+
+    @property
+    def answer(self) -> str:
+        return "".join(self.shown).strip()
+
+
+def parse_meta(raw: str | None) -> dict[str, Any]:
+    match = re.search(r"\{.*\}", raw or "", re.DOTALL)
+    if not match:
+        return {}
+    try:
+        value = json.loads(match.group(0))
+    except ValueError:
+        return {}
+    return value if isinstance(value, dict) else {}
+
+
+def cited_ids(text: str, known: set[str]) -> list[str]:
+    """Source ids cited inline ([S1], [R], [S1, H2] ...), in order of first use, limited to `known`."""
+
+    found: list[str] = []
+    for group in re.findall(r"\[([^\[\]]{1,40})\]", text or ""):
+        for token in re.split(r"[,;\s]+", group):
+            if token in known and token not in found:
+                found.append(token)
+    return found
+
+
 class CourseChat:
     def __init__(self, handbook: HandbookCourseIndex | None = None, model: str | None = None,
                  use_search: bool = True, outlooks: CareerOutlookStore | None = None,
@@ -149,6 +218,7 @@ class CourseChat:
         self._driver = None
         self._search_error: str | None = None
         self._search_failed_at = 0.0
+        self.stream_model: Any = None                   # tests: a fake LangChain chat model for streaming
 
     # --- handbook search (optional) ------------------------------------------------
     def retriever(self):
@@ -303,10 +373,34 @@ class CourseChat:
     def _call(self, payload: dict[str, Any]) -> dict[str, Any]:
         return llm.call_structured(payload, llm.require_key(), 90, "CampusYamu-CourseChat/0.1")
 
+    def _stream(self, payload: dict[str, Any], sources: list[dict[str, Any]],
+                on_token: Callable[[str], None]) -> dict[str, Any]:
+        """The answer call, streamed: same messages, plain-text format; returns the same fields as _call."""
+
+        messages = [*payload["input"], {"role": "system", "content": COURSE_CHAT_STREAM_FORMAT}]
+        splitter = MetaSplitter()
+
+        def emit(piece: str) -> None:
+            visible = splitter.feed(piece)
+            if visible:
+                on_token(visible)
+
+        chat_stream.stream_text(messages, emit, max_tokens=int(payload.get("max_output_tokens") or 1500),
+                                model=self.stream_model)
+        if tail := splitter.finish():
+            on_token(tail)
+        meta = parse_meta(splitter.meta)
+        return {"answer": splitter.answer,
+                "sources_used": cited_ids(splitter.answer, {s["id"] for s in sources}),
+                "status": meta.get("status") if meta.get("status") in STATUSES else "answered",
+                "start_career_research": meta.get("start_career_research") is True}
+
     def ask(self, question: str, course: dict[str, Any], student: dict[str, Any] | None = None,
-            history: list[dict[str, str]] | None = None, user_id: str | None = None) -> dict[str, Any]:
+            history: list[dict[str, str]] | None = None, user_id: str | None = None,
+            on_token: Callable[[str], None] | None = None) -> dict[str, Any]:
         """Answer one question. With a user_id (and memory configured) the earlier turns come from memory
-        and `history` is ignored; the turn is saved afterwards."""
+        and `history` is ignored; the turn is saved afterwards. With `on_token`, the answer is streamed:
+        on_token(piece) as it is written (a refusal arrives whole, in the result, with no pieces)."""
 
         question = " ".join(str(question or "").split())[:MAX_QUESTION]
         if not question:
@@ -333,9 +427,9 @@ class CourseChat:
         verdict = scope.result() if scope is not None else None
         if verdict is not None and verdict.blocked:
             return self._refusal(question, course, verdict, [], search_question)
-        raw = self._call(self.request_payload(question, course, student or {}, history or [], sources,
-                                              memory=recall.context() if recall else None,
-                                              trim_history=recall is None))
+        payload = self.request_payload(question, course, student or {}, history or [], sources,
+                                       memory=recall.context() if recall else None, trim_history=recall is None)
+        raw = self._stream(payload, sources, on_token) if on_token else self._call(payload)
         known = {s["id"] for s in sources}
         used = [s for s in raw.get("sources_used", []) if s in known]
         result = {

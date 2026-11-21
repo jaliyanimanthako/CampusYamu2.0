@@ -10,6 +10,10 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115",
+    "langchain-core>=1.0",
+    "langchain-google-genai>=4.5.1",
+    "langchain-groq>=1.2.0",
+    "langchain-openai>=1.8.0",
     "langfuse>=5.2.0",
     "langgraph>=1.0",
     "neo4j>=5.26",

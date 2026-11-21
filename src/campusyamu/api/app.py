@@ -11,6 +11,7 @@ GET  /v1/options                  form values: streams, subjects, grades, distri
 GET  /v1/courses                  every course name (for the career-outlook endpoints)
 POST /v1/recommendations          run the student pipeline; returns the report
 POST /v1/recommendations/stream   the same, as server-sent events: each pipeline step as it finishes, then the report
+POST /v1/chat/stream              /v1/chat as server-sent events: the answer's text as it is written, then the result
 POST /v1/chat                     one question about one course from the report
 GET  /v1/career-outlook?course=   cached career outlook + background research status
 POST /v1/career-outlook/research  start career research for one course (runs for minutes; poll the GET)
@@ -246,6 +247,40 @@ def create_app(service_factory: Callable[[], Any] | None = None, auth: SupabaseA
         status, data = await service.call(service.app.run, body.model_dump(), user)
         return _reply(response, status, data)
 
+    def sse_response(work: Callable[[Callable[[str, dict[str, Any]], None]], Any]) -> StreamingResponse:
+        """Run `work(send)` on the worker thread; every send(event, data) becomes one server-sent event,
+        and the (status, data) it returns becomes the final `result` event: data plus `http_status`
+        (a separate field, since the chat result has its own `status`)."""
+
+        loop = asyncio.get_running_loop()
+        queue: asyncio.Queue[tuple[str, dict[str, Any]]] = asyncio.Queue()
+
+        def send(kind: str, data: dict[str, Any]) -> None:          # called on the worker thread
+            loop.call_soon_threadsafe(queue.put_nowait, (kind, data))
+
+        async def run() -> None:
+            try:
+                status, data = await service.call(work, send)
+                result = {**data, "http_status": status}
+            except Exception as exc:                              # report it in the stream; keep the server up
+                traceback.print_exc()
+                result = {"http_status": 500, "errors": [f"Request failed: {exc}"]}
+            await queue.put(("result", result))
+
+        task = asyncio.create_task(run())
+
+        async def events():
+            # If the client disconnects, the work still finishes on the worker thread (results are saved).
+            while True:
+                kind, data = await queue.get()
+                yield f"event: {kind}\ndata: {json.dumps(data, ensure_ascii=False, default=str)}\n\n"
+                if kind == "result":
+                    break
+            await task
+
+        return StreamingResponse(events(), media_type="text/event-stream",
+                                 headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
     @v1.post("/recommendations/stream", tags=["recommendations"], response_class=StreamingResponse,
              responses={200: {"content": {"text/event-stream": {}},
                               "description": "Server-sent events: `progress` per finished step, then one `result`"}})
@@ -262,36 +297,10 @@ def create_app(service_factory: Callable[[], Any] | None = None, auth: SupabaseA
         (zscore also sends `done` and `total` courses). It ends with exactly one
 
             event: result
-            data: {"status": 200, "report": {...}, "used_llm": false}     (or {"status": 400, "errors": [...]})
+            data: {"http_status": 200, "report": {...}, "used_llm": false}  (or {"http_status": 400, "errors": [...]})
         """
-        loop = asyncio.get_running_loop()
-        queue: asyncio.Queue[tuple[str, dict[str, Any]]] = asyncio.Queue()
-
-        def on_progress(event: dict[str, Any]) -> None:          # called on the worker thread
-            loop.call_soon_threadsafe(queue.put_nowait, ("progress", event))
-
-        async def run() -> None:
-            try:
-                status, data = await service.call(service.app.run, body.model_dump(), user, on_progress)
-                result = {"status": status, **data}
-            except Exception as exc:                              # report it in the stream; keep the server up
-                traceback.print_exc()
-                result = {"status": 500, "errors": [f"Request failed: {exc}"]}
-            await queue.put(("result", result))
-
-        task = asyncio.create_task(run())
-
-        async def events():
-            # If the client disconnects, the run still finishes on the worker thread (results are saved).
-            while True:
-                kind, data = await queue.get()
-                yield f"event: {kind}\ndata: {json.dumps(data, ensure_ascii=False, default=str)}\n\n"
-                if kind == "result":
-                    break
-            await task
-
-        return StreamingResponse(events(), media_type="text/event-stream",
-                                 headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+        form = body.model_dump()
+        return sse_response(lambda send: service.app.run(form, user, lambda event: send("progress", event)))
 
     @v1.post("/chat", response_model=s.ChatResponse, tags=["chat"])
     async def chat(body: s.ChatRequest, response: Response, user: str | None = Depends(current_user)) -> Any:
@@ -303,6 +312,28 @@ def create_app(service_factory: Callable[[], Any] | None = None, auth: SupabaseA
         """
         status, data = await service.call(service.app.ask, body.model_dump(), user)
         return _reply(response, status, data)
+
+    @v1.post("/chat/stream", tags=["chat"], response_class=StreamingResponse,
+             responses={200: {"content": {"text/event-stream": {}},
+                              "description": "Server-sent events: `token` pieces of the answer, then one `result`"}})
+    async def chat_stream(body: s.ChatRequest, user: str | None = Depends(current_user)) -> StreamingResponse:
+        """POST /v1/chat, with the answer streamed as it is written. Same input, limits, memory and result.
+
+        The response is `text/event-stream`:
+
+            event: token
+            data: {"text": "Yes, Architecture at Moratuwa needs an aptitude test [S1]"}
+
+        (append each `text` in order), then exactly one
+
+            event: result
+            data: {"http_status": 200, "answer": "...", "status": "answered", "sources": [...], ...}
+
+        with the same fields as POST /v1/chat plus `http_status` (or {"http_status": 4xx, "errors": [...]}). Use `result.answer` as
+        the final text. A message outside the chat's scope gets its refusal in the result with no tokens.
+        """
+        payload = body.model_dump()
+        return sse_response(lambda send: service.app.ask(payload, user, lambda text: send("token", {"text": text})))
 
     @v1.get("/career-outlook", response_model=s.CareerStatus, tags=["career"])
     async def career_outlook(course: str = Query(min_length=1, examples=["Quantity Surveying"])) -> Any:
