@@ -187,7 +187,7 @@ function AppShell() {
         return await getOptions();
       } catch {
         setDemoMode(true);
-        showToast("API offline — running with sample data.");
+        showToast("API offline, running with sample data.");
         return await getOptions();
       }
     },

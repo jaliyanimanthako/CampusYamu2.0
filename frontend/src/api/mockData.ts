@@ -674,7 +674,7 @@ export function buildMockChatResponse(req: ChatRequest): ChatResponse {
         : []),
     ],
     career_research: q.includes("career"),
-    notes: ["Demo mode response — connect make api for live handbook RAG & OpenAI answers."],
+    notes: ["Demo mode response. Connect make api for live handbook RAG & OpenAI answers."],
     model: "demo-mode",
     career: buildMockCareerStatus(courseName),
   };
