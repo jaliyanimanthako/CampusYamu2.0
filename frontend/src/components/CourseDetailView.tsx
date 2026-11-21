@@ -6,6 +6,8 @@ import {
   getCareerOutlook,
   getMyChatHistory,
   postChat,
+  postChatStream,
+  StreamUnsupportedError,
 } from "../api/client.ts";
 import type {
   CareerStatus,
@@ -26,6 +28,8 @@ interface CourseDetailViewProps {
   onUpdateChatUsage: (usage: Usage) => void;
   onBack: () => void;
   onToast: (msg: string) => void;
+  /** Signed-in student's first name from GET /v1/me; null for guests or before it loads. */
+  firstName?: string | null;
 }
 
 interface UiMessage {
@@ -158,10 +162,13 @@ export function CourseDetailView({
   onUpdateChatUsage,
   onBack,
   onToast,
+  firstName = null,
 }: CourseDetailViewProps) {
   const authOn = isAuthEnabled() || hasLocalAccountToken();
   const queryClient = useQueryClient();
   const [localMessages, setLocalMessages] = useState<UiMessage[]>([]);
+  /** The answer while it is still being written (POST /v1/chat/stream); null when not streaming. */
+  const [streamingText, setStreamingText] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [career, setCareer] = useState<CareerStatus | null>(null);
@@ -226,7 +233,7 @@ export function CourseDetailView({
   useEffect(() => {
     const el = bodyRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [messages, busy]);
+  }, [messages, busy, streamingText]);
 
   const askQuestion = async (questionText: string) => {
     const q = questionText.trim();
@@ -252,23 +259,30 @@ export function CourseDetailView({
 
     appendMessage({ role: "user", content: q });
 
+    const request = authOn
+      ? { uni_code: course.uni_code, question: q, student: {}, history: [] }
+      : {
+          question: q,
+          course: course as unknown as { course_code: string; course_name: string },
+          student: {
+            stream: report.profile.stream,
+            al_results: report.profile.al_results,
+            z_score: report.profile.z_score,
+            admission_district: report.profile.admission_district,
+            home: report.origin?.ds_division ?? report.profile.home,
+          },
+          history: priorHistory,
+        };
+
     try {
-      const res = await postChat(
-        authOn
-          ? { uni_code: course.uni_code, question: q, student: {}, history: [] }
-          : {
-              question: q,
-              course: course as unknown as { course_code: string; course_name: string },
-              student: {
-                stream: report.profile.stream,
-                al_results: report.profile.al_results,
-                z_score: report.profile.z_score,
-                admission_district: report.profile.admission_district,
-                home: report.origin?.ds_division ?? report.profile.home,
-              },
-              history: priorHistory,
-            },
-      );
+      let res;
+      try {
+        // the answer appears as it is written; the final response replaces it (with its sources)
+        res = await postChatStream(request, (piece) => setStreamingText((prev) => (prev ?? "") + piece));
+      } catch (err) {
+        if (!(err instanceof StreamUnsupportedError)) throw err;
+        res = await postChat(request);                                  // older backend: no streaming
+      }
       appendMessage({
         role: "assistant",
         content: res.answer,
@@ -281,6 +295,7 @@ export function CourseDetailView({
       const msg = err instanceof Error ? err.message : "Something went wrong. Try again.";
       appendMessage({ role: "assistant", content: msg, refused: true });
     } finally {
+      setStreamingText(null);
       setBusy(false);
     }
   };
@@ -446,8 +461,8 @@ export function CourseDetailView({
             <div className="msg bot">
               <span className="who mono">CampusYamu</span>
               <div className="text">
-                Ask me anything about <b>{course.course_name}</b> at {course.university}: entry
-                rules, your chances, the journey, or careers.
+                {firstName ? `Hi ${firstName}! ` : "Hi! "}Ask me anything about <b>{course.course_name}</b> at{" "}
+                {course.university}: entry rules, your chances, the journey, or careers.
               </div>
             </div>
 
@@ -490,7 +505,12 @@ export function CourseDetailView({
               ),
             )}
 
-            {busy && (
+            {busy && streamingText ? (
+              <div className="msg bot" aria-live="polite">
+                <span className="who mono">CampusYamu</span>
+                <AnswerWithCitations text={sanitizeDisplayText(streamingText)} />
+              </div>
+            ) : busy ? (
               <div className="msg bot">
                 <span className="who mono">CampusYamu</span>
                 <div className="typing">
@@ -499,7 +519,7 @@ export function CourseDetailView({
                   <i />
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
 
           {job?.state === "running" && (

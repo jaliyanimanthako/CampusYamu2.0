@@ -5,12 +5,15 @@ import {
   getMyResults,
   getOptions,
   postRecommendations,
+  postRecommendationsStream,
+  StreamUnsupportedError,
   setDemoMode,
 } from "./api/client.ts";
 import {
   BAND_ORDER,
   type CourseRow,
   type Me,
+  type ProgressEvent,
   type RecommendationReport,
   type RecommendationRequest,
 } from "./api/types.ts";
@@ -123,6 +126,7 @@ function AppShell() {
   );
   const [form, setForm] = useState<FormState>(DEFAULT_FORM_STATE);
   const [me, setMe] = useState<Me | null>(null);
+  const [progress, setProgress] = useState<ProgressEvent[]>([]);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const toastTimerRef = useRef<number | null>(null);
 
@@ -214,12 +218,22 @@ function AppShell() {
 
   const runMutation = useMutation({
     mutationFn: async (req: RecommendationRequest) => {
+      setProgress([]);
+      const onProgress = (event: ProgressEvent) => setProgress((prev) => [...prev, event]);
+      const run = async () => {
+        try {
+          return await postRecommendationsStream(req, onProgress);   // live steps for the analysing screen
+        } catch (err) {
+          if (err instanceof StreamUnsupportedError) return await postRecommendations(req);   // older backend
+          throw err;
+        }
+      };
       try {
-        return await postRecommendations(req);
+        return await run();
       } catch (err) {
         if (err instanceof Error && err.message.includes("Unable to reach")) {
           setDemoMode(true);
-          return await postRecommendations(req);
+          return await run();
         }
         throw err;
       }
@@ -333,6 +347,7 @@ function AppShell() {
     content = (
       <AnalysingView
         isDone={runMutation.isSuccess}
+        progress={progress}
         onCompleteAnimation={() => navigate("#/results")}
       />
     );
@@ -383,6 +398,7 @@ function AppShell() {
           report={report}
           course={course}
           chatUsage={me?.usage?.chat ?? null}
+          firstName={me?.first_name ?? null}
           onUpdateChatUsage={(usage) =>
             setMe((prev) =>
               prev ? { ...prev, usage: { ...prev.usage, chat: usage } } : prev,
@@ -409,6 +425,7 @@ function AppShell() {
         options={options}
         form={form}
         hasSavedReport={Boolean(report)}
+        firstName={me?.first_name ?? null}
         onChangeForm={setForm}
         onSubmit={(req) => {
           runMutation.mutate(req);

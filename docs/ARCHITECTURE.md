@@ -96,7 +96,8 @@ re-registered (`make kg`).
 
 Every prompt lives in `src/campusyamu/prompts/` (one module per area); `python -m campusyamu.prompts` lists them and `python -m campusyamu.prompts <name>` prints one exactly as sent.
 
-All calls go through `core/llm.py`. Code builds OpenAI Responses API requests (`store: false`);
+All structured calls go through `core/llm.py`; the one exception is the streamed course-chat answer, which goes through LangChain (`core/chat_stream.py`: ChatOpenAI, ChatGoogleGenerativeAI, ChatGroq, OpenRouter via ChatOpenAI) so its text can reach the student as it is written.
+`core/llm.py` builds OpenAI Responses API requests (`store: false`);
 with `llm.provider: gemini` in `config/settings.yaml` they are translated to Gemini `generateContent`
 (structured output via `responseJsonSchema`, function calling with thought signatures kept), with
 `llm.provider: openrouter` or `groq` to Chat Completions (`response_format` JSON schema, `tools`), and the
@@ -114,7 +115,9 @@ the student's id. Thread pools hand work over with `tracing.bind(fn)` so it stay
 
 `python -m campusyamu.api` (port 8780) is the only backend: a FastAPI service
 (`src/campusyamu/api/`) with `GET /v1/options`, `GET /v1/courses`,
-`POST /v1/recommendations` (the pipeline), `POST /v1/chat` (course chat),
+`POST /v1/recommendations` (the pipeline), `POST /v1/chat` (course chat), their server-sent-event versions
+`POST /v1/recommendations/stream` (each pipeline step as it finishes) and `POST /v1/chat/stream` (the answer
+as it is written; both end with one `result` event carrying `http_status`),
 `GET /v1/career-outlook` and `POST /v1/career-outlook/research` (background job).
 `api/service.py` (`AdvisorService`) holds the logic; `api/app.py` runs every call on
 one worker thread (the pipeline's SQLite connections are bound to it) and career

@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from campusyamu.agents.course_finder.finder import AL_GRADES, OL_GRADES, CourseFinder
 from campusyamu.agents.preference import engine_available, preference_engine
@@ -160,20 +160,22 @@ class AdvisorService:
             self.limits.record(user_id, "research")
         return (202 if started else 409), {"message": message, **self.career(course)}
 
-    def ask(self, body: dict[str, Any], user_id: str | None = None) -> tuple[int, dict[str, Any]]:
+    def ask(self, body: dict[str, Any], user_id: str | None = None,
+            on_token: Callable[[str], None] | None = None) -> tuple[int, dict[str, Any]]:
         """One chat question. With user_id (a signed-in student) the server's memory replaces `history`.
         Traced as one "chat" trace per question (Langfuse, when configured); session = student + course."""
 
         uni = str(body.get("uni_code") or (body.get("course") or {}).get("uni_code") or "")
         with tracing.observe("chat", user_id=user_id, session_id=f"{user_id}:{uni}" if user_id and uni else None,
                              input=body.get("question"), metadata={"uni_code": uni or None}) as trace:
-            status, result = self._ask(body, user_id)
+            status, result = self._ask(body, user_id, on_token)
             trace.update(output=result.get("answer") if status == 200 else result,
                          metadata={"uni_code": uni or None, "http_status": status, "status": result.get("status")},
                          level="WARNING" if status >= 400 else None)
             return status, result
 
-    def _ask(self, body: dict[str, Any], user_id: str | None) -> tuple[int, dict[str, Any]]:
+    def _ask(self, body: dict[str, Any], user_id: str | None,
+             on_token: Callable[[str], None] | None = None) -> tuple[int, dict[str, Any]]:
         if not self.options["llm_available"]:
             return 400, {"errors": [f"The course chat needs {llm.key_name()} in .env"]}
         course = body.get("course") or {}
@@ -190,7 +192,7 @@ class AdvisorService:
             return 429, {"errors": [over]}
         history = [t for t in body.get("history") or [] if isinstance(t, dict)]
         try:
-            result = self.chat.ask(body["question"], course, student, history, user_id=user_id)
+            result = self.chat.ask(body["question"], course, student, history, user_id=user_id, on_token=on_token)
         except (RuntimeError, ValueError) as exc:
             return 502, {"errors": [f"Could not answer: {exc}"]}
         name = str(course.get("course_name") or "")
@@ -245,7 +247,8 @@ class AdvisorService:
             return 404, {"errors": [f"No chat for {uni_code}"]}
         return 200, {"deleted": uni_code}
 
-    def run(self, form: dict[str, Any], user_id: str | None = None) -> tuple[int, dict[str, Any]]:
+    def run(self, form: dict[str, Any], user_id: str | None = None,
+            on_progress: Callable[[dict[str, Any]], None] | None = None) -> tuple[int, dict[str, Any]]:
         try:
             al = [f"{r['subject']}:{r['grade']}" for r in form.get("al", []) if r.get("subject")]
             ol = [f"{r['subject']}:{r['grade']}" for r in form.get("ol", []) if r.get("grade")]
@@ -281,7 +284,7 @@ class AdvisorService:
         with tracing.observe("recommendations", as_type="chain", user_id=user_id,
                              input={k: v for k, v in inputs.items() if k != "preferences"} | {
                                  "preferences": inputs["preferences"] or None, "use_llm": use_llm}) as trace:
-            state = run_pipeline(inputs, self.pipeline(use_llm, suggestions))
+            state = run_pipeline(inputs, self.pipeline(use_llm, suggestions), on_progress)
             trace.update(output={"errors": state.get("errors") or None,
                                  "counts": (state.get("report") or {}).get("counts")},
                          level="WARNING" if state.get("errors") else None)
