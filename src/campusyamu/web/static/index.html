@@ -176,7 +176,7 @@
       <legend>Home</legend>
       <div class="two">
         <div><label for="homeDistrict">Home district</label><select id="homeDistrict" required></select></div>
-        <div><label for="ds">DS division</label><select id="ds" required disabled><option value="">Choose district first</option></select></div>
+        <div><label for="town">Home town</label><select id="town" required disabled><option value="">Choose district first</option></select></div>
       </div>
       <div class="hint">Used for travel times only; it can differ from the admission district.</div>
     </fieldset>
@@ -274,9 +274,9 @@ async function init() {
   fillSelect($("admission"), OPTIONS.districts, "Choose district");
   fillSelect($("homeDistrict"), OPTIONS.districts, "Choose district");
   $("homeDistrict").addEventListener("change", () => {
-    const list = OPTIONS.ds_divisions[$("homeDistrict").value] || [];
-    fillSelect($("ds"), list, list.length ? "Choose DS division" : "Choose district first");
-    $("ds").disabled = !list.length;
+    const list = OPTIONS.towns[$("homeDistrict").value] || [];
+    fillSelect($("town"), list, list.length ? "Choose home town" : "Choose district first");
+    $("town").disabled = !list.length;
   });
   $("stream").addEventListener("change", () => { applyStreamDefaults(); checkStream(); });
   document.querySelectorAll(".al-subject").forEach((el) => el.addEventListener("change", checkStream));
@@ -324,7 +324,8 @@ function collect() {
     cgt: Number($("cgt").value),
     z_score: $("z").value === "" ? null : Number($("z").value),
     admission_district: $("admission").value,
-    ds_division: $("ds").value,
+    home_district: $("homeDistrict").value,
+    home_town: $("town").value,
     ol: [...document.querySelectorAll(".ol-grade")].map((el) => ({ subject: el.dataset.subject, grade: el.value })),
     preferences: $("prefs").value,
     use_llm: $("llm").checked,
@@ -369,7 +370,7 @@ function render(r, usedLlm) {
   html.push(`<div class="panel">
     <div class="summary"><span><b>${esc(p.stream)}</b> — ${esc(al)}</span><span>CGT ${esc(p.common_general_test)}</span>
       <span>Z-score <b>${esc(p.z_score ?? "—")}</b></span><span>Admission: ${esc(p.admission_district)}</span>
-      <span>Home: ${esc(o.ds_division)} (${esc(o.district)})</span></div>
+      <span>Home: ${esc(o.town ?? o.ds_division)} (${esc(o.district)})</span></div>
     <div class="stats">
       <span class="stat"><b>${c.can_apply}</b>courses open</span><span class="stat"><b>${c.with_conditions}</b>with conditions</span>
       <span class="stat"><b>${c.band_strong}</b>strong</span><span class="stat"><b>${c.band_competitive}</b>competitive</span>
@@ -481,7 +482,7 @@ function courseFacts(uni) {
 function studentFacts() {
   const p = REPORT.profile, o = REPORT.origin;
   return { stream: p.stream, al_results: p.al_results, z_score: p.z_score, admission_district: p.admission_district,
-           home: `${o.ds_division} (${o.district})`, interests: REPORT.preferences?.text || "" };
+           home: `${o.town ?? o.ds_division} (${o.district})`, interests: REPORT.preferences?.text || "" };
 }
 
 async function loadHistory(uni) {
@@ -692,12 +693,12 @@ function fillForm(f, report) {
   $("cgt").value = f.cgt ?? 40;
   $("z").value = f.z_score ?? "";
   $("admission").value = f.admission_district || "";
-  const district = report?.origin?.district
-    || Object.keys(OPTIONS.ds_divisions).find((d) => OPTIONS.ds_divisions[d].includes(f.ds_division));
+  // forms saved before home towns have only ds_division; their saved report's origin still gives the district
+  const district = f.home_district || report?.origin?.district;
   if (district) {
     $("homeDistrict").value = district;
-    $("homeDistrict").dispatchEvent(new Event("change"));   // fills the DS divisions of that district
-    $("ds").value = f.ds_division || "";
+    $("homeDistrict").dispatchEvent(new Event("change"));   // fills the towns of that district
+    $("town").value = f.home_town || report?.origin?.town || "";
   }
   document.querySelectorAll(".ol-grade").forEach((el) => {
     el.value = (f.ol || []).find((o) => o.subject === el.dataset.subject)?.grade || "";

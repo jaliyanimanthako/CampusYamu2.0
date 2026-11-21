@@ -41,11 +41,11 @@ export function SummaryStrip({ report, usedLlm }: SummaryStripProps) {
               {profile.admission_district}
             </strong>
           </span>
-          {origin?.ds_division ? (
+          {origin?.town ?? origin?.ds_division ? (
             <span className="rounded-full border border-[#E2E8F0] bg-[#F8FAFC] px-3 py-0.5 text-[#475569]">
               {t("summary.homePrefix")}{" "}
               <strong className="font-medium text-[#0F172A]">
-                {origin.ds_division}
+                {origin.town ?? origin.ds_division}
               </strong>
             </span>
           ) : null}

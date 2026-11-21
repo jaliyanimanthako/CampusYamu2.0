@@ -82,7 +82,7 @@ def render(result: FinderResult, max_car: float | None = None, show_not_eligible
         f"O/L: {ol}",
         f"Admission district: {p['admission_district']} (§1.5; for Z-score cut-offs in the next step)"
         + (f" | Z-score {p['z_score']} (not used in this step)" if p.get("z_score") is not None else ""),
-        f"Home: {o['ds_division']} DS division, {o['district']} district (used for travel times)",
+        f"Home: {o['town']}, {o['district']} district (used for travel times)",
         "",
         f"Summary: {len(groups['can_apply'])} can apply · {len(groups['with_conditions'])} with conditions · "
         f"{len(groups['check_handbook'])} check handbook · {len(groups['blocked_by_ol'])} blocked by O/L · "
@@ -145,8 +145,8 @@ def interactive_profile(finder: CourseFinder, reader: Callable[[str], str] = inp
     z = _ask("Z-score (optional, used in the next step)", lambda t: float(t) if t else None, "", reader=reader)
     district = _ask("Admission district (the district of your school / exam, handbook §1.5)",
                     finder.resolve_admission_district, reader=reader)
-    home = _ask("Home town / DS division (for travel times)",
-                lambda t: finder.resolve_origin(t).ds_division, reader=reader)
+    home = _ask("Home town (for travel times)",
+                lambda t: finder.resolve_origin(t).label, reader=reader)
     return StudentProfile.from_inputs(stream=stream, al=al_items, cgt=cgt, admission_district=district,
                                       home=home, ol=ol_items, z_score=z)
 
@@ -159,7 +159,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--admission-district", "--district", dest="admission_district",
                         help="District for university admission (§1.5: school/exam district); "
                              "may differ from the home town's district")
-    parser.add_argument("--home", help="Home town / DS division")
+    parser.add_argument("--home", help="Home town, e.g. Kotugoda or 'Hettipola (Matale)'")
     parser.add_argument("--ol", action="append", default=[], help="O/L 'Subject:Grade' (Science, English, Maths, ...)")
     parser.add_argument("--z-score", type=float)
     parser.add_argument("--max-car-min", type=float, help="Only offerings within this many car minutes")

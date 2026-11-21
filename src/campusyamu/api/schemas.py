@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class SubjectGrade(BaseModel):
@@ -20,13 +20,26 @@ class RecommendationRequest(BaseModel):
                                                "eligible)", examples=[40])
     z_score: float | None = Field(None, examples=[1.56])
     admission_district: str = Field(min_length=1, description="One of `districts`", examples=["Kandy"])
-    ds_division: str = Field(min_length=1, description="Home DS division, from `ds_divisions[district]`",
-                             examples=["Gangawata Korale"])
+    home_district: str | None = Field(None, description="District of the home town (one of `districts`); "
+                                                         "needed when a town name is in two districts",
+                                      examples=["Gampaha"])
+    home_town: str | None = Field(None, description="Home town, from `towns[home_district]`; travel times are "
+                                                    "measured from it", examples=["Kotugoda"])
+    ds_division: str | None = Field(None, deprecated=True,
+                                    description="Old forms only: a home DS division, mapped to its main town")
     preferences: str = Field("", max_length=2000, description="Free-text interests",
                              examples=["engineering, design"])
     use_llm: bool = Field(False, description="Use AI to read the preferences (engine: `preference_engine`; "
                                              "needs `llm_available` or `preference_ai_available`)")
     suggestions: int = Field(20, ge=5, le=50, description="Entries per suggestion list")
+
+
+    @model_validator(mode="after")
+    def _needs_home(self) -> "RecommendationRequest":
+        legacy = self.__dict__.get("ds_division")            # plain read: no deprecation warning
+        if not (self.home_town or "").strip() and not (legacy or "").strip():
+            raise ValueError("home_town is required")
+        return self
 
 
 class RecommendationResponse(BaseModel):
@@ -176,7 +189,7 @@ class Options(BaseModel):
     ol_subjects: list[str]
     ol_grades: list[str]
     districts: list[str]
-    ds_divisions: dict[str, list[str]]
+    towns: dict[str, list[str]] = Field(description="Home towns per district, for `home_town`")
     llm_available: bool = Field(description="llm.provider key set: course chat and AI feedback work")
     llm_provider: str = Field("openai", description="Language model behind the chat and feedback: openai | gemini | openrouter | groq")
     preference_engine: str = Field("llm", description="AI that reads interests: llm (the llm.provider model) | gemini_decision")

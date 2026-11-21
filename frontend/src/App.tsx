@@ -95,8 +95,10 @@ function formStateFromSaved(savedForm: RecommendationRequest): FormState {
     cgt: String(savedForm.cgt ?? DEFAULT_FORM_STATE.cgt),
     z_score: savedForm.z_score != null ? String(savedForm.z_score) : "",
     admission_district: savedForm.admission_district || DEFAULT_FORM_STATE.admission_district,
-    home_district: savedForm.admission_district || DEFAULT_FORM_STATE.home_district,
-    ds_division: savedForm.ds_division || DEFAULT_FORM_STATE.ds_division,
+    home_district:
+      savedForm.home_district || savedForm.admission_district || DEFAULT_FORM_STATE.home_district,
+    // forms saved before home towns have a DS division instead; many are also town names
+    home_town: savedForm.home_town || savedForm.ds_division || DEFAULT_FORM_STATE.home_town,
     preferences: savedForm.preferences ?? "",
     use_llm: Boolean(savedForm.use_llm),
   };

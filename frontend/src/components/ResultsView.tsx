@@ -94,7 +94,7 @@ export function ResultsView({
               <span className="accent num">Z {Number(profile.z_score).toFixed(4)}</span>
             )}
             <span>
-              {report.origin?.ds_division || profile.home}, {profile.admission_district}
+              {report.origin?.town || report.origin?.ds_division || profile.home}, {profile.admission_district}
             </span>
           </div>
         </div>

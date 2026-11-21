@@ -66,10 +66,10 @@ export const en = {
   // ProfileForm — Section 3
   "form.sec3.title": "3. District & Home Location",
   "form.sec3.subtitle":
-    "Admission district determines Z-score cut-offs; home DS division is used for travel time estimates.",
+    "Admission district determines Z-score cut-offs; home town is used for travel time estimates.",
   "form.admissionDistrict": "Admission District",
   "form.homeDistrict": "Home District",
-  "form.dsDivision": "Home DS Division",
+  "form.homeTown": "Home Town",
 
   // ProfileForm — Section 4
   "form.sec4.title": "4. Career & Subject Interests",
@@ -93,7 +93,7 @@ export const en = {
     "Common General Test (CGT) mark must be an integer between 0 and 100.",
   "form.err.zscore": "Z-score must be a valid number (for example, 1.5623).",
   "form.err.admissionDistrict": "Please select an admission district.",
-  "form.err.dsDivision": "Please select your home DS division.",
+  "form.err.homeTown": "Please select your home town.",
   "form.err.preferencesMax": "Interests must be 2000 characters or fewer.",
   "form.err.unexpected":
     "An unexpected error occurred while generating recommendations.",
@@ -222,20 +222,20 @@ export const en = {
   "hero.badge": "UGC 2024/2025 Student Handbook · Sri Lanka",
   "hero.title": "Find the right state-university course for your A/L results.",
   "hero.subtitle":
-    "Compare every eligible degree across Sri Lankan state universities by historical district Z-score cut-offs, travel time from your home DS division, and your career interests.",
+    "Compare every eligible degree across Sri Lankan state universities by historical district Z-score cut-offs, travel time from your home town, and your career interests.",
   "hero.ctaPrimary": "Check Your Eligibility",
   "hero.ctaSecondary": "How It Works",
   "hero.stat.programmes.value": "100+",
   "hero.stat.programmes.label": "UGC degree programmes",
-  "hero.stat.districts.value": "25 / 339",
-  "hero.stat.districts.label": "Districts & DS divisions",
+  "hero.stat.districts.value": "25 / 489",
+  "hero.stat.districts.label": "Districts & home towns",
   "hero.stat.bands.value": "5 Bands",
   "hero.stat.bands.label": "Strong to No History",
   "hero.stat.languages.value": "EN · සිං · தமிழ்",
   "hero.stat.languages.label": "Full trilingual interface",
   "hero.previewTitle": "What your report includes",
   "hero.previewItem1": "Admission likelihood bands from past district cut-offs",
-  "hero.previewItem2": "Car & bus travel estimates from your home DS division",
+  "hero.previewItem2": "Car & bus travel estimates from your home town",
   "hero.previewItem3": "Direct UGC handbook citations & course Q&A",
   "hero.featuresTitle": "Built for clarity, not guesswork",
   "hero.feat1.title": "Z-Score & Eligibility Bands",
@@ -243,14 +243,14 @@ export const en = {
     "Automatically checks A/L subject rules, Common General Test pass mark, and O/L prerequisites, then groups courses into Strong, Competitive, Reach, Unlikely, and No History.",
   "hero.feat2.title": "Balanced Order & Travel Time",
   "hero.feat2.desc":
-    "Balances your stated interests, admission certainty, and estimated car or bus commute from your home DS division—with close-call and what-if advice.",
+    "Balances your stated interests, admission certainty, and estimated car or bus commute from your home town—with close-call and what-if advice.",
   "hero.feat3.title": "Handbook Citations & Career Outlook",
   "hero.feat3.desc":
     "Inspect exact UGC handbook sections in Markdown, ask course-specific AI questions with citations, and check researched Sri Lankan career prospects.",
   "hero.howTitle": "How it works in 3 steps",
   "hero.step1.title": "Enter your results",
   "hero.step1.desc":
-    "Pick your A/L stream, 3 subjects, CGT mark, optional Z-score, and home DS division.",
+    "Pick your A/L stream, 3 subjects, CGT mark, optional Z-score, and home town.",
   "hero.step2.title": "Explore ranked matches",
   "hero.step2.desc":
     "Switch between Balanced Order and Band Explorer to filter by readiness or district.",
@@ -266,7 +266,7 @@ export const en = {
   "form.wizard.next": "Continue",
   "form.wizard.back": "Back",
   "form.searchDistrict": "Filter districts…",
-  "form.searchDs": "Filter DS divisions…",
+  "form.searchTown": "Filter towns…",
   "form.interestChipsLabel": "Quick interest tags (tap to add):",
   "form.aiMilestone1": "1/4 Checking UGC eligibility rules…",
   "form.aiMilestone2": "2/4 Comparing 25-district Z-score cut-offs…",

@@ -12,7 +12,7 @@ export interface ProfileFormState {
   zScore: string;
   admissionDistrict: string;
   homeDistrict: string;
-  dsDivision: string;
+  homeTown: string;
   preferences: string;
   useLlm: boolean;
 }
@@ -44,7 +44,11 @@ function safeWriteJson(key: string, value: unknown): void {
 }
 
 export function loadFormState(): ProfileFormState | null {
-  return safeReadJson<ProfileFormState>(KEYS.form);
+  // state saved before home towns has dsDivision; many DS divisions are also town names
+  const saved = safeReadJson<ProfileFormState & { dsDivision?: string }>(KEYS.form);
+  if (!saved) return null;
+  const { dsDivision, ...rest } = saved;
+  return { ...rest, homeTown: saved.homeTown ?? dsDivision ?? "" };
 }
 
 export function saveFormState(state: ProfileFormState): void {

@@ -64,7 +64,7 @@ const state = {
     z_score: "1.5600",
     admission_district: "Gampaha",
     home_district: "Gampaha",
-    ds_division: "Minuwangoda",
+    home_town: "Minuwangoda",
     preferences: "engineering, design",
     use_llm: false,
   },
@@ -507,7 +507,7 @@ views.form = async () => {
       <div class="field"><label for="adm">${t("adm")}</label><select class="select" id="adm">${o.districts.map((d) => `<option ${d === f.admission_district ? "selected" : ""}>${esc(d)}</option>`).join("")}</select></div>
       <div class="row two">
         <div class="field"><label for="hd">${t("hd")}</label><select class="select" id="hd">${o.districts.map((d) => `<option ${d === f.home_district ? "selected" : ""}>${esc(d)}</option>`).join("")}</select></div>
-        <div class="field"><label for="ds">${t("ds")}</label><select class="select" id="ds">${(o.ds_divisions[f.home_district] || []).map((d) => `<option ${d === f.ds_division ? "selected" : ""}>${esc(d)}</option>`).join("")}</select></div>
+        <div class="field"><label for="ds">${t("ds")}</label><select class="select" id="ds">${(o.towns[f.home_district] || []).map((d) => `<option ${d === f.home_town ? "selected" : ""}>${esc(d)}</option>`).join("")}</select></div>
       </div>`,
     () => `
       <header>${stepLabel(4)}<h2 style="margin-top:10px">${headline(t("f4.ha"), t("f4.hb"))}</h2>
@@ -557,9 +557,9 @@ views.form = async () => {
     f.preferences = ta.value;
   }));
   $("#llm")?.addEventListener("click", (e) => { f.use_llm = !f.use_llm; e.currentTarget.setAttribute("aria-checked", f.use_llm); });
-  $("#hd")?.addEventListener("change", (e) => { f.home_district = e.target.value; f.ds_division = (o.ds_divisions[f.home_district] || [])[0]; rerender(); });
+  $("#hd")?.addEventListener("change", (e) => { f.home_district = e.target.value; f.home_town = (o.towns[f.home_district] || [])[0]; rerender(); });
   $("#adm")?.addEventListener("change", (e) => (f.admission_district = e.target.value));
-  $("#ds")?.addEventListener("change", (e) => (f.ds_division = e.target.value));
+  $("#ds")?.addEventListener("change", (e) => (f.home_town = e.target.value));
   $("#pref")?.addEventListener("input", (e) => (f.preferences = e.target.value));
   $("#cgt")?.addEventListener("input", (e) => (f.cgt = e.target.value));
 
@@ -591,7 +591,7 @@ views.form = async () => {
         al: f.al.map(([subject, grade]) => ({ subject, grade })),
         ol: Object.entries(f.ol).map(([subject, grade]) => ({ subject, grade })),
         cgt: Number(f.cgt), z_score: f.z_score === "" ? null : Number(f.z_score),
-        admission_district: f.admission_district, ds_division: f.ds_division,
+        admission_district: f.admission_district, home_district: f.home_district, home_town: f.home_town,
         preferences: f.preferences, use_llm: f.use_llm, suggestions: 20,
       },
     });
@@ -685,7 +685,7 @@ views.results = async () => {
           <span>${esc(p.stream)}</span><span class="sep">/</span>
           <span>${p.al_results.map(([sub, g]) => `${esc(abbrev(sub))} ${g}`).join(" · ")}</span><span class="sep">/</span>
           ${p.z_score != null ? `<span class="accent num">Z ${Number(p.z_score).toFixed(4)}</span><span class="sep">/</span>` : ""}
-          <span>${esc(rep.origin?.ds_division || p.home)}, ${esc(p.admission_district)}</span>
+          <span>${esc(rep.origin?.town || rep.origin?.ds_division || p.home)}, ${esc(p.admission_district)}</span>
         </div>
       </div>
       <div class="reveal" style="--i:3;display:flex;gap:10px;flex-wrap:wrap">
