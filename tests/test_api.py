@@ -86,7 +86,7 @@ class RealServiceTests(unittest.TestCase):
         self.assertEqual(set(done), {"eligibility", "travel", "zscore", "interests", "ranking"})
         self.assertEqual(done[-1], "ranking")                                   # ranking finishes last
         result = events[-1][1]
-        self.assertEqual(result["status"], 200)
+        self.assertEqual(result["http_status"], 200)
         plain = self.client.post("/v1/recommendations", json=FORM).json()
         self.assertEqual(result["report"]["counts"], plain["report"]["counts"])  # same report as the plain call
         self.assertIn("/v1/recommendations/stream", self.client.get("/openapi.json").json()["paths"])
@@ -94,7 +94,7 @@ class RealServiceTests(unittest.TestCase):
     def test_recommendations_stream_errors_arrive_as_the_result(self) -> None:
         same = [{"subject": "Physics", "grade": "A"}] * 3
         events = sse(self.client.post("/v1/recommendations/stream", json={**FORM, "al": same}).text)
-        self.assertEqual(events, [("result", {"status": 400, "errors": ["Choose three different A/L subjects"]})])
+        self.assertEqual(events, [("result", {"http_status": 400, "errors": ["Choose three different A/L subjects"]})])
         # a body that fails request validation is rejected before the stream starts: plain JSON, HTTP 422
         bad = self.client.post("/v1/recommendations/stream", json={**FORM, "cgt": "not a number"})
         self.assertEqual(bad.status_code, 422)
@@ -197,9 +197,9 @@ class FakeServiceTests(unittest.TestCase):
         with TestClient(self.app) as client:
             ok = sse(client.post("/v1/recommendations/stream", json=FORM).text)
             self.assertEqual([k for k, _ in ok], ["progress", "result"])
-            self.assertEqual(ok[1][1], {"status": 200, "report": {}, "used_llm": False})
+            self.assertEqual(ok[1][1], {"http_status": 200, "report": {}, "used_llm": False})
             failed = sse(client.post("/v1/recommendations/stream", json={**FORM, "stream": "boom"}).text)
-        self.assertEqual(failed, [("result", {"status": 500, "errors": ["Request failed: pipeline exploded"]})])
+        self.assertEqual(failed, [("result", {"http_status": 500, "errors": ["Request failed: pipeline exploded"]})])
 
     def test_chat_passes_the_whole_course_row(self) -> None:
         body = {"question": "Is there a hostel?", "course": {"course_code": "001A", "course_name": "Law",

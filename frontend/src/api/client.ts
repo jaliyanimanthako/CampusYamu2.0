@@ -258,31 +258,32 @@ async function simulateProgress(onProgress: (event: ProgressEvent) => void): Pro
 }
 
 /**
- * POST /v1/recommendations/stream: the same request, with each pipeline step reported as it finishes
- * (server-sent events). Resolves with the report; rejects with ApiError like apiRequest, or with
- * StreamUnsupportedError when the backend predates the endpoint (nothing has run on the server then).
+ * POST a JSON body to a server-sent-events endpoint (/v1/recommendations/stream, /v1/chat/stream).
+ * Calls onEvent(kind, data) for each event before the final `result`; resolves with the result's data,
+ * or rejects with ApiError (its http_status >= 400, network, timeout) like apiRequest. Rejects with
+ * StreamUnsupportedError if the backend predates the endpoint (nothing has run on the server then).
  */
-export async function postRecommendationsStream(
-  payload: RecommendationRequest,
-  onProgress: (event: ProgressEvent) => void,
-): Promise<RecommendationResponse> {
-  if (isDemoMode()) {
-    await simulateProgress(onProgress);
-    return buildMockRecommendationResponse(payload);
-  }
+async function postSse<T>(
+  path: string,
+  payload: unknown,
+  onEvent: (kind: string, data: Record<string, unknown>) => void,
+): Promise<T> {
   const controller = new AbortController();
   let timedOut = false;
   const timerId = window.setTimeout(() => {
     timedOut = true;
     controller.abort();
   }, HEAVY_TIMEOUT_MS);
+  const timeoutError = () =>
+    new ApiError(0, [`Request timed out after ${Math.round(HEAVY_TIMEOUT_MS / 1000)}s. Please try again.`],
+      { isTimeout: true });
   const headers = new Headers({ "Content-Type": "application/json", Accept: "text/event-stream" });
   const token = await getAccessToken();
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
   let response: Response;
   try {
-    response = await fetch(buildUrl("/v1/recommendations/stream"), {
+    response = await fetch(buildUrl(path), {
       method: "POST",
       body: JSON.stringify(payload),
       headers,
@@ -290,16 +291,13 @@ export async function postRecommendationsStream(
     });
   } catch {
     window.clearTimeout(timerId);
-    if (timedOut) {
-      throw new ApiError(0, [`Request timed out after ${Math.round(HEAVY_TIMEOUT_MS / 1000)}s. Please try again.`],
-        { isTimeout: true });
-    }
+    if (timedOut) throw timeoutError();
     throw new ApiError(0, ["Unable to reach the CampusYamu API. Check that the backend server is running."],
       { isNetwork: true });
   }
   if (response.status === 404 || response.status === 405) {
     window.clearTimeout(timerId);
-    throw new StreamUnsupportedError("No /v1/recommendations/stream on this server");
+    throw new StreamUnsupportedError(`No ${path} on this server`);
   }
   if (!response.ok || !response.body) {
     window.clearTimeout(timerId);
@@ -325,30 +323,59 @@ export async function postRecommendationsStream(
         }
         if (!data) continue;
         const parsed = JSON.parse(data) as Record<string, unknown>;
-        if (kind === "progress") {
-          onProgress(parsed as unknown as ProgressEvent);
-        } else if (kind === "result") {
-          const status = Number(parsed.status ?? 500);
-          if (status >= 400) {
-            const errors = Array.isArray(parsed.errors) ? parsed.errors.map(String) : [];
-            throw new ApiError(status, errors.length ? errors : [`Request failed (${status})`]);
-          }
-          return parsed as unknown as RecommendationResponse;
+        if (kind !== "result") {
+          onEvent(kind, parsed);
+          continue;
         }
+        const status = Number(parsed.http_status ?? 500);
+        if (status >= 400) {
+          const errors = Array.isArray(parsed.errors) ? parsed.errors.map(String) : [];
+          throw new ApiError(status, errors.length ? errors : [`Request failed (${status})`]);
+        }
+        return parsed as unknown as T;
       }
       if (done) break;
     }
   } catch (err) {
     if (err instanceof ApiError) throw err;
-    if (timedOut) {
-      throw new ApiError(0, [`Request timed out after ${Math.round(HEAVY_TIMEOUT_MS / 1000)}s. Please try again.`],
-        { isTimeout: true });
-    }
-    throw new ApiError(0, ["The connection dropped before the results arrived. Please try again."]);
+    if (timedOut) throw timeoutError();
+    throw new ApiError(0, ["The connection dropped before the answer arrived. Please try again."]);
   } finally {
     window.clearTimeout(timerId);
   }
-  throw new ApiError(0, ["The connection closed before the results arrived. Please try again."]);
+  throw new ApiError(0, ["The connection closed before the answer arrived. Please try again."]);
+}
+
+/** POST /v1/recommendations/stream: each pipeline step as it finishes, then the report. */
+export async function postRecommendationsStream(
+  payload: RecommendationRequest,
+  onProgress: (event: ProgressEvent) => void,
+): Promise<RecommendationResponse> {
+  if (isDemoMode()) {
+    await simulateProgress(onProgress);
+    return buildMockRecommendationResponse(payload);
+  }
+  return postSse<RecommendationResponse>("/v1/recommendations/stream", payload, (kind, data) => {
+    if (kind === "progress") onProgress(data as unknown as ProgressEvent);
+  });
+}
+
+/** POST /v1/chat/stream: the answer's text as it is written (onToken per piece), then the full response. */
+export async function postChatStream(
+  payload: ChatRequest,
+  onToken: (text: string) => void,
+): Promise<ChatResponse> {
+  if (isDemoMode()) {
+    const res = buildMockChatResponse(payload);
+    for (const word of res.answer.split(/(?<= )/)) {
+      onToken(word);
+      await new Promise((resolve) => window.setTimeout(resolve, 35));
+    }
+    return res;
+  }
+  return postSse<ChatResponse>("/v1/chat/stream", payload, (kind, data) => {
+    if (kind === "token" && typeof data.text === "string") onToken(data.text);
+  });
 }
 
 export async function postRecommendations(
