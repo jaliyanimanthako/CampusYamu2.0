@@ -137,20 +137,23 @@ function CutoffChart({ course, z }: { course: CourseRow; z?: number | null }) {
 }
 
 function AnswerWithCitations({ text }: { text: string }) {
-  const parts = text.split(/(\[[A-Z]\d*\])/g);
+  const withCiteLinks = text.replace(/\[([A-Z]\d*)\]/g, "[$1](#cite-$1)");
   return (
-    <div className="text">
-      {parts.map((part, i) => {
-        const match = /^\[([A-Z]\d*)\]$/.exec(part);
-        if (match) {
-          return (
-            <span key={i} className="cite">
-              {match[1]}
-            </span>
-          );
-        }
-        return <span key={i}>{part}</span>;
-      })}
+    <div className="text md-chat">
+      <ReactMarkdown
+        components={{
+          a: ({ href, children }) =>
+            href?.startsWith("#cite-") ? (
+              <span className="cite">{children}</span>
+            ) : (
+              <a href={href} target="_blank" rel="noreferrer">
+                {children}
+              </a>
+            ),
+        }}
+      >
+        {withCiteLinks}
+      </ReactMarkdown>
     </div>
   );
 }
