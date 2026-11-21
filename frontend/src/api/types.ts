@@ -212,6 +212,10 @@ export interface Usage {
 
 export interface Me {
   user_id: string;
+  /** Name from the sign-in (Google profile or sign-up form); null when there is none. */
+  display_name?: string | null;
+  /** First word of display_name ("Jaliya" from "Jaliya Nimantha"), for greetings. */
+  first_name?: string | null;
   usage: Record<string, Usage>;
 }
 
@@ -277,3 +281,20 @@ declare global {
     CAMPUSYAMU_CONFIG?: RuntimeConfig;
   }
 }
+
+/** One finished (or started) pipeline step from POST /v1/recommendations/stream. */
+export type ProgressStep = "eligibility" | "travel" | "zscore" | "interests" | "ranking";
+
+export interface ProgressEvent {
+  step: ProgressStep;
+  status: "running" | "done" | "skipped";
+  /** eligibility: courses whose rules were checked (126) and how many the student can apply for */
+  courses_checked?: number;
+  eligible?: number;
+  /** travel: course offerings with a travel time */
+  offerings?: number;
+  /** zscore: courses analysed so far, of total */
+  done?: number;
+  total?: number;
+}
+

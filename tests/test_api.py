@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 import threading
 import unittest
@@ -17,6 +18,16 @@ FORM = {"stream": "Physical Science",
         "ol": [{"subject": "Science", "grade": "B"}, {"subject": "English", "grade": "B"},
                {"subject": "Mathematics", "grade": ""}],
         "preferences": "engineering, design", "use_llm": False, "suggestions": 8}
+
+
+def sse(text: str) -> list[tuple[str, dict]]:
+    """Parse a text/event-stream body into (event, data) pairs."""
+
+    events = []
+    for block in text.strip().split("\n\n"):
+        lines = dict(line.split(": ", 1) for line in block.splitlines() if ": " in line)
+        events.append((lines["event"], json.loads(lines["data"])))
+    return events
 
 
 class RealServiceTests(unittest.TestCase):
@@ -53,6 +64,41 @@ class RealServiceTests(unittest.TestCase):
         names = self.client.get("/v1/courses").json()
         self.assertIn("Quantity Surveying", names)
         self.assertEqual(names, sorted(names))
+
+    def test_recommendations_stream_reports_each_step(self) -> None:
+        r = self.client.post("/v1/recommendations/stream", json=FORM)
+        self.assertEqual(r.status_code, 200, r.text)
+        self.assertTrue(r.headers["content-type"].startswith("text/event-stream"))
+        events = sse(r.text)
+        kinds = [k for k, _ in events]
+        self.assertEqual(kinds[-1], "result")
+        self.assertEqual(kinds.count("result"), 1)
+        progress = [d for k, d in events if k == "progress"]
+        eligibility = next(d for d in progress if d["step"] == "eligibility")
+        self.assertEqual((eligibility["status"], eligibility["courses_checked"]), ("done", 126))
+        self.assertGreater(eligibility["eligible"], 0)
+        zscore = [d for d in progress if d["step"] == "zscore"]
+        self.assertEqual(zscore[0]["done"], 0)
+        self.assertEqual(zscore[-1]["status"], "done")
+        self.assertEqual(zscore[-1]["done"], zscore[-1]["total"])
+        self.assertEqual(len(zscore), zscore[-1]["total"] + 2)                  # start, one per course, done
+        done = [d["step"] for d in progress if d["status"] == "done"]
+        self.assertEqual(set(done), {"eligibility", "travel", "zscore", "interests", "ranking"})
+        self.assertEqual(done[-1], "ranking")                                   # ranking finishes last
+        result = events[-1][1]
+        self.assertEqual(result["http_status"], 200)
+        plain = self.client.post("/v1/recommendations", json=FORM).json()
+        self.assertEqual(result["report"]["counts"], plain["report"]["counts"])  # same report as the plain call
+        self.assertIn("/v1/recommendations/stream", self.client.get("/openapi.json").json()["paths"])
+
+    def test_recommendations_stream_errors_arrive_as_the_result(self) -> None:
+        same = [{"subject": "Physics", "grade": "A"}] * 3
+        events = sse(self.client.post("/v1/recommendations/stream", json={**FORM, "al": same}).text)
+        self.assertEqual(events, [("result", {"http_status": 400, "errors": ["Choose three different A/L subjects"]})])
+        # a body that fails request validation is rejected before the stream starts: plain JSON, HTTP 422
+        bad = self.client.post("/v1/recommendations/stream", json={**FORM, "cgt": "not a number"})
+        self.assertEqual(bad.status_code, 422)
+        self.assertTrue(bad.headers["content-type"].startswith("application/json"))
 
     def test_recommendations(self) -> None:
         r = self.client.post("/v1/recommendations", json=FORM)
@@ -112,7 +158,11 @@ class FakeWeb:
         return 200, {"answer": "Yes.", "status": "answered", "notes": [], "model": "m", "career_research": False,
                      "sources": [{"id": "h1", "kind": "handbook", "title": "p. 12"}], "career": self.career("Law")}
 
-    def run(self, form, user=None):
+    def run(self, form, user=None, on_progress=None):
+        if form.get("stream") == "boom":
+            raise RuntimeError("pipeline exploded")
+        if on_progress:
+            on_progress({"step": "eligibility", "status": "done", "courses_checked": 126, "eligible": 3})
         return 200, {"report": {}, "used_llm": False}
 
     def me(self, user):
@@ -142,6 +192,14 @@ class FakeServiceTests(unittest.TestCase):
     def setUp(self) -> None:
         self.web = FakeWeb()
         self.app = create_app(lambda: self.web, auth=SupabaseAuth(url=""))      # sign-in off
+
+    def test_stream_failures_end_the_stream_with_an_error_result(self) -> None:
+        with TestClient(self.app) as client:
+            ok = sse(client.post("/v1/recommendations/stream", json=FORM).text)
+            self.assertEqual([k for k, _ in ok], ["progress", "result"])
+            self.assertEqual(ok[1][1], {"http_status": 200, "report": {}, "used_llm": False})
+            failed = sse(client.post("/v1/recommendations/stream", json={**FORM, "stream": "boom"}).text)
+        self.assertEqual(failed, [("result", {"http_status": 500, "errors": ["Request failed: pipeline exploded"]})])
 
     def test_chat_passes_the_whole_course_row(self) -> None:
         body = {"question": "Is there a hostel?", "course": {"course_code": "001A", "course_name": "Law",
@@ -193,6 +251,10 @@ class FakeServiceTests(unittest.TestCase):
             self.assertEqual(self.web.last_user, "user-1")            # the chat gets the student's id
             self.assertEqual(client.get("/v1/me/chats").status_code, 401)
             self.assertEqual(client.get("/v1/me", headers=token()).json()["user_id"], "user-1")
+            me = client.get("/v1/me", headers=token(user_metadata={"full_name": "Jaliya Nimantha"})).json()
+            self.assertEqual((me["display_name"], me["first_name"]), ("Jaliya Nimantha", "Jaliya"))
+            nameless = client.get("/v1/me", headers=token()).json()
+            self.assertEqual((nameless["display_name"], nameless["first_name"]), (None, None))
             self.assertEqual(client.get("/v1/me/chats", headers=token()).json()[0]["uni_code"], "023G")
             r = client.get("/v1/me/chats/023G", params={"before": 5, "limit": 10}, headers=token())
             self.assertEqual((r.status_code, r.json()["messages"][0]["content"]), (200, "q"))

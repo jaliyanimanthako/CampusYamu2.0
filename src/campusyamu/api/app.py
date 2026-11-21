@@ -10,10 +10,12 @@ GET  /v1/health                   liveness + whether the language model (llm.pro
 GET  /v1/options                  form values: streams, subjects, grades, districts, DS divisions
 GET  /v1/courses                  every course name (for the career-outlook endpoints)
 POST /v1/recommendations          run the student pipeline; returns the report
+POST /v1/recommendations/stream   the same, as server-sent events: each pipeline step as it finishes, then the report
+POST /v1/chat/stream              /v1/chat as server-sent events: the answer's text as it is written, then the result
 POST /v1/chat                     one question about one course from the report
 GET  /v1/career-outlook?course=   cached career outlook + background research status
 POST /v1/career-outlook/research  start career research for one course (runs for minutes; poll the GET)
-GET  /v1/me                       the signed-in student: today's use of the paid calls
+GET  /v1/me                       the signed-in student: name for greetings, today's use of the paid calls
 GET  /v1/me/results               their latest search: the form and the report (saved by /recommendations)
 GET  /v1/me/chats                 their course chats (newest first)
 GET  /v1/me/chats/{uni_code}      one chat's messages (paged with ?before=)
@@ -27,6 +29,7 @@ signed-in student (api/auth.py); /v1/chat then keeps that student's chat memory.
 from __future__ import annotations
 
 import asyncio
+import json
 import os
 import traceback
 from concurrent.futures import ThreadPoolExecutor
@@ -38,7 +41,7 @@ from typing import Any, Callable
 from fastapi import APIRouter, Depends, FastAPI, Query, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
@@ -88,6 +91,21 @@ def current_user(request: Request,
         return auth.user_id(credentials.credentials)
     except AuthError as exc:
         raise StarletteHTTPException(401, str(exc)) from exc
+
+
+def current_profile(request: Request,
+                    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer)) -> dict[str, str | None]:
+    """The signed-in student's name from the verified token (display_name, first_name); None values if absent."""
+
+    empty: dict[str, str | None] = {"display_name": None, "first_name": None}
+    if credentials is None:
+        return empty
+    auth: SupabaseAuth = request.app.state.auth
+    source: Any = auth if auth.enabled else request.app.state.local_auth
+    try:
+        return source.profile(credentials.credentials)
+    except AuthError:
+        return empty            # current_user has already rejected a bad token
 
 
 def signed_in_user(user: str | None = Depends(current_user)) -> str:
@@ -229,6 +247,61 @@ def create_app(service_factory: Callable[[], Any] | None = None, auth: SupabaseA
         status, data = await service.call(service.app.run, body.model_dump(), user)
         return _reply(response, status, data)
 
+    def sse_response(work: Callable[[Callable[[str, dict[str, Any]], None]], Any]) -> StreamingResponse:
+        """Run `work(send)` on the worker thread; every send(event, data) becomes one server-sent event,
+        and the (status, data) it returns becomes the final `result` event: data plus `http_status`
+        (a separate field, since the chat result has its own `status`)."""
+
+        loop = asyncio.get_running_loop()
+        queue: asyncio.Queue[tuple[str, dict[str, Any]]] = asyncio.Queue()
+
+        def send(kind: str, data: dict[str, Any]) -> None:          # called on the worker thread
+            loop.call_soon_threadsafe(queue.put_nowait, (kind, data))
+
+        async def run() -> None:
+            try:
+                status, data = await service.call(work, send)
+                result = {**data, "http_status": status}
+            except Exception as exc:                              # report it in the stream; keep the server up
+                traceback.print_exc()
+                result = {"http_status": 500, "errors": [f"Request failed: {exc}"]}
+            await queue.put(("result", result))
+
+        task = asyncio.create_task(run())
+
+        async def events():
+            # If the client disconnects, the work still finishes on the worker thread (results are saved).
+            while True:
+                kind, data = await queue.get()
+                yield f"event: {kind}\ndata: {json.dumps(data, ensure_ascii=False, default=str)}\n\n"
+                if kind == "result":
+                    break
+            await task
+
+        return StreamingResponse(events(), media_type="text/event-stream",
+                                 headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+    @v1.post("/recommendations/stream", tags=["recommendations"], response_class=StreamingResponse,
+             responses={200: {"content": {"text/event-stream": {}},
+                              "description": "Server-sent events: `progress` per finished step, then one `result`"}})
+    async def recommendations_stream(body: s.RecommendationRequest,
+                                     user: str | None = Depends(current_user)) -> StreamingResponse:
+        """POST /v1/recommendations with live progress, for the analysing screen. Same input, limits and saving.
+
+        The response is `text/event-stream`:
+
+            event: progress
+            data: {"step": "eligibility", "status": "done", "courses_checked": 126, "eligible": 55}
+
+        `step` is eligibility, travel, zscore, interests or ranking; `status` is running, done or skipped
+        (zscore also sends `done` and `total` courses). It ends with exactly one
+
+            event: result
+            data: {"http_status": 200, "report": {...}, "used_llm": false}  (or {"http_status": 400, "errors": [...]})
+        """
+        form = body.model_dump()
+        return sse_response(lambda send: service.app.run(form, user, lambda event: send("progress", event)))
+
     @v1.post("/chat", response_model=s.ChatResponse, tags=["chat"])
     async def chat(body: s.ChatRequest, response: Response, user: str | None = Depends(current_user)) -> Any:
         """Answer one question about one course, from the handbook and the student's results.
@@ -239,6 +312,28 @@ def create_app(service_factory: Callable[[], Any] | None = None, auth: SupabaseA
         """
         status, data = await service.call(service.app.ask, body.model_dump(), user)
         return _reply(response, status, data)
+
+    @v1.post("/chat/stream", tags=["chat"], response_class=StreamingResponse,
+             responses={200: {"content": {"text/event-stream": {}},
+                              "description": "Server-sent events: `token` pieces of the answer, then one `result`"}})
+    async def chat_stream(body: s.ChatRequest, user: str | None = Depends(current_user)) -> StreamingResponse:
+        """POST /v1/chat, with the answer streamed as it is written. Same input, limits, memory and result.
+
+        The response is `text/event-stream`:
+
+            event: token
+            data: {"text": "Yes, Architecture at Moratuwa needs an aptitude test [S1]"}
+
+        (append each `text` in order), then exactly one
+
+            event: result
+            data: {"http_status": 200, "answer": "...", "status": "answered", "sources": [...], ...}
+
+        with the same fields as POST /v1/chat plus `http_status` (or {"http_status": 4xx, "errors": [...]}). Use `result.answer` as
+        the final text. A message outside the chat's scope gets its refusal in the result with no tokens.
+        """
+        payload = body.model_dump()
+        return sse_response(lambda send: service.app.ask(payload, user, lambda text: send("token", {"text": text})))
 
     @v1.get("/career-outlook", response_model=s.CareerStatus, tags=["career"])
     async def career_outlook(course: str = Query(min_length=1, examples=["Quantity Surveying"])) -> Any:
@@ -254,9 +349,12 @@ def create_app(service_factory: Callable[[], Any] | None = None, auth: SupabaseA
         return _reply(response, status, data)
 
     @v1.get("/me", response_model=s.Me, tags=["account"])
-    async def me(user: str = Depends(signed_in_user)) -> Any:
-        """The signed-in student and today's use of the paid calls (limits reset at midnight, Sri Lanka time)."""
-        return await service.call(service.app.me, user)
+    async def me(user: str = Depends(signed_in_user),
+                 profile: dict[str, str | None] = Depends(current_profile)) -> Any:
+        """The signed-in student: their name for greetings (first_name is the first word of display_name, e.g.
+        "Jaliya" from "Jaliya Nimantha"; null when the sign-in has no name) and today's use of the paid calls
+        (limits reset at midnight, Sri Lanka time)."""
+        return {**await service.call(service.app.me, user), **profile}
 
     @v1.get("/me/results", response_model=s.SavedResults, tags=["account"])
     async def my_results(response: Response, user: str = Depends(signed_in_user)) -> Any:

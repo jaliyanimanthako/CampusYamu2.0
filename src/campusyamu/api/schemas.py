@@ -119,6 +119,8 @@ class ChatResponse(BaseModel):
 
 class Me(BaseModel):
     user_id: str
+    display_name: str | None = Field(None, description="Name from the sign-in (Google profile or sign-up form)")
+    first_name: str | None = Field(None, description="First word of display_name, for greetings")
     usage: dict[str, Usage] = Field(description="Today's use of the paid calls: chat, ai_recommendations, research")
 
 

@@ -41,6 +41,8 @@ interface FormWizardProps {
   onSubmit: (req: RecommendationRequest) => void;
   onViewSaved: () => void;
   onToast: (msg: string) => void;
+  /** Signed-in student's first name from GET /v1/me; null for guests or before it loads. */
+  firstName?: string | null;
 }
 
 const INTEREST_CHIPS = ["medicine", "computing", "law", "management", "architecture", "teaching"];
@@ -53,6 +55,7 @@ export function FormWizard({
   onSubmit,
   onViewSaved,
   onToast,
+  firstName = null,
 }: FormWizardProps) {
   const [step, setStep] = useState(0);
 
@@ -137,7 +140,10 @@ export function FormWizard({
         </div>
       )}
 
-      <h1 className="reveal" style={{ ["--i" as string]: 1, marginTop: 20 }}>
+      <p className="greeting reveal" style={{ ["--i" as string]: 0 }}>
+        Hi <span className="accent">{firstName || "there"}</span>, let's find the courses you can apply for.
+      </p>
+      <h1 className="reveal" style={{ ["--i" as string]: 1, marginTop: 8 }}>
         Your A/L <span className="accent">results.</span>
       </h1>
 

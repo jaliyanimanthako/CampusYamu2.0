@@ -42,7 +42,7 @@ from __future__ import annotations
 
 import operator
 import re
-from typing import Annotated, Any, TypedDict
+from typing import Annotated, Any, Callable, TypedDict
 
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Send
@@ -335,8 +335,79 @@ def build_pipeline(finder: CourseFinder | None = None, zscore: ZScoreAgent | Non
     return graph.compile()
 
 
-def run_pipeline(inputs: dict[str, Any], app=None) -> PipelineState:
-    """Run once and return the final state (``report`` or ``errors``)."""
+PROGRESS_STEPS = ("eligibility", "travel", "zscore", "interests", "ranking")
+
+
+class PipelineProgress:
+    """Turns LangGraph node updates into the five steps the analysing screen shows.
+
+    Events are small dicts: {"step": one of PROGRESS_STEPS, "status": "running" | "done" | "skipped", ...}.
+
+    * find_courses       -> eligibility done (courses_checked, eligible) and travel done (offerings, since travel
+                            times are attached in the same node); starts zscore (total) and interests
+    * analyze_course x N -> zscore running (done of total), one per course analysed
+    * score_preferences  -> interests done
+    * assemble           -> zscore done; ranking running
+    * explain_rankings   -> ranking done
+    """
+
+    def __init__(self, emit: Callable[[dict[str, Any]], None], inputs: dict[str, Any]) -> None:
+        self.emit_fn = emit
+        text = inputs.get("preferences") or ""
+        self.wants_interests = bool((", ".join(text) if isinstance(text, (list, tuple)) else str(text)).strip())
+        self.zscore_total = 0
+        self.zscore_done = 0
+
+    def emit(self, event: dict[str, Any]) -> None:
+        try:
+            self.emit_fn(event)
+        except Exception:                       # progress is a nicety; never break the run
+            pass
+
+    def update(self, node: str, update: dict[str, Any]) -> None:
+        if node == "find_courses":
+            counts = (update.get("finder") or {}).get("counts") or {}
+            candidates = update.get("candidates") or []
+            self.emit({"step": "eligibility", "status": "done", "courses_checked": sum(counts.values()),
+                       "eligible": counts.get("can_apply", 0) + counts.get("with_conditions", 0)})
+            self.emit({"step": "travel", "status": "done", "offerings": len(candidates)})
+            has_z = (update.get("profile") or {}).get("z_score") is not None
+            self.zscore_total = len({c["zscore_course"] for c in candidates if c.get("zscore_course")}) if has_z else 0
+            self.emit({"step": "zscore", "status": "running" if self.zscore_total else "skipped",
+                       "done": 0, "total": self.zscore_total})
+            self.emit({"step": "interests", "status": "running" if self.wants_interests else "skipped"})
+        elif node == "analyze_course":
+            self.zscore_done += 1
+            self.emit({"step": "zscore", "status": "running", "done": self.zscore_done, "total": self.zscore_total})
+        elif node == "score_preferences":
+            self.emit({"step": "interests", "status": "done"})
+        elif node == "assemble":
+            if self.zscore_total:
+                self.emit({"step": "zscore", "status": "done", "done": self.zscore_total, "total": self.zscore_total})
+            self.emit({"step": "ranking", "status": "running"})
+        elif node == "explain_rankings":
+            self.emit({"step": "ranking", "status": "done"})
+
+
+def run_pipeline(inputs: dict[str, Any], app=None,
+                 on_progress: Callable[[dict[str, Any]], None] | None = None) -> PipelineState:
+    """Run once and return the final state (``report`` or ``errors``).
+
+    With ``on_progress``, the graph is streamed and each finished step is reported as it happens
+    (see PipelineProgress); the returned state is the same as without it.
+    """
 
     app = app or build_pipeline()
-    return app.invoke({"inputs": inputs, "zscore_results": [], "errors": []})
+    initial = {"inputs": inputs, "zscore_results": [], "errors": []}
+    if on_progress is None:
+        return app.invoke(initial)
+    progress = PipelineProgress(on_progress, inputs)
+    final: PipelineState = {}
+    for mode, chunk in app.stream(initial, stream_mode=["updates", "values"]):
+        if mode == "values":
+            final = chunk
+            continue
+        for node, update in (chunk or {}).items():
+            if isinstance(update, dict):
+                progress.update(node, update)
+    return final

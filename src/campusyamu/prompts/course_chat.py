@@ -61,3 +61,16 @@ Rules:
   or career facts.
 - Never promise admission. Do not invent numbers.
 - If an H passage is about a different course, do not apply it to this course."""
+
+
+# Streaming (POST /v1/chat/stream): the student watches the answer appear, so it is written as plain text
+# instead of the JSON object; the two flags go on a hidden last line that the server strips out.
+STREAM_META_START = "<<meta"
+COURSE_CHAT_STREAM_FORMAT = """Output format (this overrides any mention of JSON fields above):
+- Write the answer itself as plain text for the student (short paragraphs or a "- " list). Do not write JSON,
+  code fences or headings. Cite sources inline exactly like [S1], [R], [H2], [C], [W] or [D]; the sources you
+  cite this way are the sources used.
+- Then, on a new final line, write exactly one line in this form and nothing after it:
+  <<meta {"status": "<answered | partly_answered | not_in_sources | out_of_scope>", "start_career_research": <true | false>}>>
+  status and start_career_research follow the same rules as above. The student never sees this line."""
+

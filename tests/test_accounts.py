@@ -78,7 +78,7 @@ class FakeChat:
         self.fail, self.research = False, False
         self.asked: list[tuple] = []
 
-    def ask(self, question, course, student, history, user_id=None):
+    def ask(self, question, course, student, history, user_id=None, on_token=None):
         self.asked.append((course, student))
         if self.fail:
             raise RuntimeError("OpenAI down")
@@ -158,7 +158,7 @@ class ServiceAccountTests(unittest.TestCase):
         from unittest import mock
 
         self.svc.pipeline = lambda use_llm, suggestions: None
-        with mock.patch.object(service, "run_pipeline", lambda inputs, graph: {"report": REPORT}):
+        with mock.patch.object(service, "run_pipeline", lambda inputs, graph, on_progress=None: {"report": REPORT}):
             self.assertEqual(self.svc.results("u")[0], 404)
             self.assertEqual(self.svc.run({**FORM, "use_llm": False}, "u")[0], 200)
             self.svc.run({**FORM, "use_llm": False}, None)                     # sign-in off: nothing saved
