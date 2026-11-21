@@ -47,3 +47,6 @@ data/memory/
 *.db-shm
 *.sqlite
 *.sqlite3
+
+#settings
+config/settings.yaml

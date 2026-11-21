@@ -12,7 +12,7 @@ import { ArrowRightIcon, BrandMark, FigureImg } from "./BrandMark.tsx";
 import { LangMenu } from "./LangMenu.tsx";
 
 interface SignInViewProps {
-  onSignedIn: (email?: string, avatar?: AvatarId, isNewAccount?: boolean) => void;
+  onSignedIn: (email?: string, avatar?: AvatarId, isNewAccount?: boolean, name?: string) => void;
   onContinueGuest?: () => void;
   onBackHome: () => void;
   onToast: (msg: string) => void;
@@ -74,7 +74,10 @@ export function SignInView({
             return;
           }
           const metaAvatar = data.user?.user_metadata?.avatar as AvatarId | undefined;
-          onSignedIn(data.user?.email ?? trimmedEmail, metaAvatar, false);
+          const metaName =
+            (data.user?.user_metadata?.full_name as string | undefined) ||
+            (data.user?.user_metadata?.name as string | undefined);
+          onSignedIn(data.user?.email ?? trimmedEmail, metaAvatar, false, metaName);
         } else {
           const { data, error } = await sb.auth.signUp({
             email: trimmedEmail,
@@ -89,7 +92,7 @@ export function SignInView({
             return;
           }
           if (data.session) {
-            onSignedIn(data.user?.email ?? trimmedEmail, undefined, true);
+            onSignedIn(data.user?.email ?? trimmedEmail, undefined, true, name.trim() || undefined);
           } else {
             setNotice(
               `Account created! Check ${trimmedEmail} for a confirmation link, then sign in.`,
@@ -109,7 +112,12 @@ export function SignInView({
                 name: name.trim(),
               });
         setLocalAuthSession(res.access_token, res.user);
-        onSignedIn(res.user.email, res.user.avatar as AvatarId | undefined, mode === "signup");
+        onSignedIn(
+          res.user.email,
+          res.user.avatar as AvatarId | undefined,
+          mode === "signup",
+          res.user.name || undefined,
+        );
       }
     } catch (err) {
       onToast(err instanceof Error ? err.message : t("error"));

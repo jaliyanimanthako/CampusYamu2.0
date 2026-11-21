@@ -11,6 +11,7 @@ import { FigureImg } from "./BrandMark.tsx";
 interface AccountViewProps {
   me: Me | null;
   userEmail: string | null;
+  userName: string | null;
   avatarId: AvatarId;
   onOpenCourse: (uniCode: string) => void;
   onSignOut: () => void;
@@ -19,6 +20,7 @@ interface AccountViewProps {
 export function AccountView({
   me,
   userEmail,
+  userName,
   avatarId,
   onOpenCourse,
   onSignOut,
@@ -42,7 +44,7 @@ export function AccountView({
   }, [authOn]);
 
   const email = userEmail || "student@campusyamu.lk";
-  const [localPart, domainPart] = email.split("@");
+  const displayName = (userName?.trim() || email.split("@")[0]).trim();
 
   const meters = [
     {
@@ -73,9 +75,11 @@ export function AccountView({
               className="reveal"
               style={{ ["--i" as string]: 1, marginTop: 8, fontSize: "clamp(28px, 4vw, 48px)" }}
             >
-              {localPart}
-              {domainPart && <span className="accent">@{domainPart}</span>}
+              {displayName}
             </h1>
+            <div className="muted reveal" style={{ ["--i" as string]: 2, marginTop: 6, fontSize: 15 }}>
+              {email}
+            </div>
           </div>
         </div>
         <button

@@ -113,6 +113,9 @@ function AppShell() {
   const [userEmail, setUserEmail] = useState<string | null>(() =>
     supabaseEnabled ? null : (getLocalAuthUser()?.email ?? null),
   );
+  const [userName, setUserName] = useState<string | null>(() =>
+    supabaseEnabled ? null : (getLocalAuthUser()?.name ?? null),
+  );
   const [avatarId, setAvatarId] = useState<AvatarId>(() => {
     const localAv = getLocalAuthUser()?.avatar as AvatarId | undefined;
     if (localAv && AVATARS.some((a) => a.id === localAv)) return localAv;
@@ -158,6 +161,11 @@ function AppShell() {
     getCurrentUser().then((user) => {
       setHasAccount(Boolean(user));
       setUserEmail(user?.email ?? null);
+      setUserName(
+        (user?.user_metadata?.full_name as string | undefined) ||
+          (user?.user_metadata?.name as string | undefined) ||
+          null,
+      );
       const av = user?.user_metadata?.avatar as AvatarId | undefined;
       if (av && AVATARS.some((a) => a.id === av)) {
         setAvatarId(av);
@@ -172,6 +180,11 @@ function AppShell() {
       const user = session?.user ?? null;
       setHasAccount(Boolean(user));
       setUserEmail(user?.email ?? null);
+      setUserName(
+        (user?.user_metadata?.full_name as string | undefined) ||
+          (user?.user_metadata?.name as string | undefined) ||
+          null,
+      );
       const av = user?.user_metadata?.avatar as AvatarId | undefined;
       if (av && AVATARS.some((a) => a.id === av)) {
         setAvatarId(av);
@@ -263,6 +276,7 @@ function AppShell() {
     setHasAccount(false);
     setGuestMode(false);
     setUserEmail(null);
+    setUserName(null);
     navigate("#/home");
   };
 
@@ -309,9 +323,10 @@ function AppShell() {
     return (
       <>
         <SignInView
-          onSignedIn={(signedInEmail, signedInAvatar, isNewAccount) => {
+          onSignedIn={(signedInEmail, signedInAvatar, isNewAccount, signedInName) => {
             setHasAccount(true);
             if (signedInEmail) setUserEmail(signedInEmail);
+            if (signedInName) setUserName(signedInName);
             if (signedInAvatar && AVATARS.some((a) => a.id === signedInAvatar)) {
               setAvatarId(signedInAvatar);
               saveAvatar(signedInAvatar);
@@ -414,6 +429,7 @@ function AppShell() {
       <AccountView
         me={me}
         userEmail={userEmail}
+        userName={userName}
         avatarId={avatarId}
         onOpenCourse={(uni) => navigate(`#/course/${encodeURIComponent(uni)}`)}
         onSignOut={() => void handleSignOut()}
