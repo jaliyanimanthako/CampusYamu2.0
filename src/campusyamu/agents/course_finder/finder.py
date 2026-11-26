@@ -1,7 +1,7 @@
 """Step 1 of the student pipeline: which courses can this student apply for?
 
 Input is a ``StudentProfile`` (stream, three A/L subjects with grades, Common
-General Test mark, admission district, home town / DS division, O/L grades,
+General Test mark, admission district, home town, O/L grades,
 optional Z-score).
 
 The admission district (the "district of a candidate for university
@@ -16,7 +16,7 @@ database; nothing is guessed:
 * O/L requirements per offering -- the UGC O/L table nodes in the graph
 * aptitude tests, extra conditions (e.g. Nursing height), programme-level
   requirements (e.g. Accounting for finance degrees)
-* travel from the student's DS division to the site where each offering is
+* travel from the student's home town to the site where each offering is
   taught (agents.travel_time)
 
 The Z-score is carried in the profile but not used here: cut-off comparison
@@ -112,7 +112,7 @@ class StudentProfile:
     al_results: list[tuple[str, str]]          # [(subject, grade)] x 3
     common_general_test: int
     admission_district: str                    # §1.5 district used for selection / Z-score cut-offs
-    home: str                                  # DS division or its main town (travel only)
+    home: str                                  # home town, optionally 'Town (District)' (travel only)
     ol_results: dict[str, str]                 # {"English": "B", ...}
     z_score: float | None = None
 
@@ -229,7 +229,7 @@ class CourseFinder:
             raise ProfileError(f"Unknown admission district {name!r}", exc.suggestions) from None
 
     def resolve_origin(self, home: str) -> Origin:
-        """The home DS division anywhere in Sri Lanka (DS division names are unique)."""
+        """The home town: 'Kotugoda' or 'Hettipola (Matale)' when the name is in two districts."""
 
         try:
             return self.travel.find_origin(home)

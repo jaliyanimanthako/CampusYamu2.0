@@ -7,7 +7,7 @@ Interactive docs: /docs  ·  OpenAPI spec: /openapi.json
     uv run python -m campusyamu.api --host 0.0.0.0 --port 8780
 
 GET  /v1/health                   liveness + whether the language model (llm.provider) is configured
-GET  /v1/options                  form values: streams, subjects, grades, districts, DS divisions
+GET  /v1/options                  form values: streams, subjects, grades, districts, towns
 GET  /v1/courses                  every course name (for the career-outlook endpoints)
 POST /v1/recommendations          run the student pipeline; returns the report
 POST /v1/recommendations/stream   the same, as server-sent events: each pipeline step as it finishes, then the report

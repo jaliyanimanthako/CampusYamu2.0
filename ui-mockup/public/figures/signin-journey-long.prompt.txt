@@ -1,0 +1,26 @@
+Mode: built-in image_gen edit; transparent_background: true
+Edit target: signin-journey-study.png
+Output: 887x1774, 1:2 portrait with a longer winding path and separated stages.
+Placement: centered and contained at 92% of the existing login illustration panel height.
+
+Use case: precise-object-edit / illustration-story
+Asset type: genuinely LENGTHENED version of this university journey illustration for CampusYamu.
+Input image is the edit target and the strict character/style/color reference.
+
+MAIN CORRECTION:
+The existing path is too short and the study stage was squeezed into its middle. REDRAW THE PATH WITH AT LEAST TWICE THE VISIBLE TRAVEL DISTANCE and spread the three stages far apart. EXTEND THE ACTUAL CANVAS VERTICALLY to a TALL 1:2 aspect ratio, approximately 1024 x 2048, rather than returning the same 2:3 composition. This is an extended journey, not just an extra character on the old short bend.
+
+COMPOSITION ON THE EXTENDED CANVAS:
+- BOTTOM THIRD: the existing full-body student with headphones and backpack, mustard jacket, blue trousers, holding the results sheet, at the beginning of the lavender route near lower left. Thoughtful smiling pose, same identity and face.
+- MIDDLE THIRD: the same student studying at university, sitting on a small widened section of the path near middle right, laptop on knee, writing in an open notebook, two books and a restrained small lavender library arch behind. Keep this entire university scene in its own clear section with no overlap into the first or final figure.
+- TOP THIRD: same smiling graduate in the PURPLE/INDIGO CLOAK WITH BROAD MUSTARD-GOLD TRIM AND LINING, navy mortarboard and gold tassel, walking confidently with diploma near upper right. Preserve these colors from the edit target.
+
+LONG PATH GEOMETRY:
+Draw ONE continuous wide lavender ribbon road with a darker lavender underside. It should wind through TWO LARGE S-CURVES between the three stages: sweep outward to the right after the starting platform, curve back LEFT through an open empty stretch, sweep right into the middle university study platform, then leave that platform on another long curve that sweeps out to the LEFT and climbs back to the right into the graduation platform. The curves themselves must be long and clearly visible in the SPACE BETWEEN STAGES. Do not connect each scene by a tiny short diagonal. Two slender navy/lavender oval gates can mark the stretches between stages, positioned away from bodies and faces.
+IMPORTANT: Clear visible stretches of bare winding pathway separate results -> university and university -> graduation. Deliberately more breathing room and travel distance than the reference. Each figure remains naturally proportioned, never stretched. The path itself is lengthened and recomposed.
+
+INVARIANTS:
+Keep our familiar young Sri Lankan human with warm brown skin, chunky swept navy hair, mustard/white/royal-blue casual outfit and white-and-mustard shoes in the first two stages. Graduate cloak stays deep purple with gold trim. Keep the same polished faceted painted editorial illustration, restrained grain, clean shape language, brand palette and gentle perspective. Full figures, cap, diploma, notebook, laptop, feet, arch and all ribbon endpoints within frame with modest clear margin.
+BACKGROUND: genuine transparent alpha outside physical silhouettes, clean antialiasing only, no background rectangle, no colored glow, no fog, no halo or diffuse shadows.
+No text, labels, numbers, logos, watermark, extra people, 3D render, photorealism or black outlines. Exactly three human stages.
+OUTPUT: tall extended 1:2 portrait, about 1024x2048, long meandering path occupying almost the full height and most of the width.

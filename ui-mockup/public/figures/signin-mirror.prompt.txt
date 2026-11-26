@@ -1,0 +1,24 @@
+Mode: built-in image_gen; transparent_background: true
+References: user's two-people-and-mirror illustration for composition and pose; chat-companion.png for human character identity and brand style.
+Placement: left login panel, no mirroring, centered at 70% of panel height.
+
+Use case: illustration-story
+Asset type: portrait login-page illustration for CampusYamu, replacing the current books scene.
+REFERENCE ROLES:
+Image 1, the user's black-and-white illustration with two men and a tall mirror: use ONLY its composition, body poses, spatial relationships and quiet conversational mood.
+Image 2, the colorful brown-skinned student in a mustard jacket: use ONLY its recognizable human character design, face, proportions, navy hair, colors and illustration style.
+PRIMARY REQUEST:
+Re-create the elegant vertical concept from image 1 using TWO versions of OUR student in our brand's style, arranged around ONE tall narrow freestanding mirror/frame.
+Lower figure stands on the LEFT of the frame, leaning his right shoulder/back casually against its left edge, arms loosely folded, ankles crossed with one foot touching down and the other at an angle. He tilts his head UP and to the RIGHT to look at his seated counterpart. Full body and both shoes visible.
+Upper figure sits ON THE TOP EDGE of the frame at upper right, hips securely on the frame, torso leaning forward slightly. His bent legs hang over the front of the mirror, ankles loosely crossed. He looks DOWN and to the LEFT at the standing student and gestures gently with both hands open as though sharing advice. Full body, both hands and both shoes visible. Clear natural friendly exchange.
+The tall mirror reaches from the ground to the seated student's hips. A slim substantial royal-blue/navy frame with a lavender reflective interior and two restrained angular white reflection shapes. No reflection of a third person. The frame is a physical prop, not an app screen. Keep its interior mostly empty and calm.
+HUMAN IDENTITY AND OUTFITS:
+Both are the SAME familiar young Sri Lankan male student: warm medium-brown skin, expressive warm smile, swept chunky navy hair, white tee and mustard-yellow light jacket, royal-blue trousers, white-and-mustard trainers. Upper student's jacket can be open; lower student has headphones around his neck. Natural long-limbed youthful proportions. No glasses, beard, black clothing or monochrome rendering copied from image 1.
+STYLE:
+Match the brand reference's polished modern editorial illustration, clean broad shapes with crisp faceted flat shadows and restrained fine grain. Rich navy, royal blue #4F6FE8, lavender #C9B8F5, mustard #F2B84B, white, warm skin. No black outlines, 3D rendering, realistic lighting, gradients, glow or blurred shading.
+COMPOSITION:
+Tall portrait about 2:3. Like the pose reference: upper figure upper-right, lower figure lower-left, vertical frame between them. Whole composition visible with 5-7% transparent margin, no cropping. Body language and interaction are the central feature. Balanced strong silhouette, large readable faces.
+BACKGROUND:
+Genuine fully transparent alpha outside the exact figures and frame. NO colored halo, diffuse shadow, fog, glow, background rectangle or vignette. Clean cutout edges with normal antialiasing only. No floor or ground line.
+AVOID:
+Books, laptop, campus building, plants, extra people, floating icons, connecting squiggles, text, logos, letters, UI controls, watermark, busy background. Exactly two human figures and one frame.

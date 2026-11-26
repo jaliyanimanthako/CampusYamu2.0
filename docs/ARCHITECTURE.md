@@ -28,7 +28,7 @@ flowchart TD
 
 | Node | Agent | What it does | LLM |
 | --- | --- | --- | --- |
-| validate_profile | course_finder | A/L subjects and grades, admission district (§1.5), home DS division | – |
+| validate_profile | course_finder | A/L subjects and grades, admission district (§1.5), home town | – |
 | find_courses | course_finder + knowledge_graph + travel_time | A/L eligibility from the graph's rules, O/L checks, aptitude tests, teaching site and travel time per offering | – |
 | analyze_course | zscore | past cut-offs for the admission district, calibrated estimate ± uncertainty, band | – |
 | score_preferences | preference | interests → categories; match (1–10), mismatch (−1…−10), net per course | 1 call (keyword fallback) |
@@ -47,7 +47,7 @@ src/campusyamu/
 ├── agents/
 │   ├── course_finder/   step 1: courses a student can apply for
 │   ├── zscore/          historical cut-off analysis (SQLite)
-│   ├── travel_time/     DS division × campus road matrix (SQLite), teaching-site placement
+│   ├── travel_time/     home town × campus road matrix (SQLite), teaching-site placement
 │   ├── course_details/  handbook block per course, found by course code
 │   ├── preference/      interest categories, match/mismatch marks
 │   ├── ranking/         suggestion orders, what-if sensitivity, feedback

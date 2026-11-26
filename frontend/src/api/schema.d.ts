@@ -40,7 +40,10 @@ export interface components {
       cgt: number;
       z_score?: number | null;
       admission_district: string;
-      ds_division: string;
+      home_district?: string | null;
+      home_town?: string | null;
+      /** @deprecated Old forms only: a home DS division, mapped to its main town */
+      ds_division?: string | null;
       preferences?: string;
       use_llm?: boolean;
       suggestions?: number;
@@ -124,7 +127,7 @@ export interface components {
       ol_subjects: string[];
       ol_grades: string[];
       districts: string[];
-      ds_divisions: Record<string, string[]>;
+      towns: Record<string, string[]>;
       llm_available: boolean;
     };
     Health: {

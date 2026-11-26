@@ -1,0 +1,490 @@
+origin_id,city,district,province,ds_division,lat,lon,point_source,point_detail
+LK11-001,Angoda,Colombo,Western,Kolonnawa,6.936019,79.92572,osm_town,node/666021104
+LK11-002,Athurugiriya,Colombo,Western,Kaduwela,6.877975,79.99002,osm_town,node/558931492
+LK11-003,Avissawella,Colombo,Western,Seethawaka,6.952121,80.212859,osm_town,node/3095584802
+LK11-004,Battaramulla,Colombo,Western,Kaduwela,6.902181,79.919578,osm_town,node/256824244
+LK11-005,Boralesgamuwa,Colombo,Western,Kesbewa,6.84106,79.901703,osm_town,node/251844978
+LK11-006,Colombo,Colombo,Western,Colombo,6.938861,79.854201,osm_city,node/50794342
+LK11-007,Dehiwala,Colombo,Western,Dehiwala,6.851279,79.865977,osm_town,node/134253719
+LK11-008,Delkanda,Colombo,Western,Sri Jayawardanapura Kotte,6.863674,79.901398,osm_town,node/2091753195
+LK11-009,Gothatuwa,Colombo,Western,Kolonnawa,6.929658,79.90606,osm_town,node/3370500512
+LK11-010,Hanwella,Colombo,Western,Seethawaka,6.908836,80.081711,osm_town,node/1843491184
+LK11-011,Homagama,Colombo,Western,Homagama,6.841238,80.003446,osm_town,node/4647981713
+LK11-012,Kaduwela,Colombo,Western,Kaduwela,6.935703,79.984331,osm_city,node/619905117
+LK11-013,Kesbewa,Colombo,Western,Kesbewa,6.795014,79.941097,osm_city,node/5968326762
+LK11-014,Kolonnawa,Colombo,Western,Kolonnawa,6.932625,79.890314,osm_city,node/2091951428
+LK11-015,Kosgama,Colombo,Western,Seethawaka,6.940634,80.137056,osm_town,node/1854630224
+LK11-016,Kotikawatte,Colombo,Western,Kolonnawa,6.936136,79.915976,osm_town,node/665686382
+LK11-017,Kottawa,Colombo,Western,Maharagama,6.843014,79.965531,osm_town,node/3689548032
+LK11-018,Maharagama,Colombo,Western,Maharagama,6.847278,79.926608,osm_city,node/4448823642
+LK11-019,Malabe,Colombo,Western,Kaduwela,6.904072,79.954619,osm_town,node/3274475234
+LK11-020,Meegoda,Colombo,Western,Homagama,6.844108,80.046031,osm_town,node/1788271749
+LK11-021,Meepe,Colombo,Western,Padukka,6.858657,80.091357,osm_town,node/1854653001
+LK11-022,Moratuwa,Colombo,Western,Moratuwa,6.781958,79.891113,osm_city,way/1577414741
+LK11-023,Mulleriyawa,Colombo,Western,Kolonnawa,6.927277,79.940507,osm_town,node/666021113
+LK11-024,Mulleriyawa New Town,Colombo,Western,Kolonnawa,6.928235,79.92774,osm_town,node/5344216182
+LK11-025,Nugegoda,Colombo,Western,Dehiwala,6.869969,79.888284,osm_town,node/198828328
+LK11-026,Padukka,Colombo,Western,Padukka,6.841538,80.091647,osm_town,node/245519771
+LK11-027,Pelawatte,Colombo,Western,Kaduwela,6.891596,79.928957,osm_town,node/250730974
+LK11-028,Puwakpitiya,Colombo,Western,Seethawaka,6.940833,80.194164,osm_town,node/5019110305
+LK11-029,Ratmalana,Colombo,Western,Ratmalana,6.819746,79.868264,ds_point:town_name_match,Ratmalana [suburb] (node/7023727496)
+LK11-030,Sri Jayewardenepura Kotte,Colombo,Western,Sri Jayawardanapura Kotte,6.888322,79.918741,osm_city,node/3275779630
+LK11-031,Talawatugoda,Colombo,Western,Maharagama,6.87632,79.935361,osm_town,node/619133455
+LK11-032,Thimbirigasyaya,Colombo,Western,Thimbirigasyaya,6.897905,79.869608,ds_point:town_name_match,Thimbirigasyaya [suburb] (node/3666851322)
+LK11-033,Wellampitiya,Colombo,Western,Kolonnawa,6.93689,79.896573,osm_town,node/696519958
+LK12-001,Dekatana,Gampaha,Western,Dompe,6.969976,80.042811,osm_town,node/1843491294
+LK12-002,Delgoda,Gampaha,Western,Biyagama,6.987057,80.013328,osm_town,node/1843491276
+LK12-003,Divulapitiya,Gampaha,Western,Divulapitiya,7.224779,80.019931,osm_town,node/638948677
+LK12-004,Dungalpitiya,Gampaha,Western,Negombo,7.14691,79.83203,osm_town,node/1269983060
+LK12-005,Ekala,Gampaha,Western,Ja Ela,7.101934,79.911035,osm_town,node/617248527
+LK12-006,Gampaha,Gampaha,Western,Gampaha,7.09286,79.99521,osm_city,node/3289447451
+LK12-007,Ganemulla,Gampaha,Western,Gampaha,7.068284,79.961394,osm_town,node/637706199
+LK12-008,Ja-ela,Gampaha,Western,Ja Ela,7.079377,79.890763,osm_town,node/252542985
+LK12-009,Kadawatha,Gampaha,Western,Mahara,7.002137,79.951227,osm_town,node/51237603
+LK12-010,Kandana,Gampaha,Western,Ja Ela,7.049495,79.8982,osm_town,node/1896024292
+LK12-011,Kapungoda,Gampaha,Western,Negombo,7.118917,79.841015,osm_town,node/1269983065
+LK12-012,Katana,Gampaha,Western,Divulapitiya,7.250553,79.905196,osm_town,node/639175794
+LK12-013,Katunayake,Gampaha,Western,Katana,7.156773,79.871668,osm_town,node/639153516
+LK12-014,Kelaniya,Gampaha,Western,Kelaniya,6.950233,79.91719,osm_town,node/1924765777
+LK12-015,Kiribathgoda,Gampaha,Western,Kelaniya,6.978151,79.926993,osm_town,node/621150152
+LK12-016,Kirindiwela,Gampaha,Western,Dompe,7.043183,80.131874,osm_town,node/634848847
+LK12-017,Kochchikade,Gampaha,Western,Negombo,7.264921,79.859037,osm_town,node/313407388
+LK12-018,Kotugoda,Gampaha,Western,Minuwangoda,7.123495,79.924781,osm_town,node/617248525
+LK12-019,Malwana,Gampaha,Western,Biyagama,6.948103,80.015185,osm_town,node/6342777698
+LK12-020,Minuwangoda,Gampaha,Western,Minuwangoda,7.169272,79.948461,osm_town,node/4879825152
+LK12-021,Mirigama,Gampaha,Western,Mirigama,7.247514,80.129921,osm_town,node/638948678
+LK12-022,Miriswatte,Gampaha,Western,Gampaha,7.073851,80.016065,osm_town,node/619905135
+LK12-023,Negombo,Gampaha,Western,Negombo,7.209428,79.833117,osm_city,node/2064194449
+LK12-024,Nittambuwa,Gampaha,Western,Attanagalla,7.144079,80.096497,osm_town,node/4558483172
+LK12-025,Pasyala,Gampaha,Western,Mirigama,7.168443,80.1242,osm_town,node/51237546
+LK12-026,Pugoda,Gampaha,Western,Dompe,6.976051,80.12044,osm_town,node/1854630227
+LK12-027,Raddolugama,Gampaha,Western,Katana,7.13869,79.90028,manual,osm node/4645363183 (bus stand; not tagged as a place)
+LK12-028,Ragama,Gampaha,Western,Ja Ela,7.026349,79.923648,osm_town,node/637652815
+LK12-029,Seeduwa,Gampaha,Western,Katana,7.130629,79.878239,osm_town,node/292785668
+LK12-030,Udugampola,Gampaha,Western,Minuwangoda,7.126079,79.981227,manual,osm node/638941854 (tagged village)
+LK12-031,Veyangoda,Gampaha,Western,Attanagalla,7.153449,80.060247,osm_town,node/638957830
+LK12-032,Wattala,Gampaha,Western,Wattala,6.989871,79.892709,osm_town,node/1837184844
+LK12-033,Weliweriya,Gampaha,Western,Gampaha,7.032279,80.028349,osm_town,node/4688847654
+LK12-034,Yakkala,Gampaha,Western,Gampaha,7.08592,80.033564,osm_town,node/3724170469
+LK13-001,Agalawatta,Kalutara,Western,Agalawatta,6.542344,80.157362,osm_town,node/969659938
+LK13-002,Aluthgama,Kalutara,Western,Beruwala,6.432649,79.998899,osm_town,node/1614298232
+LK13-003,Anguruwathota,Kalutara,Western,Madurawala,6.645179,80.076291,ds_point:largest_settlement,Anguruwathota [village] (node/265874956)
+LK13-004,Baduraliya,Kalutara,Western,Palindanuwara,6.517338,80.23058,osm_town,node/1994770491
+LK13-005,Bandaragama,Kalutara,Western,Bandaragama,6.714547,79.989511,osm_town,node/129616015
+LK13-006,Beruwala,Kalutara,Western,Beruwala,6.475586,79.983407,osm_town,node/1827277942
+LK13-007,Bulathsinhala,Kalutara,Western,Bulathsinhala,6.649895,80.178025,osm_town,node/1796923177
+LK13-008,Dharga Town,Kalutara,Western,Beruwala,6.43869,80.004718,osm_town,node/12365237666
+LK13-009,Dodangoda,Kalutara,Western,Dodangoda,6.552863,80.023344,ds_point:ds_office_osm,Dodangoda Divisional Secretariat Office (node/6200434094)
+LK13-010,Horana,Kalutara,Western,Horana,6.716647,80.061953,osm_town,way/1209845254
+LK13-011,Ingiriya,Kalutara,Western,Ingiriya,6.743756,80.176677,osm_town,node/1745548902
+LK13-012,Kalutara,Kalutara,Western,Kalutara,6.585261,79.963301,osm_city,node/1822512017
+LK13-013,Katukurunda,Kalutara,Western,Kalutara,6.562408,79.969988,osm_town,node/1529264246
+LK13-014,Matugama,Kalutara,Western,Matugama,6.522954,80.11426,osm_town,node/540529437
+LK13-015,Millaniya,Kalutara,Western,Millaniya,6.679977,80.020818,ds_point:town_name_match,Millaniya [village] (node/6722775998)
+LK13-016,Nagoda,Kalutara,Western,Kalutara,6.569033,79.988698,osm_town,node/1822570013
+LK13-017,Wadduwa,Kalutara,Western,Panadura,6.663973,79.93051,osm_town,node/1841033463
+LK13-018,Walallawita,Kalutara,Western,Walallawita,6.37732,80.196531,ds_point:town_name_match,Walallawita [village] (node/5387262373)
+LK21-001,Akurana,Kandy,Central,Poojapitiya,7.36032,80.60062,ds_point:town_name_match,Akurana [suburb] (node/5084831532)
+LK21-002,Ankumbura,Kandy,Central,Poojapitiya,7.439282,80.570959,osm_town,node/3213933910
+LK21-003,Bokkawala,Kandy,Central,Poojapitiya,7.393404,80.553195,osm_town,node/4440274514
+LK21-004,Daulagala,Kandy,Central,Udunuwara,7.226515,80.577415,osm_town,node/1855349748
+LK21-005,Deltota,Kandy,Central,Deltota,7.172657,80.695997,osm_town,node/3591163621
+LK21-006,Digana,Kandy,Central,Kundasale,7.296494,80.733417,osm_town,node/2334261043
+LK21-007,Dolosbage,Kandy,Central,Ganga Ihala Korale,7.081728,80.470101,osm_town,node/3938776007
+LK21-008,Doluwa,Kandy,Central,Doluwa,7.184572,80.608701,ds_point:town_name_match,Doluwa [village] (node/5406842210)
+LK21-009,Galagedara,Kandy,Central,Tumpane,7.372967,80.524693,osm_town,node/634207826
+LK21-010,Gampola,Kandy,Central,Udapalatha,7.163649,80.570274,osm_town,node/1830490058
+LK21-011,Hasalaka,Kandy,Central,Minipe,7.352095,80.950606,osm_town,node/2055565043
+LK21-012,Hatharaliyadda,Kandy,Central,Hatharaliyadda,7.332691,80.468926,osm_town,node/4440347734
+LK21-013,Hedeniya,Kandy,Central,Harispattuwa,7.3393,80.5579,osm_town,node/4432698030
+LK21-014,Hunnasgiriya,Kandy,Central,Ududumbara,7.297214,80.851937,osm_town,node/1783925992
+LK21-015,Kadugannawa,Kandy,Central,Yatinuwara,7.25728,80.519521,osm_town,node/3226291259
+LK21-016,Kandy,Kandy,Central,Gangawata Korale,7.293121,80.635036,osm_city,node/2908772560
+LK21-017,Katugastota,Kandy,Central,Gangawata Korale,7.322084,80.624955,osm_town,node/258034509
+LK21-018,Kurunduwatte,Kandy,Central,Ganga Ihala Korale,7.127228,80.52977,osm_town,node/1831930947
+LK21-019,Madawala,Kandy,Central,Pathadumbara,7.32858,80.673508,osm_town,node/4039761952
+LK21-020,Medamahanuwara,Kandy,Central,Medadumbara,7.289129,80.817246,osm_town,node/2315533328
+LK21-021,Medawala,Kandy,Central,Harispattuwa,7.357158,80.565789,osm_town,node/3343528437
+LK21-022,Menikhinna,Kandy,Central,Kundasale,7.315716,80.701847,osm_town,node/2334261103
+LK21-023,Nawalapitiya,Kandy,Central,Pasbagekorale,7.055894,80.535015,osm_town,node/1974499447
+LK21-024,Panvila,Kandy,Central,Panvila,7.363355,80.713506,ds_point:ds_office_osm,Panwila Divisional Secretariat Office (node/6218088731)
+LK21-025,Pilimatalawa,Kandy,Central,Yatinuwara,7.265634,80.552114,osm_town,node/3738555775
+LK21-026,Pussellawa,Kandy,Central,Udapalatha,7.110145,80.633768,osm_town,node/51226428
+LK21-027,Talatuoya,Kandy,Central,Pathahewaheta,7.251506,80.690364,osm_town,node/2382094322
+LK21-028,Teldeniya,Kandy,Central,Medadumbara,7.309641,80.764946,osm_town,node/2334155482
+LK21-029,Ududumbara,Kandy,Central,Ududumbara,7.318958,80.878196,osm_town,node/2306122120
+LK21-030,Wattegama,Kandy,Central,Pathadumbara,7.351325,80.682593,osm_town,node/1156534098
+LK21-031,Weligalla,Kandy,Central,Udunuwara,7.189708,80.592652,osm_town,node/1981249135
+LK22-001,Ambanganga,Matale,Central,Ambanganga,7.542253,80.673108,ds_point:ds_office_osm,Ambangngakorale Divisional Secretariat (node/5623935763)
+LK22-002,Dambulla,Matale,Central,Dambulla,7.874203,80.651092,osm_town,node/258031093
+LK22-003,Galewela,Matale,Central,Galewela,7.759661,80.571097,osm_town,node/3613139445
+LK22-004,Hettipola,Matale,Central,Wilgamuwa,7.536887,80.912999,osm_town,node/2055561682
+LK22-005,Laggala,Matale,Central,Laggala,7.593292,80.840245,osm_town,node/6187391099
+LK22-006,Matale,Matale,Central,Matale,7.472045,80.623431,osm_city,node/258049423
+LK22-007,Naula,Matale,Central,Naula,7.707039,80.653083,osm_town,node/258615787
+LK22-008,Pallepola,Matale,Central,Pallepola,7.627878,80.6054,ds_point:ds_office_osm,Pallepola Divisional Secretariat (node/4943979316)
+LK22-009,Rattota,Matale,Central,Rattota,7.520609,80.677573,osm_town,node/1727645733
+LK22-010,Ukuwela,Matale,Central,Ukuwela,7.42125,80.633183,osm_town,node/1175899378
+LK22-011,Yatawatta,Matale,Central,Yatawatta,7.559424,80.593465,ds_point:ds_office_osm,yatawatta divisional secretary (node/10221155791)
+LK23-001,Adhikarigama,Nuwara Eliya,Central,Hanguranketa,7.213528,80.780556,osm_town,node/4843030523
+LK23-002,Agarapathana,Nuwara Eliya,Central,Thalawakele,6.864128,80.70555,osm_town,node/3820992970
+LK23-003,Bogawantalawa,Nuwara Eliya,Central,Norwood,6.796242,80.678105,osm_town,node/4441608255
+LK23-004,Dickoya,Nuwara Eliya,Central,Norwood,6.873775,80.603942,osm_town,node/3372812204
+LK23-005,Ginigathhena,Nuwara Eliya,Central,Ambagamuwa Korale,6.989091,80.494185,osm_town,node/247206090
+LK23-006,Hanguranketha,Nuwara Eliya,Central,Hanguranketa,7.177471,80.775527,osm_town,node/3872230600
+LK23-007,Hapugastalawa,Nuwara Eliya,Central,Kothmale West,7.055649,80.572708,ds_point:largest_settlement,Hapugastalawa [village] (node/1834947923)
+LK23-008,Hatton,Nuwara Eliya,Central,Norwood,6.891633,80.598459,osm_town,node/247205705
+LK23-009,Kotagala,Nuwara Eliya,Central,Thalawakele,6.925274,80.609055,osm_town,node/4987873965
+LK23-010,Kothmale,Nuwara Eliya,Central,Kothmale East,7.065116,80.683851,osm_town,node/4430210242
+LK23-011,Lindula,Nuwara Eliya,Central,Thalawakele,6.927168,80.687025,osm_town,node/3820976519
+LK23-012,Maskeliya,Nuwara Eliya,Central,Norwood,6.833871,80.57203,osm_town,node/1830417762
+LK23-013,Mathurata,Nuwara Eliya,Central,Mathurata,7.079911,80.801522,ds_point:town_name_match,Mathurata [village] (node/3876761497)
+LK23-014,Nallathanniya,Nuwara Eliya,Central,Norwood,6.825513,80.522596,osm_town,node/3513452767
+LK23-015,Nanu Oya,Nuwara Eliya,Central,Nuwara Eliya,6.94098,80.744208,osm_town,node/2637063504
+LK23-016,Nildandahinna,Nuwara Eliya,Central,Nildandahinna,7.080451,80.893368,osm_town,node/3590215201
+LK23-017,Norwood,Nuwara Eliya,Central,Norwood,6.838931,80.612224,osm_town,node/1830417760
+LK23-018,Nuwara Eliya,Nuwara Eliya,Central,Nuwara Eliya,6.973974,80.766986,osm_city,node/44240758
+LK23-019,Padiyapelella,Nuwara Eliya,Central,Walapane,7.091151,80.79903,osm_town,node/2035882234
+LK23-020,Pooliyawatta,Nuwara Eliya,Central,Norwood,6.85668,80.625896,osm_town,node/7823334774
+LK23-021,Pundaluoya,Nuwara Eliya,Central,Kothmale East,7.013783,80.66679,osm_town,node/4883891589
+LK23-022,Ragala,Nuwara Eliya,Central,Walapane,7.01182,80.857312,osm_town,node/2035867651
+LK23-023,Rikillagaskada,Nuwara Eliya,Central,Hanguranketa,7.146118,80.783998,osm_town,node/3650726151
+LK23-024,Talawakele,Nuwara Eliya,Central,Thalawakele,6.938078,80.661471,osm_town,node/247211381
+LK23-025,Udapussellawa,Nuwara Eliya,Central,Nildandahinna,6.999538,80.903958,osm_town,node/3590215205
+LK23-026,Walapane,Nuwara Eliya,Central,Walapane,7.095807,80.862436,osm_town,node/3588043678
+LK23-027,Watawala,Nuwara Eliya,Central,Ambagamuwa Korale,6.944749,80.53935,osm_town,node/5252428598
+LK31-001,Ahangama,Galle,Southern,Habaraduwa,5.973516,80.3623,osm_town,node/1941205815
+LK31-002,Ahungalla,Galle,Southern,Balapitiya,6.313789,80.035122,osm_town,node/2678378690
+LK31-003,Akmeemana,Galle,Southern,Akmeemana,6.054702,80.257758,ds_point:ds_office_osm,Akmeemana Divisional Secretariat Office (node/3866596666)
+LK31-004,Ambalangoda,Galle,Southern,Ambalangoda,6.238906,80.054147,osm_town,node/4448814739
+LK31-005,Ampegama,Galle,Southern,Welivitiya-Divitura,6.193952,80.145666,ds_point:largest_settlement,Ampegama [village] (node/6284383905)
+LK31-006,Baddegama,Galle,Southern,Baddegama,6.172481,80.177916,ds_point:town_name_match,Baddegama [village] (node/1578215204)
+LK31-007,Balapitiya,Galle,Southern,Balapitiya,6.280576,80.040575,osm_town,node/2683036450
+LK31-008,Bentota,Galle,Southern,Bentota,6.421528,79.997854,osm_town,node/1606175319
+LK31-009,Elpitiya,Galle,Southern,Elpitiya,6.291885,80.161905,osm_town,node/3198144520
+LK31-010,Galle,Galle,Southern,Galle 4 Gravets,6.032814,80.214955,osm_city,node/3639546887
+LK31-011,Gamaddegoda,Galle,Southern,Rathgama,6.088134,80.145815,ds_point:largest_settlement,Gamaddegoda [village] (node/313808479)
+LK31-012,Gonapinuwala,Galle,Southern,Gonapinuwala,6.141426,80.136945,ds_point:town_name_match,Gonapinuwala [village] (node/3249089692)
+LK31-013,Hikkaduwa,Galle,Southern,Hikkaduwa,6.140753,80.102818,osm_town,node/9649624598
+LK31-014,Imaduwa,Galle,Southern,Imaduwa,6.035481,80.388898,osm_town,node/3483816670
+LK31-015,Induruwa,Galle,Southern,Bentota,6.373974,80.010556,osm_town,node/1788410986
+LK31-016,Karandeniya,Galle,Southern,Karandeniya,6.270681,80.091189,osm_town,node/1788450007
+LK31-017,Kosgoda,Galle,Southern,Balapitiya,6.338588,80.028902,osm_town,node/2678433190
+LK31-018,Labuduwa,Galle,Southern,Bope-Poddala,6.072768,80.231892,osm_town,node/309607443
+LK31-019,Madampagama,Galle,Southern,Madampagama,6.219292,80.05753,ds_point:town_name_match,Madampagama [village] (node/3748967480)
+LK31-020,Mapalagama,Galle,Southern,Nagoda,6.221984,80.2856,osm_town,node/1792916650
+LK31-021,Neluwa,Galle,Southern,Neluwa,6.377343,80.360788,osm_town,node/2155827808
+LK31-022,Opatha,Galle,Southern,Thawalama,6.268232,80.411894,osm_town,node/7777690004
+LK31-023,Pitigala,Galle,Southern,Niyagama,6.343576,80.222556,osm_town,node/2185045619
+LK31-024,Udugama,Galle,Southern,Nagoda,6.211829,80.338949,osm_town,node/2185271561
+LK31-025,Wanduramba,Galle,Southern,Wanduramba,6.134657,80.254981,osm_town,node/7101673219
+LK31-026,Weerapana,Galle,Southern,Thawalama,6.250723,80.420312,osm_town,node/4850945220
+LK31-027,Yakkalamulla,Galle,Southern,Yakkalamulla,6.107667,80.348536,osm_town,node/3492719090
+LK32-001,Akuressa,Matara,Southern,Akuressa,6.101178,80.476488,osm_town,node/98593218
+LK32-002,Deiyandara,Matara,Southern,Mulatiyana,6.153362,80.603823,osm_town,node/2152922098
+LK32-003,Deniyaya,Matara,Southern,Kotapola,6.342564,80.560618,osm_town,node/2155637865
+LK32-004,Dikwella,Matara,Southern,Dikwella,5.964618,80.694651,osm_town,node/1745481386
+LK32-005,Dondra,Matara,Southern,Devinuwara,5.928104,80.589355,osm_town,node/77369078
+LK32-006,Hakmana,Matara,Southern,Hakmana,6.083926,80.644974,osm_town,node/1932060660
+LK32-007,Kalubowitiyana,Matara,Southern,Pitabaddara,6.313781,80.402254,osm_town,node/10100921472
+LK32-008,Kamburupitiya,Matara,Southern,Kaburupitiya,6.080283,80.567383,osm_town,node/2165128744
+LK32-009,Kirinda,Matara,Southern,Kirinda Puhulwella,6.052338,80.629137,osm_town,node/3508139702
+LK32-010,Makandura,Matara,Southern,Mulatiyana,6.140234,80.557119,osm_town,node/4884223376
+LK32-011,Malimbada,Matara,Southern,Malimbada,6.008757,80.516946,ds_point:town_name_match,Malimbada [village] (node/3508004633)
+LK32-012,Matara,Matara,Southern,Matara Four Gravets,5.947822,80.548292,osm_city,node/3639539242
+LK32-013,Mirissa,Matara,Southern,Weligama,5.949363,80.455813,osm_town,node/50769618
+LK32-014,Morawaka,Matara,Southern,Pitabaddara,6.261275,80.49175,osm_town,node/2155827571
+LK32-015,Mulatiyana,Matara,Southern,Mulatiyana,6.160512,80.584463,osm_town,node/2152922356
+LK32-016,Phala Athuraliya,Matara,Southern,Athuraliya,6.073645,80.511408,ds_point:town_name_match,Phala Athuraliya [village] (node/3508036654)
+LK32-017,Pitabeddara,Matara,Southern,Pitabaddara,6.201143,80.47405,osm_town,node/1093799347
+LK32-018,Radampola,Matara,Southern,Dikwella,6.002779,80.672023,osm_town,node/13380407634
+LK32-019,Thihagoda,Matara,Southern,Thihagoda,6.012756,80.565877,osm_town,node/388241712
+LK32-020,Urubokka,Matara,Southern,Pasgoda,6.307562,80.631348,osm_town,node/2017450880
+LK32-021,Walgama,Matara,Southern,Matara Four Gravets,5.942467,80.514928,osm_town,node/250132444
+LK32-022,Weligama,Matara,Southern,Weligama,5.97513,80.429139,osm_town,node/3639544458
+LK32-023,Welipitiya,Matara,Southern,Welipitiya,6.007766,80.44349,ds_point:town_name_match,Welipitiya [village] (node/3493281453)
+LK32-024,Yatiyana,Matara,Southern,Thihagoda,6.024698,80.601266,osm_town,node/388245026
+LK33-001,Ambalantota,Hambantota,Southern,Ambalantota,6.122463,81.023859,osm_town,node/51232381
+LK33-002,Angunukolapelessa,Hambantota,Southern,Angunakolapelessa,6.166936,80.897673,osm_town,node/1818583229
+LK33-003,Beliatte,Hambantota,Southern,Beliatta,6.049265,80.734753,osm_town,node/1639373029
+LK33-004,Hambantota,Hambantota,Southern,Hambantota,6.124913,81.124256,osm_city,node/247220841
+LK33-005,Hungama,Hambantota,Southern,Ambalantota,6.109909,80.932016,osm_town,node/51232384
+LK33-006,Katuwana,Hambantota,Southern,Katuwana,6.264725,80.691011,osm_town,node/1933478723
+LK33-007,Lunugamvehera,Hambantota,Southern,Lunugamwehera,6.347041,81.196142,osm_town,node/51232367
+LK33-008,Middeniya,Hambantota,Southern,Katuwana,6.251494,80.764303,osm_town,node/1933478883
+LK33-009,Okawela,Hambantota,Southern,Okewela,6.108173,80.717077,ds_point:town_name_match,Okawela [village] (node/3521370261)
+LK33-010,Ranna,Hambantota,Southern,Tangalle,6.09701,80.875136,osm_town,node/51232436
+LK33-011,Sooriyawewa,Hambantota,Southern,Sooriyawewa,6.308184,81.002183,osm_town,node/1183726317
+LK33-012,Tangalle,Hambantota,Southern,Tangalle,6.025085,80.794928,osm_town,node/51216347
+LK33-013,Tissamaharama,Hambantota,Southern,Thissamaharama,6.277072,81.289281,osm_town,node/1723384697
+LK33-014,Walasmulla,Hambantota,Southern,Walasmulla,6.15585,80.697958,osm_town,node/1932027698
+LK33-015,Weeraketiya,Hambantota,Southern,Weeraketiya,6.148432,80.763236,osm_town,node/610929933
+LK33-016,Weerawila,Hambantota,Southern,Thissamaharama,6.257497,81.228115,osm_town,node/51232378
+LK41-001,Achchuvely,Jaffna,Northern,Valikamam East (Kopay),9.77894,80.115357,osm_town,node/4449040986
+LK41-002,Ariyalai,Jaffna,Northern,Nallur,9.65909,80.047657,osm_town,node/4439958432
+LK41-003,Chankanai,Jaffna,Northern,Valikamam West (Chankanai),9.748734,79.970294,osm_town,node/3220285970
+LK41-004,Chavakachcheri,Jaffna,Northern,Thenmaradchi (Chavakachcheri),9.657901,80.164308,osm_town,node/1245043181
+LK41-005,Chunnakam,Jaffna,Northern,Valikamam South (Uduvil),9.743031,80.028827,osm_town,node/324707634
+LK41-006,Jaffna,Jaffna,Northern,Jaffna,9.665093,80.009303,osm_city,node/2050947471
+LK41-007,Kaithady,Jaffna,Northern,Thenmaradchi (Chavakachcheri),9.68774,80.103627,osm_town,node/1494019080
+LK41-008,Kankesanturai,Jaffna,Northern,Valikamam North (Thllippalai),9.811866,80.037446,osm_town,node/324707446
+LK41-009,Karainagar,Jaffna,Northern,Karainagar,9.740443,79.885037,osm_town,node/1886574306
+LK41-010,Kayts,Jaffna,Northern,Islands North (Kayts),9.692323,79.867305,osm_town,node/1886574426
+LK41-011,Kodikamam,Jaffna,Northern,Thenmaradchi (Chavakachcheri),9.680135,80.222333,osm_town,node/4440184795
+LK41-012,Manipay,Jaffna,Northern,Valikamam South West (Sandilipay),9.724495,79.996026,osm_town,node/3220290861
+LK41-013,Maruthankerny,Jaffna,Northern,Vadamaradchchi East,9.619495,80.401519,osm_town,node/4452658187
+LK41-014,Maveliturai,Jaffna,Northern,Delft,9.52387,79.711052,ds_point:largest_settlement,Maveliturai [hamlet] (node/340000603)
+LK41-015,Nallur,Jaffna,Northern,Nallur,9.673491,80.029028,osm_town,node/2059494459
+LK41-016,Navatkuli,Jaffna,Northern,Thenmaradchi (Chavakachcheri),9.662675,80.083189,osm_town,node/1245043224
+LK41-017,Neerveli,Jaffna,Northern,Valikamam East (Kopay),9.723937,80.082836,osm_town,node/2536663949
+LK41-018,Nelliyady,Jaffna,Northern,Vadamaradchchi South-West (Karaveddy),9.799212,80.199754,osm_town,node/4451088396
+LK41-019,Palaly,Jaffna,Northern,Valikamam North (Thllippalai),9.789913,80.075788,osm_town,node/4446901662
+LK41-020,Pandattarippu,Jaffna,Northern,Valikamam South West (Sandilipay),9.774958,79.971675,osm_town,node/3220281897
+LK41-021,Point Pedro,Jaffna,Northern,Vadamaradchi North (Point Pedro),9.824101,80.236184,osm_town,node/803792646
+LK41-022,Tellippalai,Jaffna,Northern,Valikamam North (Thllippalai),9.782181,80.036111,osm_town,node/4453663169
+LK41-023,Valvettiturai,Jaffna,Northern,Vadamaradchi North (Point Pedro),9.822013,80.169551,osm_town,node/1835802068
+LK41-024,Varany,Jaffna,Northern,Thenmaradchi (Chavakachcheri),9.728637,80.228346,osm_town,node/4451051810
+LK41-025,Velanai,Jaffna,Northern,Islands South (Velanai),9.637031,79.902525,osm_town,node/3220261990
+LK42-001,Madhu,Mannar,Northern,Madhu,8.855367,80.203007,ds_point:town_name_match,Madhu [village] (node/4758373445)
+LK42-002,Mannar,Mannar,Northern,Mannar Town,8.98129,79.904394,osm_city,node/1886592110
+LK42-003,Musali,Mannar,Northern,Musali,8.747144,79.955519,ds_point:ds_office_osm,Musali DS Office (way/444211564)
+LK42-004,Pesalai,Mannar,Northern,Mannar Town,9.084841,79.820893,osm_town,node/5352235180
+LK42-005,Talaimannar,Mannar,Northern,Mannar Town,9.105524,79.730743,osm_town,node/339885285
+LK42-006,Vankalai,Mannar,Northern,Nanaddan,8.89393,79.933233,ds_point:largest_settlement,Vankalai [village] (node/11659276359)
+LK42-007,Vellankulam,Mannar,Northern,Manthai West,9.186204,80.130157,osm_town,node/4698843901
+LK43-001,Kanakarayankulam,Vavuniya,Northern,Vavuniya North,9.047005,80.518048,osm_town,node/634174328
+LK43-002,Nedunkeni,Vavuniya,Northern,Vavuniya North,9.062416,80.660778,osm_town,node/634174641
+LK43-003,Neriyakulam,Vavuniya,Northern,Vengalacheddikulam,8.616205,80.354115,osm_town,node/11659276357
+LK43-004,Puliyankulam,Vavuniya,Northern,Vavuniya North,8.965263,80.524968,osm_town,node/634179061
+LK43-005,Vavuniya,Vavuniya,Northern,Vavuniya,8.759352,80.500078,osm_city,node/634182147
+LK43-006,Vavuniya South,Vavuniya,Northern,Vavuniya,8.76239,80.493766,ds_point:ds_office_osm,Vavunuya South DS Office (way/307308233)
+LK44-001,Mallavi,Mullaitivu,Northern,Thunukkai,9.146664,80.292307,osm_town,node/4646263644
+LK44-002,Mankulam,Mullaitivu,Northern,Oddusuddan,9.128353,80.446037,osm_town,node/634173386
+LK44-003,Mullaitivu,Mullaitivu,Northern,Maritimepattu,9.269853,80.814535,osm_city,node/633759246
+LK44-004,Mulliyawalai,Mullaitivu,Northern,Maritimepattu,9.225507,80.778311,osm_town,node/634172978
+LK44-005,Oddusudan,Mullaitivu,Northern,Oddusuddan,9.155437,80.651327,osm_town,node/634261389
+LK44-006,Puthukkudiyirippu,Mullaitivu,Northern,Puthukkudiyiruppu,9.31381,80.696154,osm_town,node/634222744
+LK44-007,Thirumurikandy,Mullaitivu,Northern,Thunukkai,9.301923,80.404077,osm_town,node/4564642054
+LK44-008,Vavunikulam,Mullaitivu,Northern,Manthai East,9.091423,80.32732,ds_point:largest_settlement,Vavunikulam [village] (node/4661480157)
+LK44-009,Visuvamadu,Mullaitivu,Northern,Puthukkudiyiruppu,9.384333,80.547731,osm_town,node/4568772490
+LK44-010,Welioya,Mullaitivu,Northern,Welioya,8.967425,80.781376,osm_town,node/5357161030
+LK45-001,Akkarayan,Kilinochchi,Northern,Karachchi,9.312722,80.311174,osm_town,node/4564642055
+LK45-002,Kilinochchi,Kilinochchi,Northern,Karachchi,9.384007,80.408722,osm_city,node/634253347
+LK45-003,Mulankavil,Kilinochchi,Northern,Poonakary,9.250444,80.146142,osm_town,node/4562777964
+LK45-004,Pallai,Kilinochchi,Northern,Pachchilaipalli,9.610117,80.325555,osm_town,node/4452654358
+LK45-005,Paranthan,Kilinochchi,Northern,Kandavalai,9.437231,80.407862,osm_town,node/634262363
+LK45-006,Pooneryn,Kilinochchi,Northern,Poonakary,9.505324,80.212792,osm_town,node/1835809125
+LK45-007,Tharmapuram,Kilinochchi,Northern,Kandavalai,9.407019,80.523989,osm_town,node/4568772505
+LK45-008,Uruthirapuram,Kilinochchi,Northern,Karachchi,9.393132,80.353732,osm_town,node/4565936557
+LK45-009,Vaddakachchi,Kilinochchi,Northern,Karachchi,9.369469,80.457555,osm_town,node/4568772492
+LK51-001,Arayampathy,Batticaloa,Eastern,Manmunai Pattu,7.657856,81.73998,ds_point:largest_settlement,Arayampathy [suburb] (way/778185935)
+LK51-002,Batticaloa,Batticaloa,Eastern,Manmunai North,7.735603,81.694196,osm_city,node/3668151968
+LK51-003,Chenkaladi,Batticaloa,Eastern,Eravur Pattu,7.785428,81.591281,osm_town,node/2051354272
+LK51-004,Eravur,Batticaloa,Eastern,Eravur Town,7.775716,81.604802,osm_town,node/13594506483
+LK51-005,Kalkudah,Batticaloa,Eastern,Koralai Pattu,7.915665,81.560356,ds_point:largest_settlement,Kalkudah [village] (node/1725061614)
+LK51-006,Kaluwanchikudy,Batticaloa,Eastern,Manmunai South & Eruvil Pattu,7.517497,81.787128,osm_town,node/1880354572
+LK51-007,Kattankudy,Batticaloa,Eastern,Kattankudy,7.677704,81.729925,ds_point:ds_office_osm,Divisional Secretariat Kattankudy (node/4613754593)
+LK51-008,Kiran,Batticaloa,Eastern,Koralai Pattu South,7.863853,81.538536,osm_town,node/14219786669
+LK51-009,Koralai Pattu North,Batticaloa,Eastern,Koralai Pattu North,8.165656,81.413868,ds_point:ds_office_osm,Divisional Secretariat- Vakarai (way/473256925)
+LK51-010,Koralai Pattu West,Batticaloa,Eastern,Koralai Pattu West,7.91835,81.52206,ds_point:ds_office_osm,Koralaipattu West Oddamavadi Divisional Secretariat (way/386579974)
+LK51-011,Manmunai South West,Batticaloa,Eastern,Manmunai South West,7.600373,81.718456,ds_point:ds_office_osm,DS office Quates (way/494619909)
+LK51-012,Porativu Pattu,Batticaloa,Eastern,Porativu Pattu,7.481545,81.711718,ds_point:polygon_point,no office or town in OSM
+LK51-013,Unnichchai,Batticaloa,Eastern,Manmunai West,7.61487,81.547095,ds_point:largest_settlement,Unnichchai [village] (node/636923904)
+LK51-014,Valaichchenai,Batticaloa,Eastern,Koralai Pattu Central,7.909082,81.533122,osm_town,node/1880414146
+LK52-001,Addalaichenai,Ampara,Eastern,Addalaichenai,7.237467,81.860232,ds_point:ds_office_osm,RDS Office (way/1262969365)
+LK52-002,Akkaraipattu,Ampara,Eastern,Alayadivembu,7.214314,81.848199,osm_town,node/1874239095
+LK52-003,Ampara,Ampara,Eastern,Ampara,7.297812,81.679019,osm_city,node/1877296501
+LK52-004,Damana,Ampara,Eastern,Damana,7.204846,81.652259,ds_point:town_name_match,Damana [village] (node/1877385005)
+LK52-005,Dehiattakandiya,Ampara,Eastern,Dehiattakandiya,7.6715,81.040892,osm_town,node/2304546463
+LK52-006,Gonagolla,Ampara,Eastern,Uhana,7.43523,81.628636,osm_town,node/4959610624
+LK52-007,Irakkamam,Ampara,Eastern,Irakkamam,7.244572,81.723293,ds_point:town_name_match,Irakkamam [village] (node/3998723931)
+LK52-008,Kalmunai,Ampara,Eastern,Kalmunai,7.413156,81.826933,osm_town,node/3318180364
+LK52-009,Karaitivu,Ampara,Eastern,Karaitivu,7.376949,81.838792,osm_town,node/3316122477
+LK52-010,Mahaoya,Ampara,Eastern,Mahaoya,7.530591,81.356858,osm_town,node/2001999522
+LK52-011,Nintavur,Ampara,Eastern,Nintavur,7.353897,81.846346,osm_town,node/3316015820
+LK52-012,Padiyathalawa,Ampara,Eastern,Padiyathalawa,7.4002,81.242464,osm_town,node/1975993021
+LK52-013,Panama,Ampara,Eastern,Lahugala,6.755659,81.804893,osm_town,node/1874159258
+LK52-014,Pottuvil,Ampara,Eastern,Pottuvil,6.873242,81.830048,osm_town,node/1874239303
+LK52-015,Sainthamaruthu,Ampara,Eastern,Sainthamaruthu,7.392195,81.835068,ds_point:ds_office_osm,"Divisional Secretariat, Sainthamaruthu (way/1227298919)"
+LK52-016,Sammanthurai,Ampara,Eastern,Sammanthurai,7.357977,81.798463,osm_town,node/1877385081
+LK52-017,Sorikkalmunai,Ampara,Eastern,Navithanveli,7.392501,81.791528,ds_point:largest_settlement,Sorikkalmunai [village] (node/3478022892)
+LK52-018,Tirukkovil,Ampara,Eastern,Tirukkovil,7.112369,81.852124,ds_point:ds_office_osm,Thirukkovil D.S. Office (way/771836917)
+LK52-019,Uhana,Ampara,Eastern,Uhana,7.363039,81.636194,osm_town,node/4992079825
+LK53-001,Gomarankadawala,Trincomalee,Eastern,Gomarankadawala,8.674558,80.956203,osm_town,node/5357161047
+LK53-002,Kantale,Trincomalee,Eastern,Kantale,8.367003,81.002838,osm_town,node/636867709
+LK53-003,Kinniya,Trincomalee,Eastern,Kinniya,8.501649,81.191218,ds_point:town_name_match,Kinniya [village] (node/1242724515)
+LK53-004,Kuchchaweli,Trincomalee,Eastern,Kuchchaweli,8.816375,81.100989,ds_point:ds_office_osm,Divisional Secretariat (node/7693516382)
+LK53-005,Mutur,Trincomalee,Eastern,Muthur,8.457969,81.266704,ds_point:town_name_match,Mutur [village] (node/633777951)
+LK53-006,Pankulam,Trincomalee,Eastern,Morawewa,8.624102,81.031944,ds_point:largest_settlement,Pankulam [village] (node/4013536856)
+LK53-007,Sanamvali,Trincomalee,Eastern,Verugal,8.372043,81.380172,ds_point:largest_settlement,Sanamvali [hamlet] (node/633777931)
+LK53-008,Serunuwara,Trincomalee,Eastern,Seruvila,8.325694,81.300632,osm_town,node/9394245014
+LK53-009,SriTissapuraColony,Trincomalee,Eastern,Padavi Sri Pura,8.901166,80.843936,ds_point:largest_settlement,SriTissapuraColony [village] (node/4596186834)
+LK53-010,Thambalagamuwa,Trincomalee,Eastern,Thambalagamuwa,8.500301,81.094578,ds_point:town_name_match,Thambalagamuwa [village] (node/6789998179)
+LK53-011,Trincomalee,Trincomalee,Eastern,Town & Gravets,8.576425,81.234495,osm_city,node/335253618
+LK61-001,Alawwa,Kurunegala,North Western,Alawwa,7.294016,80.239242,osm_town,node/1239560146
+LK61-002,Ambanpola,Kurunegala,North Western,Ambanpola,7.919672,80.239316,osm_town,node/1534183371
+LK61-003,Bamunakotuwa,Kurunegala,North Western,Bamunakotuwa,7.572354,80.24944,osm_town,node/1239429314
+LK61-004,Bingiriya,Kurunegala,North Western,Bingiriya,7.598317,79.937336,osm_town,node/5299173421
+LK61-005,Bowatta,Kurunegala,North Western,Bingiriya,7.598686,79.961964,osm_town,node/1976198826
+LK61-006,Dambadeniya,Kurunegala,North Western,Narammala,7.368185,80.149427,osm_town,node/2907471043
+LK61-007,Ehetuwewa,Kurunegala,North Western,Ehetuwewa,7.940417,80.344657,ds_point:ds_office_osm,Divisional Secretariat Ehetuwewa (node/9410652166)
+LK61-008,Galgamuwa,Kurunegala,North Western,Galgamuwa,7.995668,80.270612,osm_town,node/3578458836
+LK61-009,Giribawa,Kurunegala,North Western,Giribawa,8.115615,80.1972,ds_point:ds_office_osm,Giribawa Divisional Secretariat Office (way/568473451)
+LK61-010,Giriulla,Kurunegala,North Western,Pannala,7.329946,80.122513,osm_town,node/638951280
+LK61-011,Hettipola,Kurunegala,North Western,Panduwasnuwara West,7.605573,80.078758,osm_town,node/1976165108
+LK61-012,Hiripitiya,Kurunegala,North Western,Ganewatta,7.656862,80.369249,osm_town,node/2024849122
+LK61-013,Ibbagamuwa,Kurunegala,North Western,Ibbagamuwa,7.547913,80.449642,osm_town,node/1536695366
+LK61-014,Kobeigane,Kurunegala,North Western,Kobeigane,7.655835,80.126457,osm_town,node/1976141592
+LK61-015,Kotawehera,Kurunegala,North Western,Kotawehera,7.808612,80.076454,ds_point:town_name_match,Kotawehera [village] (node/5273749128)
+LK61-016,Kuliyapitiya,Kurunegala,North Western,Kuliyapitiya West,7.470143,80.044035,osm_town,node/1976202073
+LK61-017,Kuliyapitiya East,Kurunegala,North Western,Kuliyapitiya East,7.451398,80.182409,ds_point:ds_office_osm,Divisional Secretariat Kuliyapitiya East (node/5493577281)
+LK61-018,Kumbukgate,Kurunegala,North Western,Ganewatta,7.676097,80.424747,osm_town,node/2024849232
+LK61-019,Kurunegala,Kurunegala,North Western,Kurunegala,7.487046,80.364908,osm_city,node/2907017040
+LK61-020,Madagalla,Kurunegala,North Western,Polpitigama,7.842306,80.397547,osm_town,node/4913676318
+LK61-021,Maho,Kurunegala,North Western,Maho,7.823914,80.273567,osm_town,node/1239690493
+LK61-022,Mallawapitiya,Kurunegala,North Western,Mallawapitiya,7.474502,80.390864,ds_point:town_name_match,Mallawapitiya [village] (node/1924902306)
+LK61-023,Maspotha,Kurunegala,North Western,Maspotha,7.546437,80.307729,ds_point:town_name_match,Maspotha [village] (node/2831757044)
+LK61-024,Mawathagama,Kurunegala,North Western,Mawathagama,7.432988,80.446409,osm_town,node/1924902377
+LK61-025,Meegalewa,Kurunegala,North Western,Galgamuwa,8.055234,80.354208,osm_town,node/5061715257
+LK61-026,Melsiripura,Kurunegala,North Western,Ibbagamuwa,7.642765,80.509315,osm_town,node/1536695369
+LK61-027,Narammala,Kurunegala,North Western,Narammala,7.43066,80.214327,osm_town,node/637029092
+LK61-028,Nikaweratiya,Kurunegala,North Western,Nikaweratiya,7.750383,80.115723,osm_town,node/1536648881
+LK61-029,Padeniya,Kurunegala,North Western,Wariyapola,7.655589,80.221928,osm_town,node/1239591372
+LK61-030,Panduwasnuwara East,Kurunegala,North Western,Panduwasnuwara East,7.548396,80.126897,ds_point:ds_office_osm,Divisional Secretariet Office (node/3070201674)
+LK61-031,Pannala,Kurunegala,North Western,Pannala,7.328358,80.024106,osm_town,node/639263035
+LK61-032,Polgahawela,Kurunegala,North Western,Polgahawela,7.335258,80.300246,osm_town,node/3722684420
+LK61-033,Polpithigama,Kurunegala,North Western,Polpitigama,7.817217,80.404961,osm_town,node/5051771406
+LK61-034,Rasnayakepura,Kurunegala,North Western,Rasnayakapura,7.776435,80.014319,ds_point:town_name_match,Rasnayakepura [village] (node/6159506915)
+LK61-035,Rideegama,Kurunegala,North Western,Rideegama,7.544678,80.490627,ds_point:ds_office_osm,Divisional Secretariat Office (node/3213647937)
+LK61-036,Udubaddawa,Kurunegala,North Western,Udubaddawa,7.485033,79.968157,ds_point:town_name_match,Udubaddawa [village] (node/7194868822)
+LK61-037,Wariyapola,Kurunegala,North Western,Wariyapola,7.619812,80.246116,osm_town,node/6764808364
+LK61-038,Weerambugedara,Kurunegala,North Western,Weerabugedara,7.476078,80.242324,ds_point:town_name_match,Weerambugedara [village] (node/3066311599)
+LK62-001,Anamaduwa,Puttalam,North Western,Anamaduwa,7.877637,80.010937,osm_town,node/1731568993
+LK62-002,Andigama,Puttalam,North Western,Mahakumbukkadawala,7.775717,79.950066,osm_town,node/3691118090
+LK62-003,Arachchikattuwa,Puttalam,North Western,Arachchikattuwa,7.664556,79.836997,ds_point:town_name_match,Arachchikattuwa [village] (node/3691087776)
+LK62-004,Chilaw,Puttalam,North Western,Chilaw,7.576256,79.795357,osm_town,node/1400410588
+LK62-005,Dankotuwa,Puttalam,North Western,Dankotuwa,7.297489,79.882187,osm_town,node/617242457
+LK62-006,Kalpitiya,Puttalam,North Western,Kalpitiya,8.236806,79.766151,ds_point:town_name_match,Kalpitiya [village] (node/1150550162)
+LK62-007,Karaitivu,Puttalam,North Western,Vanathavilluwa,8.222808,79.808028,ds_point:largest_settlement,Karaitivu [village] (node/636834739)
+LK62-008,Karuwalagaswewa,Puttalam,North Western,Karuwalagaswewa,8.05713,79.96092,osm_town,node/1837177540
+LK62-009,Madampe,Puttalam,North Western,Madampe,7.495416,79.841381,osm_town,node/2728009239
+LK62-010,Madurankuliya,Puttalam,North Western,Mundel,7.90538,79.822015,osm_town,node/1731515234
+LK62-011,Mahawewa,Puttalam,North Western,Mahawewa,7.45396,79.828306,ds_point:town_name_match,Mahawewa [village] (node/1400420569)
+LK62-012,Nattandiya,Puttalam,North Western,Nattandiya,7.412186,79.864345,osm_town,node/1848019758
+LK62-013,Nawagattegama,Puttalam,North Western,Nawagattegama,8.003322,80.10609,osm_town,node/4853637033
+LK62-014,Puttalam,Puttalam,North Western,Puttalam,8.031599,79.830029,osm_city,node/330173100
+LK62-015,Saliyawewa,Puttalam,North Western,Karuwalagaswewa,8.190668,80.091275,osm_town,node/1837177541
+LK62-016,Wennappuwa,Puttalam,North Western,Wennappuwa,7.342641,79.841308,osm_town,node/1837181385
+LK62-017,Wilpotha,Puttalam,North Western,Pallama,7.749222,79.892557,ds_point:largest_settlement,Wilpotha [village] (node/5338791523)
+LK71-001,Anuradhapura,Anuradhapura,North Central,Nuwaragam Palatha East,8.334985,80.41061,osm_city,node/566574942
+LK71-002,Bulnewa,Anuradhapura,North Central,Galnewa,8.044345,80.444915,osm_town,node/4406862722
+LK71-003,Eppawala,Anuradhapura,North Central,Thalawa,8.146125,80.411391,osm_town,node/4690500673
+LK71-004,Galenbindunuwewa,Anuradhapura,North Central,Galenbidunuwewa,8.292445,80.718972,osm_town,node/4904980441
+LK71-005,Galnewa,Anuradhapura,North Central,Galnewa,8.035483,80.480207,osm_town,node/4406851218
+LK71-006,Habarana,Anuradhapura,North Central,Palugaswewa,8.042323,80.756462,osm_town,node/258047343
+LK71-007,Horowpothana,Anuradhapura,North Central,Horowpathana,8.549319,80.832905,osm_town,node/1740742132
+LK71-008,Ipalogama,Anuradhapura,North Central,Ipalogama,8.090521,80.518115,ds_point:ds_office_osm,Ipalogama Divisional Secretariat Office (node/6550863826)
+LK71-009,Kahatagasdigiliya,Anuradhapura,North Central,Kahatagasdigiliya,8.42648,80.688169,osm_town,node/1881982709
+LK71-010,Kebithigollewa,Anuradhapura,North Central,Kebithigollewa,8.640841,80.669827,osm_town,node/1881982344
+LK71-011,Kekirawa,Anuradhapura,North Central,Kekirawa,8.040833,80.597102,osm_town,node/1880414110
+LK71-012,Maradankadawala,Anuradhapura,North Central,Kekirawa,8.12713,80.563077,osm_town,node/1880414149
+LK71-013,Medawachchiya,Anuradhapura,North Central,Medawachchiya,8.538778,80.492996,osm_town,node/7660344416
+LK71-014,Mihintale,Anuradhapura,North Central,Mihinthale,8.3583,80.512158,osm_town,node/1880627994
+LK71-015,Nachchadoowa,Anuradhapura,North Central,Nachchaduwa,8.251893,80.463063,ds_point:town_name_match,Nachchadoowa [village] (node/8103531315)
+LK71-016,Nochchiyagama,Anuradhapura,North Central,Nochchiyagama,8.264014,80.21051,osm_town,node/2383121120
+LK71-017,Nuwaragam Palatha Central,Anuradhapura,North Central,Nuwaragam Palatha Central,8.33033,80.364814,ds_point:ds_office_osm,"D.S. office, Nuwaragampalatha Central - Pandulagama (way/552088700)"
+LK71-018,Padaviya,Anuradhapura,North Central,Padaviya,8.835027,80.770066,osm_town,node/1886444959
+LK71-019,Palagala,Anuradhapura,North Central,Palagala,7.951161,80.517153,ds_point:ds_office_osm,Divisional Secretariate Palagala (way/539151862)
+LK71-020,Pemaduwa,Anuradhapura,North Central,Mahawilachchiya,8.491876,80.200861,osm_town,node/5245322821
+LK71-021,Rajanganaya,Anuradhapura,North Central,Rajanganaya,8.15313,80.220331,ds_point:ds_office_osm,Rajanganaya Divisional Secretariat Office (way/568190693)
+LK71-022,Rambewa,Anuradhapura,North Central,Rambewa,8.441531,80.50657,osm_town,node/1981159940
+LK71-023,Thambuttegama,Anuradhapura,North Central,Thambuththegama,8.161297,80.300096,osm_town,node/4406211506
+LK71-024,Thirappane,Anuradhapura,North Central,Thirappane,8.215715,80.522982,ds_point:town_name_match,Thirappane [village] (node/2834994101)
+LK72-001,Aralaganwila,Polonnaruwa,North Central,Dimbulagala,7.782607,81.184693,osm_town,node/1974755458
+LK72-002,Bakamuna,Polonnaruwa,North Central,Elahera,7.777185,80.816959,osm_town,node/1924916088
+LK72-003,Diyabeduma,Polonnaruwa,North Central,Elahera,7.934163,80.867986,osm_town,node/3803000351
+LK72-004,Giritale,Polonnaruwa,North Central,Higurakgoda,8.000262,80.924442,osm_town,node/1241525013
+LK72-005,Hingurakgoda,Polonnaruwa,North Central,Higurakgoda,8.041514,80.95317,osm_town,node/618688780
+LK72-006,Kaduruwela,Polonnaruwa,North Central,Thamankaduwa,7.930647,81.032735,osm_town,node/2272544113
+LK72-007,Manampitiya,Polonnaruwa,North Central,Dimbulagala,7.908845,81.111924,osm_town,node/2821280145
+LK72-008,Medirigiriya,Polonnaruwa,North Central,Medirigiriya,8.142325,80.971342,osm_town,node/2262022047
+LK72-009,Polonnaruwa,Polonnaruwa,North Central,Thamankaduwa,7.939536,81.000339,osm_city,node/258523517
+LK72-010,Sungavila,Polonnaruwa,North Central,Lankapura,8.071022,81.088868,ds_point:largest_settlement,Sungavila [village] (node/2278210758)
+LK72-011,Welikanda,Polonnaruwa,North Central,Welikanda,7.947211,81.247559,osm_town,node/2211160989
+LK81-001,Ambagahaoya,Badulla,Uva,Soranathota,7.032545,81.058961,ds_point:largest_settlement,Ambagahaoya [village] (node/3769534132)
+LK81-002,Badulla,Badulla,Uva,Badulla,6.990035,81.057031,osm_city,node/1945604886
+LK81-003,Ballaketuwa,Badulla,Uva,Ella,6.860112,81.095324,osm_town,node/4897349781
+LK81-004,Bandarawela,Badulla,Uva,Bandarawela,6.830482,80.98882,osm_town,node/1819856065
+LK81-005,Bogahakumbura,Badulla,Uva,Welimada,6.861378,80.875668,osm_town,node/4885452076
+LK81-006,Boralande,Badulla,Uva,Welimada,6.830275,80.895407,osm_town,node/1820038174
+LK81-007,Diyatalawa,Badulla,Uva,Haputale,6.806962,80.957223,osm_town,node/1818771605
+LK81-008,Ella,Badulla,Uva,Ella,6.873606,81.048993,osm_town,node/41626831
+LK81-009,Ettampitiya,Badulla,Uva,Hali-Ela,6.936963,80.989573,osm_town,node/1819856580
+LK81-010,Girandurukotte,Badulla,Uva,Mahiyanganaya,7.470198,81.014857,osm_town,node/1974676458
+LK81-011,Haldummulla,Badulla,Uva,Haldummulla,6.760216,80.880885,osm_town,node/2718847363
+LK81-012,Hali-Ela,Badulla,Uva,Hali-Ela,6.955169,81.032253,osm_town,node/2011981297
+LK81-013,Haputale,Badulla,Uva,Haputale,6.768153,80.96023,osm_town,node/598167631
+LK81-014,Kandaketiya,Badulla,Uva,Kandeketiya,7.170232,81.003999,osm_town,node/3773755242
+LK81-015,Koslanda,Badulla,Uva,Haldummulla,6.743565,81.018248,osm_town,node/3182644176
+LK81-016,Lunugala,Badulla,Uva,Lunugala,7.04194,81.202177,osm_town,node/1945700048
+LK81-017,Madulsima,Badulla,Uva,Lunugala,7.032869,81.165625,osm_town,node/3995333112
+LK81-018,Mahiyanganaya,Badulla,Uva,Mahiyanganaya,7.339714,80.993873,osm_town,node/1783976655
+LK81-019,Meegahakivula,Badulla,Uva,Meegahakiula,7.136987,81.04773,osm_town,node/3769289831
+LK81-020,Passara,Badulla,Uva,Passara,6.9354,81.156993,osm_town,node/1945644436
+LK81-021,Rideemaliyadda,Badulla,Uva,Rideemaliyadda,7.221679,81.118997,ds_point:ds_office_osm,Rideemaliyedda Divisional Secretariat (node/4561226628)
+LK81-022,Uvaparanagama,Badulla,Uva,Uvaparanagama,6.957652,80.929173,ds_point:ds_office_osm,Uva Paranagama Divisional Secretariat (node/4807539228)
+LK81-023,Welimada,Badulla,Uva,Welimada,6.905839,80.909812,osm_town,node/3866573399
+LK82-001,Badalkumbura,Monaragala,Uva,Badalkumbura,6.895241,81.235981,osm_town,node/1720491052
+LK82-002,Bibile,Monaragala,Uva,Bibile,7.16009,81.225414,osm_town,node/1979375865
+LK82-003,Buttala,Monaragala,Uva,Buttala,6.761973,81.246538,osm_town,node/1720491067
+LK82-004,Kataragama,Monaragala,Uva,Katharagama,6.413559,81.332442,osm_town,node/917948834
+LK82-005,Makulla,Monaragala,Uva,Madulla,6.979658,81.374754,ds_point:town_name_match,Makulla [village] (node/7836867284)
+LK82-006,Medagama,Monaragala,Uva,Medagama,7.034514,81.275998,osm_town,node/4561226329
+LK82-007,Monaragala,Monaragala,Uva,Monaragala,6.872728,81.350578,osm_town,node/1135433343
+LK82-008,Nakkala,Monaragala,Uva,Monaragala,6.890046,81.298576,osm_town,node/1979375847
+LK82-009,Okkampitiya,Monaragala,Uva,Buttala,6.752159,81.306299,osm_town,node/3769922289
+LK82-010,Sevanagala,Monaragala,Uva,Sevanagala,6.359882,80.919611,ds_point:ds_office_osm,Divisional Secretary (way/1106521927)
+LK82-011,Siyambalanduwa,Monaragala,Uva,Siyambalanduwa,6.906402,81.559209,osm_town,node/1135422214
+LK82-012,Tanamalwila,Monaragala,Uva,Thanamalwila,6.436243,81.130276,osm_town,node/51232363
+LK82-013,Wellawaya,Monaragala,Uva,Wellawaya,6.73178,81.101836,osm_town,node/1739426106
+LK91-001,Ayagama,Ratnapura,Sabaragamuwa,Ayagama,6.638552,80.311659,osm_town,node/5025823028
+LK91-002,Balangoda,Ratnapura,Sabaragamuwa,Balangoda,6.650143,80.698566,osm_town,node/13738457427
+LK91-003,Eheliyagoda,Ratnapura,Sabaragamuwa,Eheliyagoda,6.853132,80.262544,osm_town,node/3510259422
+LK91-004,Elapatha,Ratnapura,Sabaragamuwa,Elapatha,6.654982,80.367455,ds_point:ds_office_osm,Divisional Secretariat Elapatha (way/806751863)
+LK91-005,Embilipitiya,Ratnapura,Sabaragamuwa,Embilipitiya,6.334065,80.853832,osm_town,node/1814571533
+LK91-006,Godakawela,Ratnapura,Sabaragamuwa,Godakawela,6.504607,80.651027,osm_town,node/4237322481
+LK91-007,Kahawatta,Ratnapura,Sabaragamuwa,Pelmadulla,6.583175,80.573265,osm_town,node/1745540314
+LK91-008,Kalawana,Ratnapura,Sabaragamuwa,Kalawana,6.531093,80.396478,osm_town,node/1994693288
+LK91-009,Kaltota,Ratnapura,Sabaragamuwa,Kalthota,6.659413,80.885961,ds_point:town_name_match,Kaltota [suburb] (node/5036931957)
+LK91-010,Karawita,Ratnapura,Sabaragamuwa,Nivithigala,6.58857,80.416137,osm_town,node/1994926602
+LK91-011,Kiriella,Ratnapura,Sabaragamuwa,Kiriella,6.737957,80.27308,osm_town,node/1841029618
+LK91-012,Kuruwita,Ratnapura,Sabaragamuwa,Kuruvita,6.776101,80.366896,osm_town,node/2146223770
+LK91-013,Madampe,Ratnapura,Sabaragamuwa,Godakawela,6.53394,80.593145,osm_town,node/1723302619
+LK91-014,Marabe Town,Ratnapura,Sabaragamuwa,Eheliyagoda,6.888298,80.221614,osm_town,way/1566983654
+LK91-015,Nivithigala,Ratnapura,Sabaragamuwa,Nivithigala,6.595911,80.457794,osm_town,node/1994857640
+LK91-016,Opanayake,Ratnapura,Sabaragamuwa,Opanayake,6.60853,80.622924,osm_town,node/1994857187
+LK91-017,Padalangala,Ratnapura,Sabaragamuwa,Embilipitiya,6.253668,80.913314,osm_town,node/1814571480
+LK91-018,Pallebedda,Ratnapura,Sabaragamuwa,Embilipitiya,6.481881,80.707642,osm_town,node/1745524916
+LK91-019,Pelmadulla,Ratnapura,Sabaragamuwa,Pelmadulla,6.623434,80.543146,osm_town,node/637895939
+LK91-020,Pinnawala Town,Ratnapura,Sabaragamuwa,Imbulpe,6.717979,80.678207,osm_town,node/13154856133
+LK91-021,Rakwana,Ratnapura,Sabaragamuwa,Godakawela,6.475006,80.611565,osm_town,node/1985788725
+LK91-022,Ratnapura,Ratnapura,Sabaragamuwa,Ratnapura,6.680369,80.402298,osm_city,node/637897018
+LK91-023,Sooriyakanda,Ratnapura,Sabaragamuwa,Kolonna,6.438766,80.635494,osm_town,node/1931843075
+LK91-024,Udawalawe,Ratnapura,Sabaragamuwa,Embilipitiya,6.424187,80.817277,osm_town,node/1723290057
+LK91-025,Weligepola,Ratnapura,Sabaragamuwa,Weligepola,6.574002,80.704352,ds_point:town_name_match,Weligepola [suburb] (node/1994857978)
+LK92-001,Aranayake,Kegalle,Sabaragamuwa,Aranayake,7.177586,80.457178,osm_town,node/4075115740
+LK92-002,Bulathkohupitiya,Kegalle,Sabaragamuwa,Bulathkohipitiya,7.104951,80.335745,osm_town,node/4402350584
+LK92-003,Dehiowita,Kegalle,Sabaragamuwa,Dehiowita,6.96656,80.265917,osm_town,node/1805745169
+LK92-004,Deraniyagala,Kegalle,Sabaragamuwa,Deraniyagala,6.927273,80.338512,osm_town,node/3104886470
+LK92-005,Galapitamada,Kegalle,Sabaragamuwa,Ruwanwella,7.139915,80.234756,osm_town,node/3118648155
+LK92-006,Hathagoda,Kegalle,Sabaragamuwa,Bulathkohipitiya,7.06918,80.287612,osm_town,way/1546887967
+LK92-007,Hemmathagama,Kegalle,Sabaragamuwa,Mawanella,7.173889,80.499861,osm_town,node/1831898259
+LK92-008,Karawanella,Kegalle,Sabaragamuwa,Yatiyantota,7.023929,80.26292,osm_town,node/1805745147
+LK92-009,Kegalle,Kegalle,Sabaragamuwa,Kegalle,7.253201,80.345413,osm_city,node/49374844
+LK92-010,Kithulgala,Kegalle,Sabaragamuwa,Yatiyantota,6.997872,80.408493,osm_town,node/1150497671
+LK92-011,Kotiyakumbura,Kegalle,Sabaragamuwa,Galigamuwa,7.123942,80.287357,osm_town,node/2015279495
+LK92-012,Mawanella,Kegalle,Sabaragamuwa,Mawanella,7.252343,80.445992,osm_town,node/51237600
+LK92-013,Rambukkana,Kegalle,Sabaragamuwa,Rambukkana,7.323927,80.395748,osm_town,node/634201943
+LK92-014,Ruwanwella,Kegalle,Sabaragamuwa,Ruwanwella,7.045864,80.253779,osm_town,node/1805745304
+LK92-015,Warakapola,Kegalle,Sabaragamuwa,Warakapola,7.224961,80.196539,osm_town,node/1733768118
+LK92-016,Yatiyantota,Kegalle,Sabaragamuwa,Yatiyantota,7.028955,80.295028,osm_town,node/1809578921

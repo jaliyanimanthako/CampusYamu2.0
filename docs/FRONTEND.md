@@ -158,7 +158,7 @@ All API contracts are defined in [docs/API.md](API.md) and [src/campusyamu/api/s
   - Collapsible optional section for `ol_subjects` (`Science`, `English`, `Mathematics`) using `ol_grades`. Omit empty entries from the request payload.
 - **Location (2-Step Picker):**
   - `admission_district` from `districts`.
-  - Home District (`districts`) → `ds_division` (`ds_divisions[homeDistrict]`).
+  - Home District (`districts`) → `home_town` (`towns[homeDistrict]`); send both `home_district` and `home_town`.
 - **Interests & AI Toggle:**
   - Free-text `preferences` (max 2000 chars).
   - `use_llm` checkbox: **only render when `options.llm_available === true`**. Label clearly that AI mode takes 20–40s.
@@ -225,9 +225,9 @@ Build the frontend incrementally in five focused phases. Each phase should be ve
 - **Done when:** `Header.tsx` renders the `campusyamu2.0` wordmark and live `GET /v1/health` status badge.
 
 ### Phase 2 — Student Profile & Results Intake (`ProfileForm.tsx`)
-- Hydrate streams, A/L subjects, O/L subjects, districts, and DS divisions from `GET /v1/options` (cached per session).
+- Hydrate streams, A/L subjects, O/L subjects, districts, and home towns from `GET /v1/options` (cached per session).
 - Implement `stream_hints` auto-fill for A/L defaults and non-blocking soft warnings.
-- Enforce 3 distinct A/L subjects, required `cgt` (`0–100`), optional `z_score`, collapsible O/L grades, and the 2-step Home District → DS Division picker.
+- Enforce 3 distinct A/L subjects, required `cgt` (`0–100`), optional `z_score`, collapsible O/L grades, and the 2-step Home District → Home Town picker.
 - Gate the `use_llm` toggle on `options.llm_available === true`.
 - Wire `POST /v1/recommendations` with a single-worker duplicate-submit guard and elapsed-time loading indicator.
 - **Done when:** Submitting valid results returns and persists `report` in `sessionStorage`, and `400`/`422` errors display cleanly inline.

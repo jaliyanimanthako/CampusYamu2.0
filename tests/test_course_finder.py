@@ -34,7 +34,7 @@ class CourseFinderTests(unittest.TestCase):
         groups = result.by_group()
         self.assertEqual(len(groups["can_apply"]) + len(groups["with_conditions"]), 55)
         self.assertEqual(len(groups["not_eligible"]), 71)
-        self.assertEqual(result.origin["ds_division"], "Minuwangoda")
+        self.assertEqual(result.origin["town"], "Minuwangoda")
         architecture = self.course(result, "023").offerings[0]
         self.assertEqual((architecture.uni_code, architecture.status), ("023G", APTITUDE))
         engineering = self.course(result, "008")
@@ -76,7 +76,7 @@ class CourseFinderTests(unittest.TestCase):
         with self.assertRaises(ProfileError):
             StudentProfile.from_inputs(**{**STUDENT, "ol": ["Science:Z"]})
         typo = self.find(admission_district="Gampah", home="Minuwangda")
-        self.assertEqual((typo.profile["admission_district"], typo.origin["ds_division"]),
+        self.assertEqual((typo.profile["admission_district"], typo.origin["town"]),
                          ("Gampaha", "Minuwangoda"))
         with self.assertRaisesRegex(ProfileError, "Unknown admission district"):
             self.find(admission_district="Atlantis")
@@ -86,7 +86,7 @@ class CourseFinderTests(unittest.TestCase):
 
         result = self.find(admission_district="Colombo", home="Minuwangoda")
         self.assertEqual(result.profile["admission_district"], "Colombo")
-        self.assertEqual((result.origin["ds_division"], result.origin["district"]), ("Minuwangoda", "Gampaha"))
+        self.assertEqual((result.origin["town"], result.origin["district"]), ("Minuwangoda", "Gampaha"))
 
     def test_interactive_reasks_until_valid(self) -> None:
         answers = iter(["Physical Science", "Combined Maths A, Physics B",               # only two -> re-ask
@@ -97,7 +97,7 @@ class CourseFinderTests(unittest.TestCase):
         with redirect_stdout(io.StringIO()):
             profile = interactive_profile(self.finder, reader=lambda prompt: next(answers))
         self.assertEqual((profile.admission_district, profile.home, profile.z_score),
-                         ("Colombo", "Minuwangoda", 1.56))
+                         ("Colombo", "Minuwangoda (Gampaha)", 1.56))          # the resolved town, with its district
 
     def test_cli_json(self) -> None:
         out = io.StringIO()

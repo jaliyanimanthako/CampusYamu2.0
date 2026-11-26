@@ -67,8 +67,20 @@ def student_from_report(report: dict[str, Any]) -> dict[str, Any]:
     profile, origin = report.get("profile") or {}, report.get("origin") or {}
     return {"stream": profile.get("stream"), "al_results": profile.get("al_results"),
             "z_score": profile.get("z_score"), "admission_district": profile.get("admission_district"),
-            "home": f"{origin.get('ds_division')} ({origin.get('district')})",
+            "home": f"{origin.get('town') or origin.get('ds_division')} ({origin.get('district')})",
             "interests": (report.get("preferences") or {}).get("text", "")}
+
+
+def home_from_form(form: dict[str, Any]) -> str:
+    """The home town for the travel lookup, as 'Town (District)' when the district is known.
+
+    Forms saved before towns replaced DS divisions only have ``ds_division``; the
+    travel lookup maps a DS division name to its main town.
+    """
+
+    name = (form.get("home_town") or "").strip() or (form.get("ds_division") or "").strip()
+    district = (form.get("home_district") or "").strip()
+    return f"{name} ({district})" if name and district else name
 
 
 class AdvisorService:
@@ -99,9 +111,9 @@ class AdvisorService:
         streams = [a["name"] for _, a in graph.nodes(data=True) if a["type"] == "Stream"]
         subjects = sorted({s for _, a in graph.nodes(data=True) if a["type"] == "Subject"
                            and (s := canonical_subject(a["name"]))})
-        ds_by_district: dict[str, list[str]] = {}
-        for origin in self.finder.travel.ds_divisions():
-            ds_by_district.setdefault(origin.district, []).append(origin.ds_division)
+        towns_by_district: dict[str, list[str]] = {}
+        for origin in self.finder.travel.towns():
+            towns_by_district.setdefault(origin.district, []).append(origin.town)
         return {
             "streams": streams,
             "stream_hints": self._stream_hints(streams),
@@ -109,8 +121,8 @@ class AdvisorService:
             "al_grades": list(AL_GRADES),
             "ol_subjects": OL_FORM_SUBJECTS,
             "ol_grades": list(OL_GRADES),
-            "districts": sorted(ds_by_district),
-            "ds_divisions": {d: sorted(v) for d, v in sorted(ds_by_district.items())},
+            "districts": sorted(towns_by_district),
+            "towns": {d: sorted(v) for d, v in sorted(towns_by_district.items())},
             "llm_available": llm.available(),                         # llm.provider key: chat, feedback
             "llm_provider": llm.provider(),                           # openai | gemini | openrouter | groq
             "preference_engine": preference_engine(),                # AI that reads the interests
@@ -258,7 +270,7 @@ class AdvisorService:
                 "al": al,
                 "cgt": int(form.get("cgt") or 0),
                 "admission_district": form.get("admission_district"),
-                "home": form.get("ds_division"),
+                "home": home_from_form(form),
                 "ol": ol,
                 "z_score": float(z) if z not in (None, "") else None,
                 "preferences": (form.get("preferences") or "").strip(),
@@ -266,7 +278,7 @@ class AdvisorService:
         except (TypeError, ValueError, KeyError) as exc:
             return 400, {"errors": [f"Invalid form value: {exc}"]}
         missing = [label for key, label in (("stream", "stream"), ("admission_district", "admission district"),
-                                            ("home", "home DS division")) if not inputs[key]]
+                                            ("home", "home town")) if not inputs[key]]
         if len(al) != 3:
             missing.append("three A/L subjects")
         if len({a.split(':')[0] for a in al}) != len(al):

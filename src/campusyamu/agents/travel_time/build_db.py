@@ -1,17 +1,20 @@
-"""Build ``data/processed/travel/travel_times.db`` from the DS-division x campus road matrix CSVs.
+"""Build ``data/processed/travel/travel_times.db`` from the town x campus road matrix CSVs.
 
     uv run python -m campusyamu.agents.travel_time.build_db
 
-Inputs (``data/``):
-    campuses.csv                 39 campus sites (A = handbook Annex (c) / course
-                                 locations, B = extra sites), coordinates + source
-    ds_campus_matrix_long.csv    one row per (DS division, campus): road km,
-                                 driving minutes, straight-line km, snap distances
-    ds_campus_distance_km.csv    the same matrix, wide (cross-check only)
-    ds_campus_duration_min.csv   the same matrix, wide (cross-check only)
+Inputs (``data/raw/travel``):
+    campuses.csv                     39 campus sites (A = handbook Annex (c) / course
+                                     locations, B = extra sites), coordinates + source
+    towns.csv                        489 home towns: every OSM city/town, plus the main
+                                     point of each rural DS division without one; with
+                                     the DS division each town lies in
+    towns_campus_matrix_long.csv     one row per (town, campus): road km, driving
+                                     minutes, straight-line km, snap distances
+    towns_campus_distance_km.csv     the same matrix, wide (cross-check only)
+    towns_campus_duration_min.csv    the same matrix, wide (cross-check only)
 
 The build fails instead of writing a partial database when a pair is missing,
-a value is blank, the wide and long files disagree, or a campus/origin in the
+a value is blank, the wide and long files disagree, or a campus/town in the
 matrix is unknown. Softer problems (unusual road/straight-line ratio,
 approximate coordinates, unconfirmed sites) are written to ``quality_flags``.
 
@@ -36,8 +39,9 @@ from campusyamu.core.paths import KNOWLEDGE_GRAPH, TRAVEL_DB, TRAVEL_DECISIONS, 
 DATA_DIR = TRAVEL_RAW_DIR                     # the road-matrix CSVs (data/raw/travel)
 DEFAULT_DB = TRAVEL_DB
 CAMPUSES_CSV = "campuses.csv"
-LONG_CSV = "ds_campus_matrix_long.csv"
-WIDE_CSVS = {"road_km": "ds_campus_distance_km.csv", "drive_min": "ds_campus_duration_min.csv"}
+TOWNS_CSV = "towns.csv"
+LONG_CSV = "towns_campus_matrix_long.csv"
+WIDE_CSVS = {"road_km": "towns_campus_distance_km.csv", "drive_min": "towns_campus_duration_min.csv"}
 RATIO_RANGE = (1.0, 3.0)          # road km / straight-line km outside this is flagged
 WIDE_TOLERANCE = 0.05
 
@@ -83,14 +87,19 @@ def is_candidate(campus_site: str) -> bool:
 SCHEMA = """
 CREATE TABLE metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 CREATE TABLE districts (district TEXT PRIMARY KEY, province TEXT NOT NULL);
-CREATE TABLE ds_divisions (
+CREATE TABLE towns (
     origin_id TEXT PRIMARY KEY,
-    ds_division TEXT NOT NULL UNIQUE,
+    town TEXT NOT NULL,                      -- not unique nationally (Hettipola, Karaitivu, Madampe)
     district TEXT NOT NULL REFERENCES districts(district),
     province TEXT NOT NULL,
-    point_source TEXT NOT NULL,
-    snap_m REAL
+    ds_division TEXT NOT NULL,               -- the DS division the town lies in
+    lat REAL NOT NULL,
+    lon REAL NOT NULL,
+    point_source TEXT NOT NULL,              -- osm_city | osm_town | manual | ds_point:<how>
+    snap_m REAL,
+    UNIQUE (town, district)
 );
+CREATE INDEX towns_by_ds ON towns(ds_division);
 CREATE TABLE campuses (
     campus_id TEXT PRIMARY KEY,
     site_no TEXT NOT NULL UNIQUE,
@@ -108,7 +117,7 @@ CREATE TABLE campuses (
     snap_m REAL
 );
 CREATE TABLE travel (
-    origin_id TEXT NOT NULL REFERENCES ds_divisions(origin_id),
+    origin_id TEXT NOT NULL REFERENCES towns(origin_id),
     campus_id TEXT NOT NULL REFERENCES campuses(campus_id),
     road_km REAL NOT NULL,
     drive_min REAL NOT NULL,
@@ -133,7 +142,7 @@ CREATE TABLE offering_sites (               -- where each KG offering (UGC uni-c
     note TEXT
 );
 CREATE VIEW travel_detail AS
-SELECT d.origin_id, d.ds_division, d.district AS origin_district, d.province,
+SELECT d.origin_id, d.town, d.district AS origin_district, d.province,
        c.campus_id, c.university, c.campus_site, c.district AS campus_district,
        c.status, c.approximate_location, c.institution_id, c.university_id,
        t.road_km, t.drive_min, t.straight_km,
@@ -141,7 +150,7 @@ SELECT d.origin_id, d.ds_division, d.district AS origin_district, d.province,
              + (SELECT value FROM settings WHERE key = 'bus_overhead_min')) AS bus_min_est,
        d.district = c.district AS same_district
 FROM travel t
-JOIN ds_divisions d USING (origin_id)
+JOIN towns d USING (origin_id)
 JOIN campuses c USING (campus_id);
 CREATE VIEW offering_travel AS
 SELECT t.*, s.uni_code, s.course_code, s.course_name, s.offering_id,
@@ -198,6 +207,7 @@ def load_decisions(data_dir: Path) -> dict:
 
 def load_inputs(data_dir: Path) -> dict:
     campuses = _read(data_dir / CAMPUSES_CSV)
+    town_rows = _read(data_dir / TOWNS_CSV)
     long_rows = _read(data_dir / LONG_CSV)
     decisions = load_decisions(data_dir)
     site_decisions = decisions.get("site_decisions", {})
@@ -244,6 +254,22 @@ def load_inputs(data_dir: Path) -> dict:
     if len(by_campus) != len(campus_rows):
         raise BuildError("campuses.csv: duplicate campus_id")
 
+    towns: dict[str, dict] = {}
+    for number, row in enumerate(town_rows, start=2):
+        where = f"{TOWNS_CSV} line {number}"
+        oid = row["origin_id"].strip()
+        if oid in towns:
+            raise BuildError(f"{where}: duplicate origin_id {oid}")
+        towns[oid] = {
+            "origin_id": oid, "town": row["city"].strip(), "district": row["district"].strip(),
+            "province": row["province"].strip(), "ds_division": row["ds_division"].strip(),
+            "lat": _float(row, "lat", where), "lon": _float(row, "lon", where),
+            "point_source": row["point_source"].strip(), "snap_m": None,
+        }
+    names = [(t["town"].casefold(), t["district"]) for t in towns.values()]
+    if len(set(names)) != len(names):
+        raise BuildError(f"{TOWNS_CSV}: the same town is listed twice in one district")
+
     origins: dict[str, dict] = {}
     travel: dict[tuple[str, str], dict] = {}
     for number, row in enumerate(long_rows, start=2):
@@ -255,14 +281,12 @@ def load_inputs(data_dir: Path) -> dict:
             continue
         if cid not in by_campus:
             raise BuildError(f"{where}: unknown campus {cid!r}")
-        origin = origins.setdefault(oid, {
-            "origin_id": oid, "ds_division": row["ds_division"].strip(),
-            "district": row["district"].strip(), "province": row["province"].strip(),
-            "point_source": row["origin_point_source"].strip(),
-            "snap_m": _float(row, "origin_snap_m", where),
-        })
-        if (origin["ds_division"], origin["district"]) != (row["ds_division"].strip(), row["district"].strip()):
-            raise BuildError(f"{where}: origin {oid} has inconsistent names")
+        if oid not in towns:
+            raise BuildError(f"{where}: town {oid!r} is not in {TOWNS_CSV}")
+        origin = origins.setdefault(oid, towns[oid])
+        origin["snap_m"] = _float(row, "origin_snap_m", where)
+        if (origin["town"], origin["district"]) != (row["city"].strip(), row["district"].strip()):
+            raise BuildError(f"{where}: town {oid} is named differently in {TOWNS_CSV}")
         if (oid, cid) in travel:
             raise BuildError(f"{where}: duplicate pair {oid} -> {cid}")
         record = {
@@ -281,9 +305,12 @@ def load_inputs(data_dir: Path) -> dict:
                               f"road {record['road_km']} km vs straight line {record['straight_km']} km "
                               f"(x{ratio:.2f})"))
 
+    unrouted = sorted(set(towns) - set(origins))
+    if unrouted:
+        raise BuildError(f"{len(unrouted)} towns in {TOWNS_CSV} have no travel rows, e.g. {unrouted[:3]}")
     missing = [(o, c) for o in origins for c in by_campus if (o, c) not in travel]
     if missing:
-        raise BuildError(f"{len(missing)} DS-division/campus pairs missing, e.g. {missing[:3]}")
+        raise BuildError(f"{len(missing)} town/campus pairs missing, e.g. {missing[:3]}")
 
     # the wide files must say exactly what the long file says
     for field, name in WIDE_CSVS.items():
@@ -292,7 +319,7 @@ def load_inputs(data_dir: Path) -> dict:
             continue
         for row in _read(path):
             for column, value in row.items():
-                if column in {"origin_id", "ds_division", "district"}:
+                if column in {"origin_id", "city", "district"}:
                     continue
                 cid = column.split("_", 1)[1] if "_" in column else column
                 if cid in excluded:
@@ -309,7 +336,7 @@ def load_inputs(data_dir: Path) -> dict:
         districts.setdefault(origin["district"], origin["province"])
     unknown = {c["district"] for c in campus_rows} - set(districts)
     if unknown:
-        raise BuildError(f"Campus districts not among DS-division districts: {sorted(unknown)}")
+        raise BuildError(f"Campus districts not among the towns' districts: {sorted(unknown)}")
     return {"campuses": campus_rows, "origins": list(origins.values()),
             "travel": list(travel.values()), "districts": districts, "flags": flags,
             "decisions": decisions, "excluded": sorted(excluded)}
@@ -353,8 +380,8 @@ def build(data_dir: Path = DATA_DIR, db_path: Path = DEFAULT_DB,
         connection.executescript(SCHEMA)
         connection.executemany("INSERT INTO districts VALUES (?, ?)", sorted(data["districts"].items()))
         connection.executemany(
-            "INSERT INTO ds_divisions VALUES (:origin_id, :ds_division, :district, :province, "
-            ":point_source, :snap_m)", data["origins"])
+            "INSERT INTO towns VALUES (:origin_id, :town, :district, :province, :ds_division, "
+            ":lat, :lon, :point_source, :snap_m)", data["origins"])
         connection.executemany(
             "INSERT INTO campuses VALUES (:campus_id, :site_no, :university, :campus_site, :district, "
             ":lat, :lon, :coord_source, :approximate_location, :handbook_listed, :status, "
@@ -376,7 +403,7 @@ def build(data_dir: Path = DATA_DIR, db_path: Path = DEFAULT_DB,
             "bus_estimate": bus.get("label", f"car time x {bus['factor']} + {bus['overhead_min']} min"),
             "excluded_sites": ", ".join(data["excluded"]),
         }
-        for name in [CAMPUSES_CSV, LONG_CSV, *WIDE_CSVS.values()]:
+        for name in [CAMPUSES_CSV, TOWNS_CSV, LONG_CSV, *WIDE_CSVS.values()]:
             if (data_dir / name).is_file():
                 meta[f"sha256:{name}"] = _sha256(data_dir / name)
         if decisions_path(data_dir).is_file():
@@ -388,13 +415,13 @@ def build(data_dir: Path = DATA_DIR, db_path: Path = DEFAULT_DB,
     tmp.replace(db_path)
     write_review(placements, db_path.parent / "offering_sites_review.csv")
     return {"offerings_placed": len(placements),
-            "offerings_to_review": sum(p.needs_review for p in placements),"districts": len(data["districts"]), "ds_divisions": len(data["origins"]),
+            "offerings_to_review": sum(p.needs_review for p in placements),"districts": len(data["districts"]), "towns": len(data["origins"]),
             "campuses": len(data["campuses"]), "pairs": len(data["travel"]),
             "quality_flags": len(data["flags"])}
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Build the DS-division x campus travel database.")
+    parser = argparse.ArgumentParser(description="Build the town x campus travel database.")
     parser.add_argument("--data-dir", type=Path, default=DATA_DIR)
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     parser.add_argument("--kg-graph", type=Path, default=KG_GRAPH)
