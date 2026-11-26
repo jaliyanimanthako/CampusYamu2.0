@@ -1,0 +1,11 @@
+Mode: built-in image_gen; transparent_background: true
+Reference: how-ask.png (style reference only)
+
+Use case: illustration-story
+Asset type: transparent character cutout for the CampusYamu university guidance landing page, to sit on the top-right rim of a real HTML chat card.
+Input image 1 is STYLE REFERENCE ONLY: match its student character design, warm brown Sri Lankan skin, navy blue swept hair, mustard yellow overshirt, white tee, royal blue trousers, white-and-yellow trainers, white/yellow headphones, expressive smile, clean faceted hand-painted editorial illustration with subtle grain and crisp soft-edged shapes.
+Primary request: one friendly university-age male student in that exact visual family, sitting casually on an INVISIBLE horizontal ledge, upright torso with a slight relaxed lean, looking down toward the left as though helping with the chat. One hand planted beside the hip at seat level and the other holding a small closed lavender handbook on his lap. Both knees and feet hang down toward the RIGHT of the hip so that legs can hang just outside a card's top-right corner. Keep the left side below seat level clear so it will not cover the chat header.
+Composition: full body, compact natural seated pose, three-quarter view facing left, entire head, hands and shoes visible, centered with modest clear padding. Seat contact at roughly 60 percent of image height, with most of the dangling legs to the right. Character only, no actual chair or ledge or box.
+Color palette: deep navy #19185d, royal blue #4f6bef, lavender #c7b5f4, mustard #f6ba48, warm brown skin and white.
+Backdrop: genuinely transparent alpha background.
+Avoid: any background rectangle, scenery, ground, chair, UI, chat box, letters, text, logos, watermark, extra characters, photorealism, 3D rendering, black contour outlines.

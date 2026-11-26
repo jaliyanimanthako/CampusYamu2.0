@@ -1,0 +1,13 @@
+Mode: built-in image_gen; transparent_background: true
+Reference: chat-companion.png (character and style reference)
+Placement: mirrored with CSS to face the FAQ cards on the right.
+
+Use case: illustration-story
+Asset type: transparent astronaut student cutout for the FAQ section of the CampusYamu university guidance website.
+Input image 1 is a CHARACTER AND STYLE REFERENCE: preserve the recognizable young Sri Lankan male student, warm brown skin, swept curly navy hair, friendly large eyes and smile, long-limbed editorial proportions, clean faceted painted shading, subtle grain, no outlines. Change his outfit and pose for the new astronaut theme.
+Primary request: the same student dressed in a playful astronaut suit, floating gently in zero gravity, three-quarter view toward the LEFT where the website's questions will be placed. Face clearly visible inside a generous round helmet with a transparent open-looking visor, navy hair visible. One gloved hand raised in a friendly relaxed wave toward the left, other hand near his chest controls. Both legs lightly bent in a relaxed floating pose, one a little higher than the other. Compact life-support backpack. Full character from helmet to boots, all hands and feet visible.
+Style/medium: polished flat editorial illustration matching the reference, cheerful university mascot, crisp faceted shapes with restrained soft shading and subtle fine grain. White spacesuit with lavender shadow panels, deep navy joints, royal-blue chest panel, small mustard-yellow trim on helmet ring, gloves and boots. Simple chest controls as small geometric blocks without letters.
+Color palette: white, lavender #C9B8F5, royal blue #4F6FE8, navy #14185C, mustard #F2B84B, natural warm brown skin.
+Composition: portrait cutout with a gentle diagonal silhouette, head toward upper left and boots toward lower right, centered with modest clear padding, designed to read well beside FAQ accordion cards at 280px wide.
+Backdrop: genuine transparent alpha.
+Constraints: one character only. No scenery, moon, planets, stars, decorative dots, tether, ground, text, labels, logos, flags, watermarks, UI, question marks or background panel. No photorealism, no 3D render, no black contour outlines.
