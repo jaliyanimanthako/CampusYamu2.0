@@ -258,7 +258,7 @@ returns the form they sent and the report, so you can fill the form and go strai
 | Common General Test mark | number 0–100 | **Required.** Below the pass mark, no course is eligible |
 | Z-score | number, e.g. `1.5623` | Optional. Without it, every course lands in `no_history` |
 | Admission district | `districts` | The district the student sat the exam from (sets the cut-offs) |
-| Home DS division | `ds_divisions[<district>]` | Two-step picker: district, then DS division. Used for travel time |
+| Home town | `towns[<district>]` | Two-step picker: home district, then home town. Used for travel time |
 | Interests | free text | e.g. "engineering, design". Optional |
 | Use AI for interests | checkbox | Show it only if `llm_available` is `true`. Makes the request slower |
 
@@ -363,7 +363,7 @@ The values for the results form.
   "ol_subjects": ["Science", "English", "Mathematics"],
   "ol_grades": ["A", "B", "C", "S", "W"],
   "districts": ["Ampara", "Anuradhapura", "...", "Vavuniya"],
-  "ds_divisions": {"Kandy": ["Akurana", "Deltota", "Doluwa", "...", "Gangawata Korale", "..."], "...": []},
+  "towns": {"Gampaha": ["Dekatana", "Delgoda", "...", "Kotugoda", "Udugampola", "..."], "...": []},
   "llm_available": true
 }
 ```
@@ -379,7 +379,7 @@ The values for the results form.
 | `al_grades` / `ol_grades` | Allowed grades |
 | `ol_subjects` | The O/L subjects the form asks about |
 | `districts` | 25 districts (for both admission district and home district) |
-| `ds_divisions` | District → its DS divisions (339 in total) |
+| `towns` | District → its home towns (489 in total). A few names are in two districts (Hettipola, Karaitivu, Madampe), so always send `home_district` too |
 | `llm_available` | Same as in `/v1/health` |
 
 Stream hints are for **form help only**: pre-filling, and a soft "this doesn't look like a
@@ -409,7 +409,8 @@ Runs the full analysis for one student.
   "cgt": 40,
   "z_score": 1.56,
   "admission_district": "Kandy",
-  "ds_division": "Gangawata Korale",
+  "home_district": "Kandy",
+  "home_town": "Katugastota",
   "preferences": "engineering, design",
   "use_llm": false,
   "suggestions": 20
@@ -424,7 +425,9 @@ Runs the full analysis for one student.
 | `cgt` | integer 0–100 | yes | Common General Test mark |
 | `z_score` | number or `null` | no | e.g. `1.5623`. `null` means no Z-score analysis |
 | `admission_district` | string | yes | one of `districts` |
-| `ds_division` | string | yes | one of `ds_divisions[<home district>]` |
+| `home_district` | string | recommended | one of `districts`: the district of the home town |
+| `home_town` | string | yes | one of `towns[<home_district>]`; travel times are measured from it |
+| `ds_division` | string | no (deprecated) | forms saved before home towns: a DS division, mapped to its main town. Send `home_town` instead |
 | `preferences` | string | no | free text, max 2000 characters |
 | `use_llm` | bool | no (default `false`) | use AI to read `preferences`. Ignored if `llm_available` is false |
 | `suggestions` | integer 5–50 | no (default `20`) | entries in each ranked list |
@@ -443,7 +446,7 @@ has no language-model key.
 | Key | What it holds |
 |---|---|
 | `profile` | The student's inputs as the server understood them: `stream`, `al_results`, `common_general_test`, `admission_district`, `home`, `ol_results`, `z_score` |
-| `origin` | Home location: `ds_division`, `district`, `province`, `origin_id` |
+| `origin` | Home location: `town`, `district`, `province`, `origin_id`. Reports saved before home towns have `ds_division` instead of `town` |
 | `counts` | Totals: `can_apply`, `with_conditions`, `not_eligible`, `band_strong`, `band_competitive`, ... |
 | `bands` | **The main result**: eligible courses by chance of admission (see below) |
 | `rankings` | Three ranked suggestion lists: `zscore`, `preference`, `distance` (see below) |
@@ -571,7 +574,7 @@ Answers one question about one course. Needs `llm_available: true`.
 | `question` | yes | The student's message, 1–1000 characters |
 | `course` | one of the two | The course row from `report.bands`. Must include `course_code`. Send the whole row: every field is used as context |
 | `uni_code` | one of the two | Signed in only: the course's UNI code from the student's saved search (6.12). The server fills in `course` and, when `student` is missing, `student` |
-| `student` | no | `stream`, `al_results`, `z_score`, `admission_district` from `report.profile`; `home` as `"<origin.ds_division> (<origin.district>)"`; `interests` from `report.preferences.text` |
+| `student` | no | `stream`, `al_results`, `z_score`, `admission_district` from `report.profile`; `home` as `"<origin.town> (<origin.district>)"`; `interests` from `report.preferences.text` |
 | `history` | no | Earlier turns of **this course's** chat, oldest first, `role` = `user` or `assistant`. Leave out failed or error messages. At most 40 turns of up to 4,000 characters each (otherwise 422); the server uses the last 8 |
 
 **Response `200`**
@@ -722,7 +725,7 @@ it). Use it at app start to fill the form and show the results again, on any dev
 
 ```json
 {"form": {"stream": "Physical Science", "al": [...], "cgt": 40, "z_score": 1.56, "admission_district": "Kandy",
-          "ds_division": "Gangawata Korale", "ol": [...], "preferences": "engineering, design",
+          "home_district": "Kandy", "home_town": "Katugastota", "ol": [...], "preferences": "engineering, design",
           "use_llm": false, "suggestions": 20},
  "report": {"profile": {...}, "origin": {...}, "bands": {...}, "rankings": {...}, "...": "..."},
  "used_llm": false, "saved_at": "2026-11-14T06:20:00+00:00"}
@@ -798,7 +801,7 @@ const { report } = await api<any>("/v1/recommendations", {
     al: [{ subject: "Combined Mathematics", grade: "A" }, { subject: "Physics", grade: "B" },
          { subject: "Chemistry", grade: "C" }],
     ol: [{ subject: "Science", grade: "B" }, { subject: "English", grade: "B" }, { subject: "Mathematics", grade: "A" }],
-    cgt: 40, z_score: 1.56, admission_district: "Kandy", ds_division: "Gangawata Korale",
+    cgt: 40, z_score: 1.56, admission_district: "Kandy", home_district: "Kandy", home_town: "Katugastota",
     preferences: "engineering, design", use_llm: false,
   }),
 });
@@ -808,7 +811,7 @@ const course = report.bands.strong[0];
 const student = {
   stream: report.profile.stream, al_results: report.profile.al_results, z_score: report.profile.z_score,
   admission_district: report.profile.admission_district,
-  home: `${report.origin.ds_division} (${report.origin.district})`, interests: report.preferences?.text ?? "",
+  home: `${report.origin.town} (${report.origin.district})`, interests: report.preferences?.text ?? "",
 };
 const history: { role: "user" | "assistant"; content: string }[] = [];   // one per course, kept by the app
 
@@ -906,7 +909,7 @@ curl $BASE/v1/options
 curl -X POST $BASE/v1/recommendations -H 'Content-Type: application/json' -d '{
   "stream":"Physical Science",
   "al":[{"subject":"Combined Mathematics","grade":"A"},{"subject":"Physics","grade":"B"},{"subject":"Chemistry","grade":"C"}],
-  "cgt":40,"z_score":1.56,"admission_district":"Kandy","ds_division":"Gangawata Korale"}'
+  "cgt":40,"z_score":1.56,"admission_district":"Kandy","home_district":"Kandy","home_town":"Katugastota"}'
 curl "$BASE/v1/career-outlook?course=Law"
 # with sign-in on: add  -H "Authorization: Bearer $TOKEN"  (a signed-in student's Supabase access token)
 ```

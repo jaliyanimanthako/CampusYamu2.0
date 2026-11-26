@@ -148,7 +148,9 @@ export interface ReportProfile {
 }
 
 export interface ReportOrigin {
-  ds_division: string;
+  town?: string;
+  /** Reports saved before home towns replaced DS divisions. */
+  ds_division?: string;
   district: string;
   province?: string;
   origin_id?: string;

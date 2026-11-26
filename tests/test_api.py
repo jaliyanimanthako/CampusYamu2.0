@@ -14,7 +14,8 @@ from campusyamu.api.auth import SupabaseAuth
 FORM = {"stream": "Physical Science",
         "al": [{"subject": "Combined Mathematics", "grade": "A"}, {"subject": "Physics", "grade": "B"},
                {"subject": "Chemistry", "grade": "C"}],
-        "cgt": 40, "z_score": 1.56, "admission_district": "Kandy", "ds_division": "Gangawata Korale",
+        "cgt": 40, "z_score": 1.56, "admission_district": "Kandy",
+        "home_district": "Kandy", "home_town": "Katugastota",
         "ol": [{"subject": "Science", "grade": "B"}, {"subject": "English", "grade": "B"},
                {"subject": "Mathematics", "grade": ""}],
         "preferences": "engineering, design", "use_llm": False, "suggestions": 8}
@@ -57,7 +58,7 @@ class RealServiceTests(unittest.TestCase):
     def test_options(self) -> None:
         o = self.client.get("/v1/options").json()
         self.assertEqual(len(o["districts"]), 25)
-        self.assertIn("Gangawata Korale", o["ds_divisions"]["Kandy"])
+        self.assertIn("Katugastota", o["towns"]["Kandy"])
         self.assertIn("Physical Science", o["streams"])
 
     def test_courses(self) -> None:
@@ -134,7 +135,7 @@ class RealServiceTests(unittest.TestCase):
 class FakeWeb:
     def __init__(self) -> None:
         self.options = {"streams": [], "stream_hints": {}, "al_subjects": [], "al_grades": [], "ol_subjects": [],
-                        "ol_grades": [], "districts": [], "ds_divisions": {}, "llm_available": True}
+                        "ol_grades": [], "districts": [], "towns": {}, "llm_available": True}
         self.course_names = {"Law"}
         self.threads: set[int] = set()
         self.closed = False

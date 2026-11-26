@@ -26,12 +26,15 @@ handbook block, chat with citations and career-research progress) → account (d
   the advice card, banners, the phone tab bar) is a separate token from navy as text (`--ink`), so
   both work in either mode. It follows the device until the student picks Light or Dark with the
   sun/moon button in the top bar or under Appearance on the account page (saved as `cy.theme`;
-  `index.html` applies it before the first paint). Illustrations switch to their royal-blue
+  `index.html` applies it before the first paint). Illustrations switch to their royal-blue (where one exists)
   `<name>.dark.webp` copies (see `public/figures/README.md`). On phones the top bars show the logo mark only, so all the buttons fit.
 - `public/app.js`: the screens; every call uses the real `/v1` request and response shapes.
 - Landing page (`views.home` in `app.js`, `#/home`): hero, a "how it works" panel that stays
-  pinned while you scroll and brings the four steps up one at a time (figure and progress bar change with them), big-number tiles, widening course-area cards, a chat preview,
-  FAQ and a closing banner. Layout ideas from choreolabs.com, in the app's own style. The numbers
+  pinned while you scroll and brings the four steps up one at a time (each with a student figure and a small
+  preview card of that part of the app: the form, the checks, course chances, a chat answer), one "Every field, every university, in one place." panel: a ring of nine course-area picture tiles (clicking one turns the ring and shows it large in the centre; it steps on its own until clicked; on narrow screens the card sits above a 3×3 grid) and, beside it, that field's own numbers (courses, universities, course offerings, student places in 2024/25; `AREA_STATS`, counted from `graph_data.json` with every course sorted into one field), with the handbook totals in a strip along the bottom, a chat preview,
+  FAQ and a closing banner. The chat preview uses a compact card with a matching student sitting
+  on its top-right rim (`chat-companion.png`, transparent in both themes); reserved space keeps
+  the figure clear of the text on phones and desktops. Layout ideas from choreolabs.com, in the app's own style. The numbers
   are real counts from `data/processed/knowledge_graph/graph_data.json` (`LANDING_STATS`).
   Signed-out visitors land here; signed-in students go straight to their courses.
 - `public/i18n.js`: all interface text in Sinhala, Tamil and English (`t(key)`). The choice is

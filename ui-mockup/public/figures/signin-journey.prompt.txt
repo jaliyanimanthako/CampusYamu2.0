@@ -1,0 +1,22 @@
+Mode: built-in image_gen; transparent_background: true
+References: user's student-to-graduate path image for narrative and composition; chat-companion.png for the human student identity and brand style.
+Placement: portrait composition centered in the left login panel at 70% of panel height.
+
+Use case: illustration-story
+Asset type: portrait illustration for the LEFT login panel of CampusYamu university guidance.
+REFERENCE ROLES:
+Image 1, the user-supplied monochrome student-to-graduate path illustration, is the CONCEPT, STORY AND COMPOSITION reference. Preserve its visual metaphor: a student considering their results, one flowing path passing through three guidance/filter hoops, then the same person walking confidently as a graduate with diploma.
+Image 2, the colorful brown-skinned student with yellow jacket, is the HUMAN CHARACTER AND BRAND STYLE reference. Both figures must be that recognizable young Sri Lankan human with warm brown skin, swept chunky navy hair, expressive friendly face and natural long limbs.
+ADAPT THE SCENE TO A TALL PORTRAIT PANEL, not a wide horizontal banner:
+At LOWER LEFT, the student stands with a navy/lavender backpack, mustard overshirt, white tee, royal-blue trousers, white-and-mustard trainers. He holds a simple results sheet in one hand while lightly touching his chin with the other, curious thoughtful expression looking along the path upward to the right. Sheet contains only small abstract blocks and a tiny blue dial, NO writing or letters.
+ONE broad flowing lavender ribbon pathway begins underneath this student and rises in an elegant diagonal S-curve through the center toward UPPER RIGHT. It passes through THREE slender vertical elliptical hoops, like a series of gates in perspective, navy/blue with lavender edges. The hoops are part of the route, not floating decoration; the path is visibly continuous through them. Give this central section enough room to read clearly without covering faces or limbs. A small fork in the center may suggest choice, with one selected lavender branch continuing forward; keep the main route unmistakable and avoid a maze.
+At UPPER RIGHT, the SAME human student now wears a navy graduation gown with a lavender facing and a navy mortarboard with a mustard tassel, blue trousers and the same trainers. He walks to the RIGHT along the end of the path with an open confident stride, carrying a rolled white diploma tied with mustard ribbon, smiling toward his future. Full body, both feet, cap and diploma visible.
+The two figures are large and expressive, not tiny infographic icons. This is a warm university journey illustration with clear start and destination.
+STYLE:
+Match the colorful brand reference: polished editorial painted illustration with clean organic shapes, restrained broad faceted flat shadows, subtle fine grain and no thick black outlines. Palette: navy #14185C, royal blue #4F6FE8, lavender #C9B8F5, mustard #F2B84B, white, brown skin. Graduate's robe stays navy, student jacket stays mustard. Path is pale lavender with a slightly darker lavender underside giving a gentle sense of depth. No 3D rendering or photorealism.
+COMPOSITION:
+Portrait about 2:3. Lower-left student, flowing middle route, upper-right graduate create an ascending diagonal journey. Entire figures, pathway and three gates fully within the canvas with 6% clear padding. Balanced readable silhouette, no crowding, designed to fill about two-thirds of the height of a tall left-side login panel. No typography, captions or UI.
+BACKGROUND:
+Fully transparent alpha outside the exact silhouettes of figures, path and gates. Clean edges. NO background rectangle, glows, blurred shadows, halos, fog or vignette.
+AVOID:
+Monochrome style, black contour lines, beards, glasses copied from the pose reference, extra people, extra arms, opaque scene background, stars, sparkles, arbitrary floating symbols, text, numbers, logos, watermarks, footer navigation, buttons. Exactly two stages of the SAME human character, one continuous path, three gates.

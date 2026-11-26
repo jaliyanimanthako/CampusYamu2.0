@@ -40,7 +40,14 @@ const themeBtn = () => {
   return `<button class="icon-btn theme-btn" type="button" aria-label="${label}" title="${label}">${isDark() ? I.sun : I.moon}</button>`;
 };
 document.addEventListener("click", (e) => {
-  if (e.target.closest(".theme-btn")) { setTheme(isDark() ? "light" : "dark"); return; }
+  const tb = e.target.closest(".theme-btn");
+  if (tb) {
+    setTheme(isDark() ? "light" : "dark");
+    // a mouse or touch click (detail > 0) lets go of focus, so a later key press (a screenshot shortcut, say)
+    // does not draw the keyboard focus ring round the button; Enter/Space (detail 0) keeps focus for keyboard users
+    if (e.detail > 0) tb.blur();
+    return;
+  }
   const opt = e.target.closest("[data-theme-opt]");
   if (opt) setTheme(opt.dataset.themeOpt);
 });
@@ -64,7 +71,7 @@ const state = {
     z_score: "1.5600",
     admission_district: "Gampaha",
     home_district: "Gampaha",
-    ds_division: "Minuwangoda",
+    home_town: "Minuwangoda",
     preferences: "engineering, design",
     use_llm: false,
   },
@@ -120,6 +127,9 @@ const I = {
   sun: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>',
   moon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>',
   globe: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>',
+  campus: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 9-5 9 5H3ZM5 9v10M10 9v10M14 9v10M19 9v10M3 21h18"/></svg>',
+  pin: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+  history: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6M12 7v5l3 2"/></svg>',
 };
 
 // the logo: a Y that is a fork in the road, with the AI sparkle on the branch to take
@@ -159,8 +169,8 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape") $$(".lang-
 // required slots show a labelled placeholder; missing optional ones (course cards) render nothing.
 // A <name>.dark.webp next to a figure replaces it in dark mode (CSS picks which one shows).
 let FIGS = {};
-const fig = (name, label, { optional = false } = {}) => {
-  const file = FIGS[name], dark = FIGS[name + ".dark"]; // <name>.dark.webp shows in dark mode
+const fig = (name, label, { optional = false, darkVariant = true } = {}) => {
+  const file = FIGS[name], dark = darkVariant && FIGS[name + ".dark"]; // <name>.dark.webp shows in dark mode
   if (!file && optional) return "";
   return file
     ? dark
@@ -275,13 +285,75 @@ views.lang = async () => {
 
 // ----- landing page: what CampusYamu is, before sign-in. Sign in is a button, not a wall.
 // Numbers are real counts from the knowledge graph (data/processed/knowledge_graph/graph_data.json).
-const LANDING_STATS = [126, 261, 20, 25, 6, 3];
-const AREA_IDS = ["engineering", "medicine", "it", "management", "arts", "science"];
-const STEP_FIGS = ["signin", "analysing", "area-engineering", "empty-chats"];
+const LANDING_STATS = [126, 261, 20, 25, 6];
+// The same counts for each course area on the ring: courses, universities offering them, course offerings,
+// and student places (proposed intake) in 2024/25. Each of the 126 courses is in exactly one area (by course
+// code, hand-sorted); the areas add up to the totals above (126 courses, 261 offerings, 42,337 places).
+const AREA_STATS = {
+  engineering: [7, 12, 20, 4021], architecture: [8, 4, 8, 812], medicine: [22, 14, 50, 5187],
+  it: [17, 14, 36, 3876], management: [17, 16, 33, 8076], agriculture: [18, 12, 34, 4250],
+  arts: [25, 17, 46, 9925], law: [1, 3, 3, 495], science: [11, 14, 31, 5695],
+};
+// the four field tiles: [stats label index or own key, clip art]
+const FIELD_TILES = [[0, "offer", ""], [2, "uni", "navy"], [1, "dist", "blue"], ["l.places", "years", ""]];
+// Each small number tile has a flat clip-art drawing of what it counts. Colours come from CSS
+// variables (.l-art in styles.css), so the drawings follow the tile colour and dark mode.
+const STAT_KINDS = ["offer", "uni", "dist", "years"];
+const STAT_ART = {
+  // course list on a clipboard
+  offer: `<g transform="rotate(-6 60 62)"><rect class="p" x="22" y="16" width="76" height="96" rx="11"/><rect class="w" x="30" y="26" width="60" height="78" rx="6"/>
+    <rect class="n" x="44" y="9" width="32" height="15" rx="6"/>
+    <circle class="b" cx="41" cy="42" r="5"/><rect class="l" x="51" y="39" width="31" height="6" rx="3"/>
+    <circle class="m" cx="41" cy="62" r="5"/><rect class="l" x="51" y="59" width="24" height="6" rx="3"/>
+    <circle class="b" cx="41" cy="82" r="5"/><rect class="l" x="51" y="79" width="28" height="6" rx="3"/></g>`,
+  // university building with a flag
+  uni: `<rect class="n" x="59" y="4" width="2.5" height="20" rx="1"/><path class="m" d="M61.5 5h15l-4 4.5 4 4.5h-15z"/>
+    <path class="l" d="M60 22 103 45H17z"/><circle class="m" cx="60" cy="36" r="4.5"/>
+    <rect class="l" x="19" y="46" width="82" height="7" rx="2"/>
+    <rect class="w" x="26" y="56" width="11" height="36" rx="2"/><rect class="w" x="45" y="56" width="11" height="36" rx="2"/><rect class="w" x="64" y="56" width="11" height="36" rx="2"/><rect class="w" x="83" y="56" width="11" height="36" rx="2"/>
+    <rect class="l" x="15" y="93" width="90" height="8" rx="2"/><rect class="p" x="9" y="102" width="102" height="9" rx="3"/>`,
+  // folded map with a route and a pin
+  dist: `<path class="l" d="M12 38 42 28v76l-30 10z"/><path class="p" d="M42 28l36 10v76l-36-10z"/><path class="l" d="M78 38l30-10v76l-30 10z"/>
+    <path class="s" d="M22 98c12-10 22-4 30-14s14-8 20-6" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 7"/>
+    <path class="m" d="M74 14c-11 0-19 8-19 18.5C55 46 74 64 74 64s19-18 19-31.5C93 22 85 14 74 14z"/><circle class="w" cx="74" cy="32" r="7"/>`,
+  // calendar page with one day ringed
+  years: `<rect class="w" x="14" y="22" width="92" height="86" rx="11"/><path class="n" d="M14 33a11 11 0 0 1 11-11h70a11 11 0 0 1 11 11v12H14z"/>
+    <rect class="l" x="34" y="13" width="7" height="18" rx="3.5"/><rect class="l" x="79" y="13" width="7" height="18" rx="3.5"/>
+    ${[0, 1, 2].map((r) => [0, 1, 2, 3].map((c) => `<rect class="${r === 2 && c === 2 ? "m" : "l"}" x="${26 + c * 19}" y="${54 + r * 16}" width="11" height="10" rx="3"/>`).join("")).join("")}`,
+};
+const statArt = (kind) => `<svg class="l-art art-${kind}" viewBox="0 0 120 120" aria-hidden="true" focusable="false">${STAT_ART[kind]}</svg>`;
+const AREA_IDS = ["engineering", "architecture", "medicine", "it", "management", "agriculture", "arts", "law", "science"];
+const AREA_FIGURES = { it: "area-it-hd", arts: "hero-drama", law: "area-law" };
+// Course areas on the landing page sit on a ring; the chosen one shows large in the centre (setupAreaRing).
+const ringFig = (id) => fig(AREA_FIGURES[id] || "area-" + id, id);
+// High-resolution artwork for each step. The chat preview stacks above its reclining student.
+const STEP_FIGS = ["how-results", "how-checks", "area-engineering", "how-ask"];
+function stepPreview(i) {
+  if (i === 0) return `<div class="l-pv">
+    <div class="pv-row"><span class="pv-k">${t("stream")}</span><span class="chip blue" lang="en">Physical Science</span></div>
+    ${[["Combined Mathematics", "A"], ["Physics", "B"], ["Chemistry", "C"]].map(([s, g]) => `<div class="pv-row pv-sub"><span lang="en">${s}</span><span class="pv-grade">${g}</span></div>`).join("")}
+    <div class="pv-row pv-z"><span class="pv-k">${t("z")}</span><b class="num">1.5600</b></div></div>`;
+  if (i === 1) return `<div class="l-pv">
+    <div class="pv-row"><span class="pill live"><span class="dot"></span>${t("analysing")}</span><b class="num pv-big">126</b></div>
+    ${t("agents").slice(0, 4).map((a, j) => `<div class="pv-check ${j < 3 ? "done" : ""}"><span class="pv-tick">${j < 3 ? I.check : ""}</span><b>${a.k}</b><span class="faint">${a.d}</span></div>`).join("")}</div>`;
+  if (i === 2) return `<div class="l-pv">
+    ${[["Engineering", "University of Moratuwa", "strong", 86], ["Computer Science", "University of Colombo", "competitive", 58], ["Architecture", "University of Moratuwa", "reach", 32]].map(([c, u, b, w]) => `
+      <div class="pv-course band-${b}"><div class="pv-row"><span class="pv-name"><b lang="en">${c}</b><span class="faint" lang="en">${u}</span></span><span class="chip">${bandLabel(b)}</span></div>
+        <div class="pv-bar"><i style="width:${w}%"></i></div></div>`).join("")}</div>`;
+  return `<div class="l-pv pv-chat">
+    <div class="msg user">${t("l.demoQ")}</div>
+    <div class="msg bot"><div class="text" lang="en">Yes. Architecture needs a practical aptitude test before selection <span class="cite">S1</span>.</div></div></div>`;
+}
+// landing hero: six students from different fields and activities; x = where the student stands in the image
+const HERO_FIGS = [
+  ["area-engineering", "42%"], ["area-medicine", "46%"],
+  ["hero-sports", "50%"], ["hero-drama", "52%"],
+  ["area-it-hd", "50%"], ["area-management", "50%"],
+];
 views.home = async () => {
   const [hA, hB] = [t("l.h1a"), t("l.h1b")];
   const pair = (k) => headline(...t(k));
-  const steps = t("l.steps"), areas = t("l.areas"), stats = t("l.stats");
+  const steps = t("l.steps"), stepDetails = t("l.stepDetails"), areas = t("l.areas"), stats = t("l.stats");
   app.innerHTML = `
   <div class="landing view-enter">
     <div class="wrap">
@@ -307,45 +379,56 @@ views.home = async () => {
           <ul class="l-trust reveal" style="--i:4">${t("l.trust").map((x) => `<li>${I.check}${x}</li>`).join("")}</ul>
         </div>
         <div class="l-hero-art reveal" style="--i:2">
-          ${fig("signin", "Sign-in figure")}
-          <span class="float f1"><span class="chip blue">${t("chance", { band: bandLabel("strong") })}</span></span>
-          <span class="float f2"><b class="num">Z 1.5600</b></span>
-          <span class="float f3">${I.spark}<span>${t("min", { n: 19 })}</span></span>
+          <div class="l-mosaic">${HERO_FIGS.map(([f, x]) => `<div class="l-mosaic-cell" style="--x:${x}">${fig(f, f)}</div>`).join("")}</div>
         </div>
       </section>
     </div>
 
-    <section class="l-how" id="l-how" style="--n:${steps.length}"><div class="l-how-pin"><div class="wrap">
+    <section class="l-how" id="l-how" style="--n:${steps.length}">${steps.map((_, k) => `<i class="l-how-snap" style="--k:${k}" aria-hidden="true"></i>`).join("")}<div class="l-how-pin"><div class="wrap">
       <span class="label">${t("l.nav.how")}</span>
       <h2>${pair("l.howH")}</h2>
       <div class="l-how-grid">
         <div class="l-how-visual"><div class="card l-stage">
-          <div class="l-stage-figs">${STEP_FIGS.map((f, i) => `<div class="l-stage-fig ${i === 0 ? "on" : ""}">${fig(f, f)}</div>`).join("")}</div>
+          <div class="l-stage-figs">${STEP_FIGS.map((f, i) => `<div class="l-stage-fig l-stage-separated ${i === 0 ? "l-stage-results on" : ""}" data-step="${i}">${fig(f, f, { darkVariant: false })}${stepPreview(i)}</div>`).join("")}</div>
           <div class="l-progress">${steps.map((_, i) => `<i class="${i === 0 ? "on" : ""}"><b></b></i>`).join("")}</div>
         </div></div>
-        <div class="l-steps">${steps.map(([k, d], i) => `
+        <div class="l-how-copy"><div class="l-steps">${steps.map(([k, d], i) => `
           <article class="l-step ${i === 0 ? "on" : ""}" data-i="${i}" ${i === 0 ? "" : 'aria-hidden="true"'}>
             <span class="l-step-n"><span class="rule"></span>${t("step", { n: pad2(i + 1) })}</span>
             <h3>${k}</h3><p>${d}</p>
+            <div class="l-step-detail"><b>${stepDetails[i][0]}</b><ul>${stepDetails[i][1].map((item) => `<li>${I.check}<span>${item}</span></li>`).join("")}</ul></div>
           </article>`).join("")}</div>
+          <div class="l-how-action"><a class="btn" href="#/signin">${t("l.start")}</a></div>
+        </div>
       </div>
     </div></div></section>
 
-    <section class="l-stats"><div class="wrap">
-      <h2 class="reveal">${pair("l.statsH")}</h2>
-      <div class="l-bento">${LANDING_STATS.map((n, i) => `
-        <div class="card l-tile t${i} reveal" style="--i:${i}"><span class="dash"></span>
-          <b class="num" data-to="${n}">0</b><span>${stats[i]}</span>${i === 5 ? `<span class="l-langs">${LANGS.map((l) => `<span lang="${l.id}">${l.name}</span>`).join("")}</span>` : ""}</div>`).join("")}</div>
-    </div></section>
-
-    <section class="l-areas" id="l-areas"><div class="wrap">
-      <span class="label reveal">${t("l.nav.areas")}</span>
-      <h2 class="reveal" style="--i:1">${pair("l.areasH")}</h2>
-      <div class="l-area-row reveal" style="--i:2">${AREA_IDS.map((id, i) => `
-        <button type="button" class="l-area ${i === 0 ? "on" : ""}" data-area="${id}">
-          ${fig("area-" + id, id)}
-          <span class="l-area-text"><b>${areas[id][0]}</b><span>${areas[id][1]}</span></span>
-        </button>`).join("")}</div>
+    <section class="l-areas" id="l-areas" aria-labelledby="course-areas-heading"><div class="wrap">
+      <div class="l-explore reveal">
+        <div class="l-explore-head">
+          <span class="label">${t("l.nav.areas")}</span>
+          <h2 id="course-areas-heading">${pair("l.exploreH")}</h2>
+        </div>
+        <div class="l-explore-ring">
+          <div class="l-ring-wrap">
+            <div class="l-ring" role="group" aria-label="${t("l.nav.areas")}">${AREA_IDS.map((id, i) => `
+              <button type="button" class="l-ring-tile${i ? "" : " on"}" style="--a:${i * (360 / AREA_IDS.length)}deg" data-i="${i}" aria-pressed="${!i}" aria-label="${areas[id][0]}" title="${areas[id][0]}">${ringFig(id)}</button>`).join("")}
+            </div>
+            <article class="l-ring-card" aria-live="polite">
+              <div class="l-ring-fig">${AREA_IDS.map((id, i) => `<div class="l-ring-slide${i ? "" : " on"}">${ringFig(id)}</div>`).join("")}</div>
+              <div class="l-ring-text"><h3>${areas[AREA_IDS[0]][0]}</h3><p>${areas[AREA_IDS[0]][1]}</p></div>
+            </article>
+          </div>
+        </div>
+        <div class="l-explore-stats">
+          <span class="label">${t("l.inHandbook")}</span>
+          <h3 class="l-field-name">${areas[AREA_IDS[0]][0]}</h3>
+          <ul class="l-field-grid">${FIELD_TILES.map(([lab, art, tone], k) => `
+            <li class="l-field${tone ? " t-" + tone : ""}"><b class="num" data-k="${k}">${AREA_STATS[AREA_IDS[0]][k].toLocaleString("en")}</b><span>${typeof lab === "number" ? stats[lab] : t(lab)}</span>${statArt(art)}</li>`).join("")}
+          </ul>
+        </div>
+        <p class="l-explore-totals"><span class="label">${t("l.statsLabel")}</span>${LANDING_STATS.map((n, i) => `<span><b>${n}</b> ${stats[i]}</span>`).join("")}</p>
+      </div>
     </div></section>
 
     <section class="l-chat"><div class="wrap l-chat-grid">
@@ -356,32 +439,38 @@ views.home = async () => {
         <ul class="l-promises">${t("l.promises").map(([k, d], i) => `
           <li class="reveal" style="--i:${i + 3}"><span class="glyph g-${["si", "ta", "en"][i]}">${[I.check, I.spark, I.chat][i]}</span><div><b>${k}</b><span>${d}</span></div></li>`).join("")}</ul>
       </div>
-      <div class="card l-chat-demo reveal" style="--i:2">
-        <div class="chat-head"><span class="bot-av">${I.spark}</span>
-          <div><b style="font-weight:600">${t("chat.title")}</b><div class="faint">${t("chat.sub")}</div></div></div>
-        <div class="l-chat-body">
-          <div class="msg user">${t("l.demoQ")}</div>
-          <div class="msg bot"><span class="who mono" lang="en">CampusYamu</span>
-            <div class="text" lang="en">Yes. Architecture needs a practical aptitude test before selection <span class="cite">S1</span>. Your Z-score is 0.08 above this year's estimated cut-off for your district <span class="cite">S2</span>.</div>
-            <div class="sources" lang="en"><span class="chip plain"><b class="mono">S1</b> Handbook · Architecture</span><span class="chip"><b class="mono">S2</b> Your saved search</span></div>
-            ${t("enOnly") ? `<div class="faint" style="margin-top:8px">${t("enOnly")}</div>` : ""}
+      <div class="l-chat-scene reveal" style="--i:2">
+        <div class="card l-chat-demo">
+          <img class="l-chat-companion" src="/figures/chat-companion.png" width="1155" height="1362" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <div class="chat-head"><span class="bot-av">${I.spark}</span>
+            <div><b style="font-weight:600">${t("chat.title")}</b><div class="faint">${t("chat.sub")}</div></div></div>
+          <div class="l-chat-body">
+            <div class="msg user">${t("l.demoQ")}</div>
+            <div class="msg bot"><span class="who mono" lang="en">CampusYamu</span>
+              <div class="text" lang="en">Yes. Architecture needs a practical aptitude test before selection <span class="cite">S1</span>. Your Z-score is 0.08 above this year's estimated cut-off for your district <span class="cite">S2</span>.</div>
+              <div class="sources" lang="en"><span class="chip plain"><b class="mono">S1</b> Handbook · Architecture</span><span class="chip"><b class="mono">S2</b> Your saved search</span></div>
+              ${t("enOnly") ? `<div class="faint" style="margin-top:8px">${t("enOnly")}</div>` : ""}
+            </div>
           </div>
+          <div class="composer"><textarea rows="1" disabled placeholder="${esc(t("ask.ph"))}" aria-label="${esc(t("ask.aria"))}"></textarea><span class="btn" aria-hidden="true">${I.send}</span></div>
         </div>
-        <div class="composer"><textarea rows="1" disabled placeholder="${esc(t("ask.ph"))}" aria-label="${esc(t("ask.aria"))}"></textarea><span class="btn" aria-hidden="true">${I.send}</span></div>
       </div>
     </div></section>
 
-    <section class="l-faq" id="l-faq"><div class="wrap">
-      <h2 class="reveal">${pair("l.faqH")}</h2>
-      <div class="l-faq-list">${t("l.faq").map(([q, a], i) => `
-        <details class="reveal" style="--i:${i}" ${i === 0 ? "open" : ""}><summary>${q}<span class="pm" aria-hidden="true"></span></summary><p>${a}</p></details>`).join("")}</div>
+    <section class="l-faq" id="l-faq"><div class="wrap l-faq-grid">
+      <div class="l-faq-main">
+        <h2 class="reveal">${pair("l.faqH")}</h2>
+        <div class="l-faq-list">${t("l.faq").map(([q, a], i) => `
+          <details class="reveal" style="--i:${i}" ${i === 0 ? "open" : ""}><summary>${q}<span class="pm" aria-hidden="true"></span></summary><p>${a}</p></details>`).join("")}</div>
+      </div>
+      <aside class="l-final reveal" style="--i:2">
+        <img class="l-final-art" src="/figures/faq-astronaut-v2.png" width="1254" height="1254" alt="" loading="lazy" decoding="async">
+        <div><h2>${t("l.ctaH")}</h2><p>${t("l.ctaP")}</p></div>
+        <a class="btn mustard" href="#/signin">${t("l.start")} ${I.ne}</a>
+      </aside>
     </div></section>
 
     <div class="wrap">
-      <section class="l-final reveal">
-        <div><h2>${t("l.ctaH")}</h2><p>${t("l.ctaP")}</p></div>
-        <a class="btn mustard" href="#/signin">${t("l.start")} ${I.ne}</a>
-      </section>
       <footer class="l-foot">${brand("#/home")}<span class="faint">${t("l.foot")}</span></footer>
     </div>
   </div>`;
@@ -418,32 +507,72 @@ views.home = async () => {
   addEventListener("resize", onScroll);
   onScroll();
 
-  // big numbers count up the first time they come into view
-  const statObs = new IntersectionObserver((entries) => entries.forEach((e) => {
-    if (!e.isIntersecting) return;
-    statObs.unobserve(e.target);
-    const el = e.target, to = Number(el.dataset.to);
-    if (REDUCED) { el.textContent = to; return; }
-    const t0 = performance.now(), dur = 900 + Math.min(700, to * 4);
-    const tick = (now) => { const p = Math.min(1, (now - t0) / dur); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 4))); if (p < 1) requestAnimationFrame(tick); };
-    requestAnimationFrame(tick);
-  }), { threshold: 0.6 });
-  $$(".l-tile b[data-to]").forEach((el) => statObs.observe(el));
+  setupAreaRing(areas, showFieldStats);
 
-  // course areas: the card under the pointer (or focused) widens
-  const areaEls = $$(".l-area");
-  const openArea = (el) => areaEls.forEach((x) => x.classList.toggle("on", x === el));
-  areaEls.forEach((el) => { el.addEventListener("mouseenter", () => openArea(el)); el.addEventListener("focus", () => openArea(el)); el.addEventListener("click", () => openArea(el)); });
 };
+
+// Field numbers beside the ring: name and the four counts for the chosen area, counting from the old values.
+function showFieldStats(id, name) {
+  const box = $(".l-explore-stats");
+  if (!box) return;
+  $(".l-field-name", box).textContent = name;
+  $$(".l-field b[data-k]", box).forEach((el) => {
+    const to = AREA_STATS[id][+el.dataset.k], from = Number(el.textContent.replace(/,/g, "")) || 0;
+    cancelAnimationFrame(el._raf);
+    if (REDUCED) { el.textContent = to.toLocaleString("en"); return; }
+    const t0 = performance.now(), dur = 650;
+    const tick = (now) => {
+      const p = Math.min(1, (now - t0) / dur), v = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3)));
+      el.textContent = v.toLocaleString("en");
+      if (p < 1) el._raf = requestAnimationFrame(tick);
+    };
+    el._raf = requestAnimationFrame(tick);
+  });
+}
+
+// Course ring: clicking a tile turns the ring so that tile sits at the top and swaps the centre card.
+// It also steps on its own every few seconds while in view, until the visitor picks one (not with reduced motion).
+function setupAreaRing(areas, onPick) {
+  const ring = $(".l-ring"), card = $(".l-ring-card");
+  if (!ring || !card) return;
+  const tiles = $$(".l-ring-tile", ring), slides = $$(".l-ring-slide", card), n = tiles.length;
+  let cur = 0, rot = 0, stopped = REDUCED, inView = false, hover = false;
+  const show = (i) => {
+    let d = (((i - cur) % n) + n) % n;
+    if (d > n / 2) d -= n; // shortest way round
+    rot -= d * (360 / n); cur = i;
+    ring.style.setProperty("--rot", rot + "deg");
+    tiles.forEach((tl, k) => { tl.classList.toggle("on", k === i); tl.setAttribute("aria-pressed", k === i); });
+    slides.forEach((sl, k) => sl.classList.toggle("on", k === i));
+    const [name, desc] = areas[AREA_IDS[i]], text = $(".l-ring-text", card);
+    text.classList.add("swap");
+    setTimeout(() => {
+      $("h3", text).textContent = name;
+      $("p", text).textContent = desc;
+      text.classList.remove("swap");
+    }, 180);
+    onPick?.(AREA_IDS[i], name);
+  };
+  tiles.forEach((tl, k) => tl.addEventListener("click", () => { stopped = true; show(k); }));
+  const wrap = ring.parentElement;
+  wrap.addEventListener("pointerenter", () => { hover = true; });
+  wrap.addEventListener("pointerleave", () => { hover = false; });
+  new IntersectionObserver(([e]) => { inView = e.isIntersecting; }, { threshold: 0.4 }).observe(wrap);
+  const timer = setInterval(() => {
+    if (!wrap.isConnected) return clearInterval(timer); // left the landing page
+    if (!stopped && inView && !hover) show((cur + 1) % n);
+  }, 3800);
+}
 
 views.signin = async () => {
   app.innerHTML = `
-  <div class="wrap"><section class="auth view-enter">
-    <div class="auth-top">${brand("#/home")}<div class="nav-right">${themeBtn()}${langMenu()}</div></div>
+  <div class="wrap auth-page">
+    <header class="topbar"><div class="nav-inner">${brand("#/home")}<div class="nav-right">${themeBtn()}${langMenu()}</div></div></header>
+    <section class="auth view-enter">
     <div class="card split">
       <div class="side">
         <span class="label">${t("signin.kicker")}</span>
-        <h1 style="margin-top:14px">${esc(t("signin.h1a"))}<br><span class="accent">${esc(t("signin.h1b"))}</span></h1>
+        <h1>${esc(t("signin.h1a"))}<br><span class="accent">${esc(t("signin.h1b"))}</span></h1>
         <p class="sub">${t("signin.sub")}</p>
         <form id="signin" novalidate>
           <div class="field"><label for="email">${t("email")}</label><input class="input" id="email" type="email" autocomplete="email" placeholder="you@example.com" value="student@example.com" lang="en"></div>
@@ -454,7 +583,7 @@ views.signin = async () => {
           <span class="faint">${t("signin.mock")}</span>
         </form>
       </div>
-      <div class="side fig-side">${fig("signin", "Sign-in figure")}</div>
+      <div class="side fig-side"><div class="fig signin-art" aria-hidden="true"><img src="/figures/signin-journey-long.png" width="887" height="1774" alt="" decoding="async"></div></div>
     </div>
   </section></div>`;
   $("#signin").addEventListener("submit", async (e) => {
@@ -507,7 +636,7 @@ views.form = async () => {
       <div class="field"><label for="adm">${t("adm")}</label><select class="select" id="adm">${o.districts.map((d) => `<option ${d === f.admission_district ? "selected" : ""}>${esc(d)}</option>`).join("")}</select></div>
       <div class="row two">
         <div class="field"><label for="hd">${t("hd")}</label><select class="select" id="hd">${o.districts.map((d) => `<option ${d === f.home_district ? "selected" : ""}>${esc(d)}</option>`).join("")}</select></div>
-        <div class="field"><label for="ds">${t("ds")}</label><select class="select" id="ds">${(o.ds_divisions[f.home_district] || []).map((d) => `<option ${d === f.ds_division ? "selected" : ""}>${esc(d)}</option>`).join("")}</select></div>
+        <div class="field"><label for="ds">${t("ds")}</label><select class="select" id="ds">${(o.towns[f.home_district] || []).map((d) => `<option ${d === f.home_town ? "selected" : ""}>${esc(d)}</option>`).join("")}</select></div>
       </div>`,
     () => `
       <header>${stepLabel(4)}<h2 style="margin-top:10px">${headline(t("f4.ha"), t("f4.hb"))}</h2>
@@ -557,9 +686,9 @@ views.form = async () => {
     f.preferences = ta.value;
   }));
   $("#llm")?.addEventListener("click", (e) => { f.use_llm = !f.use_llm; e.currentTarget.setAttribute("aria-checked", f.use_llm); });
-  $("#hd")?.addEventListener("change", (e) => { f.home_district = e.target.value; f.ds_division = (o.ds_divisions[f.home_district] || [])[0]; rerender(); });
+  $("#hd")?.addEventListener("change", (e) => { f.home_district = e.target.value; f.home_town = (o.towns[f.home_district] || [])[0]; rerender(); });
   $("#adm")?.addEventListener("change", (e) => (f.admission_district = e.target.value));
-  $("#ds")?.addEventListener("change", (e) => (f.ds_division = e.target.value));
+  $("#ds")?.addEventListener("change", (e) => (f.home_town = e.target.value));
   $("#pref")?.addEventListener("input", (e) => (f.preferences = e.target.value));
   $("#cgt")?.addEventListener("input", (e) => (f.cgt = e.target.value));
 
@@ -591,7 +720,7 @@ views.form = async () => {
         al: f.al.map(([subject, grade]) => ({ subject, grade })),
         ol: Object.entries(f.ol).map(([subject, grade]) => ({ subject, grade })),
         cgt: Number(f.cgt), z_score: f.z_score === "" ? null : Number(f.z_score),
-        admission_district: f.admission_district, ds_division: f.ds_division,
+        admission_district: f.admission_district, home_district: f.home_district, home_town: f.home_town,
         preferences: f.preferences, use_llm: f.use_llm, suggestions: 20,
       },
     });
@@ -613,7 +742,7 @@ views.analysing = async () => {
           <div class="timeline">${AGENTS.map((a, i) => `<div class="tl-item"><b>${a.k}</b><span class="mono">${pad2(i + 1)} / ${a.d}</span></div>`).join("")}</div>
           <div class="status-line" id="status"></div>
         </div>
-        <div class="side fig-side">${fig("analysing", "Analysing figure")}</div>
+        <div class="side fig-side"><div class="fig analysing-art" aria-hidden="true"><img src="/figures/analysing-search-duo.png" width="1122" height="1402" alt="" decoding="async"></div></div>
       </div>
     </section>`);
 
@@ -685,7 +814,7 @@ views.results = async () => {
           <span>${esc(p.stream)}</span><span class="sep">/</span>
           <span>${p.al_results.map(([sub, g]) => `${esc(abbrev(sub))} ${g}`).join(" · ")}</span><span class="sep">/</span>
           ${p.z_score != null ? `<span class="accent num">Z ${Number(p.z_score).toFixed(4)}</span><span class="sep">/</span>` : ""}
-          <span>${esc(rep.origin?.ds_division || p.home)}, ${esc(p.admission_district)}</span>
+          <span>${esc(rep.origin?.town || rep.origin?.ds_division || p.home)}, ${esc(p.admission_district)}</span>
         </div>
       </div>
       <div class="reveal" style="--i:3;display:flex;gap:10px;flex-wrap:wrap">

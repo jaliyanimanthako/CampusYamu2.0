@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import unittest
 
-from campusyamu.api.service import AdvisorService
+from campusyamu.api.service import AdvisorService, home_from_form
 
 FORM = {"stream": "Physical Science",
         "al": [{"subject": "Combined Mathematics", "grade": "A"}, {"subject": "Physics", "grade": "B"},
                {"subject": "Chemistry", "grade": "C"}],
         "cgt": "40", "z_score": "1.56", "admission_district": "Kandy", "home_district": "Kandy",
-        "ds_division": "Gangawata Korale",
+        "home_town": "Katugastota",
         "ol": [{"subject": "Science", "grade": "B"}, {"subject": "English", "grade": "B"},
                {"subject": "Mathematics", "grade": ""}],
         "preferences": "engineering, design", "use_llm": False, "suggestions": "8"}
@@ -26,9 +26,11 @@ class AdvisorServiceTests(unittest.TestCase):
     def test_options_for_the_dropdowns(self) -> None:
         o = self.web.options
         self.assertEqual(len(o["districts"]), 25)
-        self.assertEqual(sum(len(v) for v in o["ds_divisions"].values()), 339)
-        self.assertIn("Gangawata Korale", o["ds_divisions"]["Kandy"])
-        self.assertNotIn("Karandeniya", o["ds_divisions"]["Kandy"])
+        self.assertEqual(sum(len(v) for v in o["towns"].values()), 489)
+        self.assertIn("Katugastota", o["towns"]["Kandy"])
+        self.assertIn("Hettipola", o["towns"]["Matale"])
+        self.assertIn("Hettipola", o["towns"]["Kurunegala"])                  # same name, two districts
+        self.assertNotIn("Galle", o["towns"]["Kandy"])
         self.assertIn("Physical Science", o["streams"])
         self.assertIn("Combined Mathematics", o["al_subjects"])
         self.assertEqual(len(o["al_subjects"]), len(set(o["al_subjects"])))
@@ -58,19 +60,29 @@ class AdvisorServiceTests(unittest.TestCase):
         self.assertEqual(status, 200)
         report = data["report"]
         self.assertFalse(data["used_llm"])
-        self.assertEqual(report["origin"]["ds_division"], "Gangawata Korale")
+        self.assertEqual((report["origin"]["town"], report["origin"]["district"]), ("Katugastota", "Kandy"))
         self.assertEqual(len(report["rankings"]["distance"]["suggestions"]), 8)
         self.assertNotIn("Mathematics", report["profile"]["ol_results"])          # "not given" is left out
 
     def test_validation_errors(self) -> None:
-        status, data = self.web.run({**FORM, "ds_division": "", "al": FORM["al"][:2]})
+        status, data = self.web.run({**FORM, "home_town": "", "al": FORM["al"][:2]})
         self.assertEqual(status, 400)
-        self.assertIn("home DS division", data["errors"][0])
+        self.assertIn("home town", data["errors"][0])
         self.assertIn("three A/L subjects", data["errors"][0])
         status, data = self.web.run({**FORM, "al": [FORM["al"][0]] * 3})
         self.assertEqual((status, data["errors"]), (400, ["Choose three different A/L subjects"]))
         status, data = self.web.run({**FORM, "cgt": "abc"})
         self.assertEqual(status, 400)
+
+
+class HomeFromFormTests(unittest.TestCase):
+    def test_town_with_district(self) -> None:
+        self.assertEqual(home_from_form({"home_town": "Hettipola", "home_district": "Matale"}), "Hettipola (Matale)")
+
+    def test_forms_saved_before_home_towns(self) -> None:
+        self.assertEqual(home_from_form({"ds_division": "Gangawata Korale"}), "Gangawata Korale")
+        self.assertEqual(home_from_form({"home_town": "Kotugoda", "ds_division": "Minuwangoda"}), "Kotugoda")
+        self.assertEqual(home_from_form({"home_district": "Kandy"}), "")
 
 
 if __name__ == "__main__":

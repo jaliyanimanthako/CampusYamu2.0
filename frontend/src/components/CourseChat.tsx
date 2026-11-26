@@ -69,8 +69,8 @@ function buildChatCourse(
 function buildStudentContext(report: RecommendationReport): Record<string, unknown> {
   const { profile, origin, preferences } = report;
   const home =
-    origin?.ds_division && origin?.district
-      ? `${origin.ds_division} (${origin.district})`
+    (origin?.town ?? origin?.ds_division) && origin?.district
+      ? `${origin.town ?? origin.ds_division} (${origin.district})`
       : profile.home || "";
 
   return {

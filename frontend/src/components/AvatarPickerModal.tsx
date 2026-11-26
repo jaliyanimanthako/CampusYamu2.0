@@ -59,7 +59,7 @@ export function AvatarPickerModal({
             Choose your <span className="accent">avatar.</span>
           </h2>
           <p className="muted" style={{ margin: "8px 0 0", fontSize: 15 }}>
-            Pick your animal friend now — it cannot be changed later.
+            Pick your animal friend now. It cannot be changed later.
           </p>
         </div>
 

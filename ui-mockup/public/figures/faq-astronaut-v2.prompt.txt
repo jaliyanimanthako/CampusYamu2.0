@@ -1,0 +1,15 @@
+Mode: built-in image_gen; transparent_background: true
+References: user's astronaut image for pose; chat-companion.png for human character identity and illustration style.
+Placement: left of the FAQ cards, no CSS mirroring.
+
+Use case: illustration-story
+Asset type: replacement transparent astronaut character for the LEFT side of CampusYamu's FAQ.
+Two reference images have DISTINCT roles:
+REFERENCE 1, the user-attached orange-suited astronaut holding a globe, is POSE AND COMPOSITION ONLY. Follow its silhouette closely: a floating, reclined astronaut with helmet/head at upper right, torso diagonally across center, both boots at lower left, one knee raised and bent; the arm on the LEFT of the picture reaches upward and holds a small Earth globe over the head; the opposite arm hangs relaxed down toward lower right with an open hand. Capture this broad, weightless reclining pose, not a standing or waving pose.
+REFERENCE 2, the brown-skinned student wearing yellow with navy hair and headphones, is HUMAN IDENTITY AND DRAWING STYLE ONLY. Use this recognizable friendly Sri Lankan university-age male, warm medium-brown skin, swept chunky navy hair, bright eyes, simple warm smile, youthful expressive face. Match its polished editorial painted illustration, clean broad flat shapes, restrained faceted shading and fine subtle grain. No thick black outlines or engraved hatching.
+Primary request: draw OUR HUMAN STUDENT wearing an astronaut suit in exactly the floating reclined pose described from reference 1. His HUMAN FACE AND NAVY HAIR MUST BE CLEARLY VISIBLE through a clear helmet visor; no opaque black reflective faceplate. He looks toward the small globe in his raised hand, with a quietly delighted curious expression. One hand holds the globe; the other arm extends downward loosely. Both legs float toward the lower left, boots clearly separated, upper knee lifted.
+Spacesuit: mustard-yellow main fabric, royal-blue and navy joint panels, lavender backpack/chest details, white gloves and white boots with navy soles, a white helmet shell with mustard trim. Simple tasteful suit details and a compact life-support pack, no lettering, badges or flags. Earth globe: simple blue oceans, lavender/light-blue land shapes, small enough to be held in one hand.
+Composition: full figure including globe, helmet, fingers and boots, centered in a portrait-to-square canvas with 6 percent breathing room; broad diagonal silhouette like the pose reference; no cropping.
+Palette: #F2B84B mustard, #4F6FE8 royal blue, #14185C navy, #C9B8F5 lavender, white, natural brown skin. Keep the brand's human student illustration style throughout.
+Backdrop: genuine clean transparent alpha, no solid panel.
+Avoid: the previous upright waving astronaut pose, generic stock mascot, chibi proportions, photorealistic or 3D rendering, heavy comic outlines, crosshatching, orange beyond brand mustard, stars, dots, space scenery, ground, extra floating items, text, logos, flags or watermark.

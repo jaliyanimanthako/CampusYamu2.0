@@ -211,7 +211,7 @@ def render(state: dict[str, Any], limit: int | None, sort: str = "travel", view:
     counts = report["counts"]
     lines = [
         f"Student: {p['stream']} — {al}; CGT {p['common_general_test']}; Z-score {p.get('z_score')}",
-        f"Admission district: {p['admission_district']} | Home: {o['ds_division']} ({o['district']})",
+        f"Admission district: {p['admission_district']} | Home: {o['town']} ({o['district']})",
         f"Step 1 (KG): {counts['can_apply']} courses open, {counts['with_conditions']} with conditions, "
         f"{counts['blocked_by_ol']} blocked by O/L, {counts['not_eligible']} not eligible by A/L",
         "Step 2 (Z-score): " + ", ".join(f"{counts['band_' + b]} {b.replace('_', ' ')}" for b in BAND_ORDER),

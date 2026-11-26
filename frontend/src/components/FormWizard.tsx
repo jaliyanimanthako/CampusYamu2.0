@@ -11,7 +11,7 @@ export interface FormState {
   z_score: string;
   admission_district: string;
   home_district: string;
-  ds_division: string;
+  home_town: string;
   preferences: string;
   use_llm: boolean;
 }
@@ -28,7 +28,7 @@ export const DEFAULT_FORM_STATE: FormState = {
   z_score: "1.5600",
   admission_district: "Gampaha",
   home_district: "Gampaha",
-  ds_division: "Minuwangoda",
+  home_town: "Minuwangoda",
   preferences: "engineering, design",
   use_llm: false,
 };
@@ -89,6 +89,8 @@ export function FormWizard({
     onChangeForm({ ...form, preferences: next });
   };
 
+  const townList = options.towns[form.home_district] ?? [];
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (step < FORM_STEPS.length - 1) {
@@ -106,6 +108,11 @@ export function FormWizard({
       setStep(1);
       return;
     }
+    if (!townList.includes(form.home_town)) {
+      onToast("Choose your home town");
+      setStep(2);
+      return;
+    }
 
     onSubmit({
       stream: form.stream,
@@ -114,14 +121,14 @@ export function FormWizard({
       cgt: cgtNum,
       z_score: form.z_score.trim() === "" ? null : Number(form.z_score),
       admission_district: form.admission_district,
-      ds_division: form.ds_division,
+      home_district: form.home_district,
+      home_town: form.home_town,
       preferences: form.preferences,
       use_llm: form.use_llm,
       suggestions: 20,
     });
   };
 
-  const dsList = options.ds_divisions[form.home_district] ?? [];
 
   return (
     <>
@@ -375,11 +382,11 @@ export function FormWizard({
                     value={form.home_district}
                     onChange={(e) => {
                       const nextDistrict = e.target.value;
-                      const firstDs = options.ds_divisions[nextDistrict]?.[0] ?? "";
+                      const firstTown = options.towns[nextDistrict]?.[0] ?? "";
                       onChangeForm({
                         ...form,
                         home_district: nextDistrict,
-                        ds_division: firstDs,
+                        home_town: firstTown,
                       });
                     }}
                   >
@@ -391,14 +398,19 @@ export function FormWizard({
                   </select>
                 </div>
                 <div className="field">
-                  <label htmlFor="ds">DS division</label>
+                  <label htmlFor="town">Home town</label>
                   <select
                     className="select"
-                    id="ds"
-                    value={form.ds_division}
-                    onChange={(e) => onChangeForm({ ...form, ds_division: e.target.value })}
+                    id="town"
+                    value={townList.includes(form.home_town) ? form.home_town : ""}
+                    onChange={(e) => onChangeForm({ ...form, home_town: e.target.value })}
                   >
-                    {dsList.map((d) => (
+                    {!townList.includes(form.home_town) && (
+                      <option value="" disabled>
+                        Choose your home town
+                      </option>
+                    )}
+                    {townList.map((d) => (
                       <option key={d} value={d}>
                         {d}
                       </option>
