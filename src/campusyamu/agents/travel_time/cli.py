@@ -1,11 +1,11 @@
-"""Travel time from a student's DS division to university campuses.
+"""Travel time from a student's home town to university campuses.
 
     uv run python -m campusyamu.agents.travel_time --from Kantale
     uv run python -m campusyamu.agents.travel_time --from Kantale --university Eastern
     uv run python -m campusyamu.agents.travel_time --from Kantale --course Engineering   # by teaching site
     uv run python -m campusyamu.agents.travel_time --from Minuwangoda --faculty Engineering --university Ruhuna
     uv run python -m campusyamu.agents.travel_time --districts
-    uv run python -m campusyamu.agents.travel_time --district Trincomalee      # its DS divisions
+    uv run python -m campusyamu.agents.travel_time --district Trincomalee      # its towns
 """
 
 from __future__ import annotations
@@ -49,7 +49,7 @@ def _format_rows(rows: list[dict], courses: bool = False) -> list[str]:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--from", dest="origin", help="DS division (or its main town)")
+    parser.add_argument("--from", dest="origin", help="Home town, e.g. Kotugoda or 'Hettipola (Matale)' (an old DS division name also works)")
     parser.add_argument("--in-district", help="District, to disambiguate --from")
     parser.add_argument("--university", help="Only this university's campuses")
     parser.add_argument("--course", help="Rank offerings of a course (name or code) by teaching site")
@@ -59,7 +59,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--include-candidates", action="store_true",
                         help="Include unconfirmed candidate sites (USJ Engineering)")
     parser.add_argument("--districts", action="store_true", help="List districts")
-    parser.add_argument("--district", help="List the DS divisions of a district")
+    parser.add_argument("--district", help="List the towns of a district")
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
@@ -69,23 +69,23 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.districts:
             rows = repo.districts()
             print(json.dumps(rows, indent=2) if args.json else "\n".join(
-                f"{r['district']:<14} {r['province']:<15} {r['ds_divisions']:>3} DS divisions, "
+                f"{r['district']:<14} {r['province']:<15} {r['towns']:>3} towns, "
                 f"{r['campuses']} campuses" for r in rows))
             return 0
         if args.district and not args.origin:
-            origins = repo.ds_divisions(args.district)
+            origins = repo.towns(args.district)
             print(json.dumps([o.__dict__ for o in origins], indent=2) if args.json
-                  else "\n".join(o.ds_division for o in origins))
+                  else "\n".join(o.town for o in origins))
             return 0
         if not args.origin:
-            parser.error("give --from <DS division>, --districts or --district <name>")
+            parser.error("give --from <town>, --districts or --district <name>")
         origin = repo.find_origin(args.origin, args.in_district or args.district)
         if args.faculty:
             rows = repo.faculty_sites(origin, args.faculty, args.university, None if args.all else args.limit)
             if args.json:
                 print(json.dumps({"origin": origin.__dict__, "sites": rows, "note": NOTE}, indent=2))
                 return 0
-            print(f"From {origin.ds_division} DS division ({origin.district} district): "
+            print(f"From {origin.town} ({origin.district} district): "
                   f"sites for {args.faculty!r}" + (f" at {args.university}" if args.university else "") + "\n")
             if not rows:
                 print("No matching sites.")
@@ -100,7 +100,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             if args.json:
                 print(json.dumps({"origin": origin.__dict__, "offerings": rows, "note": NOTE}, indent=2))
                 return 0
-            print(f"From {origin.ds_division} DS division ({origin.district} district): "
+            print(f"From {origin.town} ({origin.district} district): "
                   f"offerings matching {args.course!r}, by travel time to the teaching site\n")
             print("\n".join(_format_rows(rows, courses=True)) or "No matching offerings.")
             print(f"\nNote: {NOTE}")
@@ -111,7 +111,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.json:
             print(json.dumps({"summary": summary, "campuses": rows, "note": NOTE}, indent=2))
             return 0
-        print(f"From {origin.ds_division} DS division ({origin.district} district, {origin.province} Province)\n")
+        print(f"From {origin.town} ({origin.district} district, {origin.province} Province)\n")
         print("\n".join(_format_rows(rows)))
         if summary["nearest_is_outside_home_district"]:
             home = summary["nearest_in_home_district"]

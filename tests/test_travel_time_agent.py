@@ -26,7 +26,8 @@ class TravelDatabaseTests(unittest.TestCase):
 
     def test_complete_matrix(self) -> None:
         self.assertEqual(self.counts["districts"], 25)
-        self.assertEqual(self.counts["pairs"], self.counts["ds_divisions"] * self.counts["campuses"])
+        self.assertEqual(self.counts["towns"], 489)
+        self.assertEqual(self.counts["pairs"], self.counts["towns"] * self.counts["campuses"])
 
     def test_every_campus_maps_to_a_kg_institution(self) -> None:
         from campusyamu.knowledge_graph.build_graph import load_graph
@@ -50,7 +51,7 @@ class TravelDatabaseTests(unittest.TestCase):
         siddamulla = campuses["USJ-ENG-SIDDAMULLA"]
         self.assertEqual((siddamulla["status"], siddamulla["approximate_location"]), ("confirmed", 0))
         self.assertEqual(siddamulla["campus_site"], "Faculty of Engineering, Siddamulla, Kottawa")
-        self.assertEqual(self.counts["pairs"], 339 * 38)
+        self.assertEqual(self.counts["pairs"], 489 * 38)
 
     def test_offerings_are_placed_at_their_teaching_site(self) -> None:
         sites = {r["uni_code"]: r for r in self.repo._all("SELECT * FROM offering_sites")}
@@ -90,12 +91,36 @@ class TravelDatabaseTests(unittest.TestCase):
         self.assertEqual(medicine, {"UOR-MED"})
 
     def test_lookups(self) -> None:
-        self.assertEqual(self.repo.find_origin("kantle").ds_division, "Kantale")      # typo
+        self.assertEqual(self.repo.find_origin("kantle").town, "Kantale")             # typo
+        self.assertEqual(self.repo.find_origin("Kotugoda").label, "Kotugoda (Gampaha)")
+        with self.assertRaises(LookupError_):
+            self.repo.find_origin("Peradeniya")         # not a listed town; must not become 'Hedeniya'
+        self.assertEqual(self.repo.find_origin("Minuwangda").town, "Minuwangoda")
         self.assertEqual(self.repo.find_university("jayewardenepura"), "University of Sri Jayewardenepura")
         with self.assertRaises(LookupError_):
             self.repo.find_origin("Atlantis")
         with self.assertRaises(LookupError_):
             self.repo.find_university("University")                                   # ambiguous
+
+    def test_town_in_two_districts(self) -> None:
+        with self.assertRaises(LookupError_) as ctx:
+            self.repo.find_origin("Hettipola")
+        self.assertEqual(sorted(ctx.exception.suggestions), ["Hettipola (Kurunegala)", "Hettipola (Matale)"])
+        self.assertEqual(self.repo.find_origin("Hettipola (Matale)").district, "Matale")
+        self.assertEqual(self.repo.find_origin("Hettipola", "Kurunegala").district, "Kurunegala")
+
+    def test_old_ds_division_names_map_to_a_town(self) -> None:
+        """Forms saved before towns replaced DS divisions still resolve."""
+        self.assertEqual(self.repo.find_origin("Gangawata Korale").label, "Kandy (Kandy)")
+        self.assertEqual(self.repo.find_origin("Galle 4 Gravets").label, "Galle (Galle)")
+        self.assertEqual(self.repo.find_origin("Valikamam South (Uduvil)").district, "Jaffna")
+        self.assertEqual(self.repo.town_for_ds_division("Minuwangoda").town, "Minuwangoda")
+        self.assertIsNone(self.repo.town_for_ds_division("Atlantis"))
+
+    def test_towns_by_district(self) -> None:
+        gampaha = {o.town for o in self.repo.towns("Gampaha")}
+        self.assertTrue({"Udugampola", "Ganemulla", "Kotugoda", "Katunayake", "Raddolugama", "Ekala"} <= gampaha)
+        self.assertEqual(sum(r["towns"] for r in self.repo.districts()), 489)
 
     def test_results_sorted_by_time(self) -> None:
         rows = self.repo.from_origin(self.repo.find_origin("Kantale"), limit=None)
@@ -112,7 +137,7 @@ class BuildValidationTests(unittest.TestCase):
     def _copy(self) -> Path:
         tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, tmp)
-        for name in (build_db.CAMPUSES_CSV, build_db.LONG_CSV, *build_db.WIDE_CSVS.values()):
+        for name in (build_db.CAMPUSES_CSV, build_db.TOWNS_CSV, build_db.LONG_CSV, *build_db.WIDE_CSVS.values()):
             shutil.copy(build_db.DATA_DIR / name, tmp / name)
         return tmp
 
@@ -141,6 +166,14 @@ class BuildValidationTests(unittest.TestCase):
             return rows
         self._rewrite_long(folder, bump)
         with self.assertRaisesRegex(build_db.BuildError, "differs"):
+            build_db.load_inputs(folder)
+
+    def test_town_list_must_match_the_matrix(self) -> None:
+        folder = self._copy()
+        path = folder / build_db.TOWNS_CSV
+        lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
+        path.write_text("".join(lines[:-1]), encoding="utf-8")              # drop the last town
+        with self.assertRaisesRegex(build_db.BuildError, "is not in towns.csv"):
             build_db.load_inputs(folder)
 
     def test_routing_error_fails_the_build(self) -> None:

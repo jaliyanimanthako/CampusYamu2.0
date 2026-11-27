@@ -272,7 +272,7 @@ export function CourseDetailView({
             al_results: report.profile.al_results,
             z_score: report.profile.z_score,
             admission_district: report.profile.admission_district,
-            home: report.origin?.ds_division ?? report.profile.home,
+            home: report.origin?.town ?? report.origin?.ds_division ?? report.profile.home,
           },
           history: priorHistory,
         };

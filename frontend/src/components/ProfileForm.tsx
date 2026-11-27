@@ -69,7 +69,7 @@ function buildInitialState(options: Options): ProfileFormState {
 
   const defaultDistrict =
     options.districts.find((d) => d === "Kandy") ?? options.districts[0] ?? "";
-  const dsList = options.ds_divisions[defaultDistrict] ?? [];
+  const townList = options.towns[defaultDistrict] ?? [];
 
   return {
     stream: defaultStream,
@@ -79,7 +79,7 @@ function buildInitialState(options: Options): ProfileFormState {
     zScore: "",
     admissionDistrict: defaultDistrict,
     homeDistrict: defaultDistrict,
-    dsDivision: dsList[0] ?? "",
+    homeTown: townList[0] ?? "",
     preferences: "",
     useLlm: false,
   };
@@ -151,7 +151,7 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
   const [form, setForm] = useState<ProfileFormState | null>(null);
   const [olOpen, setOlOpen] = useState(false);
   const [districtFilter, setDistrictFilter] = useState("");
-  const [dsFilter, setDsFilter] = useState("");
+  const [townFilter, setTownFilter] = useState("");
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
@@ -236,12 +236,12 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
 
   const handleHomeDistrictChange = (district: string) => {
     if (!options || !form) return;
-    const divisions = options.ds_divisions[district] ?? [];
-    setDsFilter("");
+    const towns = options.towns[district] ?? [];
+    setTownFilter("");
     setForm({
       ...form,
       homeDistrict: district,
-      dsDivision: divisions[0] ?? "",
+      homeTown: towns[0] ?? "",
     });
   };
 
@@ -294,7 +294,8 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
       }
     }
     if (!form.admissionDistrict) errs.push(t("form.err.admissionDistrict"));
-    if (!form.dsDivision) errs.push(t("form.err.dsDivision"));
+    if (!(options?.towns[form.homeDistrict] ?? []).includes(form.homeTown))
+      errs.push(t("form.err.homeTown"));
     return errs;
   };
 
@@ -346,7 +347,8 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
       cgt: Number(form.cgt.trim()),
       z_score: parsedZScore,
       admission_district: form.admissionDistrict,
-      ds_division: form.dsDivision,
+      home_district: form.homeDistrict,
+      home_town: form.homeTown,
       preferences: form.preferences.trim(),
       use_llm: options.llm_available ? form.useLlm : false,
     };
@@ -407,12 +409,13 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
       )
     : options.districts;
 
-  const allHomeDivisions = options.ds_divisions[form.homeDistrict] ?? [];
-  const filteredDivisions = dsFilter.trim()
-    ? allHomeDivisions.filter((d) =>
-        d.toLowerCase().includes(dsFilter.trim().toLowerCase()),
+  const allHomeTowns = options.towns[form.homeDistrict] ?? [];
+  const filteredTowns = townFilter.trim()
+    ? allHomeTowns.filter((d) =>
+        d.toLowerCase().includes(townFilter.trim().toLowerCase()),
       )
-    : allHomeDivisions;
+    : allHomeTowns;
+  const homeTownValid = allHomeTowns.includes(form.homeTown);
 
   const aiMilestone =
     elapsedSeconds < 4
@@ -761,28 +764,33 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
 
               <div>
                 <label
-                  htmlFor="ds-division"
+                  htmlFor="home-town"
                   className="block text-[13px] font-medium text-[#475569]"
                 >
-                  {t("form.dsDivision")}
+                  {t("form.homeTown")}
                 </label>
                 <input
                   type="search"
-                  value={dsFilter}
-                  onChange={(e) => setDsFilter(e.target.value)}
-                  placeholder={t("form.searchDs")}
-                  aria-label={t("form.searchDs")}
+                  value={townFilter}
+                  onChange={(e) => setTownFilter(e.target.value)}
+                  placeholder={t("form.searchTown")}
+                  aria-label={t("form.searchTown")}
                   className="mt-1.5 w-full rounded-[6px] border border-[#E2E8F0] bg-[#F8FAFC] px-2.5 py-1.5 text-[12px] text-[#0F172A] placeholder:text-[#64748B] focus:border-[#1D4ED8] focus:outline-none"
                 />
                 <select
-                  id="ds-division"
-                  value={form.dsDivision}
-                  onChange={(e) => setForm({ ...form, dsDivision: e.target.value })}
+                  id="home-town"
+                  value={homeTownValid ? form.homeTown : ""}
+                  onChange={(e) => setForm({ ...form, homeTown: e.target.value })}
                   className="mt-1.5 w-full rounded-[6px] border border-[#E2E8F0] bg-[#FFFFFF] px-3 py-2 text-[14px] text-[#0F172A] focus:border-[#1D4ED8] focus:outline-none"
                 >
-                  {filteredDivisions.map((ds) => (
-                    <option key={ds} value={ds}>
-                      {ds}
+                  {!homeTownValid && (
+                    <option value="" disabled>
+                      {t("form.homeTown")}
+                    </option>
+                  )}
+                  {filteredTowns.map((town) => (
+                    <option key={town} value={town}>
+                      {town}
                     </option>
                   ))}
                 </select>

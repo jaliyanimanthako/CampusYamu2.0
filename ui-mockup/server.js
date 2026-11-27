@@ -44,12 +44,12 @@ const DISTRICTS = ["Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
   "Hambantota", "Jaffna", "Kalutara", "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
   "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya", "Polonnaruwa", "Puttalam",
   "Ratnapura", "Trincomalee", "Vavuniya"];
-const DS = {
-  Gampaha: ["Attanagalla", "Biyagama", "Divulapitiya", "Dompe", "Gampaha", "Ja-Ela", "Kelaniya",
-    "Mahara", "Minuwangoda", "Mirigama", "Negombo", "Wattala"],
-  Colombo: ["Colombo", "Dehiwala", "Homagama", "Kaduwela", "Kesbewa", "Maharagama", "Moratuwa",
-    "Ratmalana", "Sri Jayawardanapura Kotte"],
-  Kandy: ["Akurana", "Deltota", "Doluwa", "Gangawata Korale", "Harispattuwa", "Kundasale", "Pathadumbara"],
+const TOWNS = {
+  Gampaha: ["Divulapitiya", "Ekala", "Gampaha", "Ganemulla", "Ja-ela", "Katunayake", "Kelaniya", "Kotugoda",
+    "Minuwangoda", "Mirigama", "Negombo", "Raddolugama", "Udugampola", "Wattala"],
+  Colombo: ["Battaramulla", "Colombo", "Dehiwala", "Homagama", "Kaduwela", "Maharagama", "Malabe", "Moratuwa", "Nugegoda",
+    "Ratmalana", "Sri Jayewardenepura Kotte"],
+  Kandy: ["Akurana", "Deltota", "Doluwa", "Gampola", "Kandy", "Katugastota", "Pilimatalawa"],
 };
 const options = {
   streams: ["Arts", "Commerce", "Biological Science", "Physical Science", "Engineering Technology",
@@ -70,7 +70,7 @@ const options = {
   ol_subjects: ["Science", "English", "Mathematics"],
   ol_grades: ["A", "B", "C", "S", "W"],
   districts: DISTRICTS,
-  ds_divisions: Object.fromEntries(DISTRICTS.map((d) => [d, DS[d] || [d]])),
+  towns: Object.fromEntries(DISTRICTS.map((d) => [d, TOWNS[d] || [d]])),
   llm_available: true,
 };
 
@@ -141,7 +141,7 @@ function cannedAnswer(question, row) {
     };
   }
   return {
-    answer: `${row.course_name} at ${row.university} is taught at ${row.site || "the main campus"}${row.proposed_intake ? `, with ${row.proposed_intake} places this year` : ""} [S1]. ${row.aptitude_test ? "An aptitude test is required before selection." : "There is no aptitude test for this course."} By car it is about ${Math.round(row.car_min)} minutes from your home in ${report.origin.ds_division} (${Math.round(row.bus_min_est)} by bus) [S2].`,
+    answer: `${row.course_name} at ${row.university} is taught at ${row.site || "the main campus"}${row.proposed_intake ? `, with ${row.proposed_intake} places this year` : ""} [S1]. ${row.aptitude_test ? "An aptitude test is required before selection." : "There is no aptitude test for this course."} By car it is about ${Math.round(row.car_min)} minutes from your home in ${report.origin.town ?? report.origin.ds_division} (${Math.round(row.bus_min_est)} by bus) [S2].`,
     status: "answered", sources: [s1, s2],
   };
 }

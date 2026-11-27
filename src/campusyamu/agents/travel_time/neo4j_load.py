@@ -3,11 +3,11 @@
     uv run python -m campusyamu.agents.travel_time.neo4j_load
 
     (:District:CampusTravel)
-    (:DSDivision:CampusTravel)-[:IN_DISTRICT]->(:District)
+    (:Town:CampusTravel)-[:IN_DISTRICT]->(:District)
     (:Campus:CampusTravel)-[:IN_DISTRICT]->(:District)
     (:Campus)-[:CAMPUS_OF]->(:Institution)          # KG node; campus-level when it exists
     (:Campus)-[:OF_UNIVERSITY]->(:Institution)      # KG university node
-    (:DSDivision)-[:TRAVEL_TO {road_km, drive_min, straight_km}]->(:Campus)
+    (:Town)-[:TRAVEL_TO {road_km, drive_min, straight_km}]->(:Campus)
     (:Offering)-[:TAUGHT_AT {rule, needs_review}]->(:Campus)   # KG offering -> teaching site
 
 Loading replaces every ``CampusTravel`` node and never touches KG
@@ -46,8 +46,8 @@ def _rows(db: Path, sql: str) -> list[dict]:
 
 def statements(db: Path):
     districts = _rows(db, "SELECT district AS name, province FROM districts")
-    origins = _rows(db, "SELECT origin_id AS id, ds_division AS name, district, province, point_source, "
-                        "snap_m FROM ds_divisions")
+    origins = _rows(db, "SELECT origin_id AS id, town AS name, district, province, ds_division, lat, lon, "
+                        "point_source, snap_m FROM towns")
     campuses = _rows(db, "SELECT campus_id AS id, site_no, university, campus_site AS name, district, lat, "
                          "lon, coord_source, approximate_location = 1 AS approximate_location, "
                          "handbook_listed = 1 AS handbook_listed, status, institution_id, university_id "
@@ -64,17 +64,17 @@ def statements(db: Path):
         campus["review_offerings"] = review.get(campus["id"], [])
 
     yield f"MATCH (n:{LABEL}) DETACH DELETE n", {}
-    for label in ("District", "DSDivision", "Campus"):
+    for label in ("District", "Town", "Campus"):
         key = "name" if label == "District" else "id"
         yield (f"CREATE CONSTRAINT {label.lower()}_{key} IF NOT EXISTS "
                f"FOR (n:{label}) REQUIRE n.{key} IS UNIQUE"), {}
     yield f"UNWIND $rows AS row CREATE (d:District:{LABEL}) SET d = row", {"rows": districts}
-    for label, rows in (("DSDivision", origins), ("Campus", campuses)):
+    for label, rows in (("Town", origins), ("Campus", campuses)):
         yield (f"UNWIND $rows AS row CREATE (n:{label}:{LABEL}) SET n = row "
                "WITH n, row MATCH (d:District {name: row.district}) CREATE (n)-[:IN_DISTRICT]->(d)",
                {"rows": rows})
     for start in range(0, len(travel), BATCH):
-        yield ("UNWIND $rows AS row MATCH (o:DSDivision {id: row.origin_id}) "
+        yield ("UNWIND $rows AS row MATCH (o:Town {id: row.origin_id}) "
                "MATCH (c:Campus {id: row.campus_id}) "
                "CREATE (o)-[:TRAVEL_TO {road_km: row.road_km, drive_min: row.drive_min, "
                "straight_km: row.straight_km}]->(c)",
@@ -97,12 +97,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         for query, params in statements(args.db):
             store._run(query, **params)
         counts = store._run(
-            "MATCH (o:DSDivision) WITH count(o) AS ds "
-            "MATCH (c:Campus) WITH ds, count(c) AS campuses "
-            "MATCH (:DSDivision)-[t:TRAVEL_TO]->(:Campus) WITH ds, campuses, count(t) AS travel "
+            "MATCH (o:Town:CampusTravel) WITH count(o) AS towns "
+            "MATCH (c:Campus) WITH towns, count(c) AS campuses "
+            "MATCH (:Town)-[t:TRAVEL_TO]->(:Campus) WITH towns, campuses, count(t) AS travel "
             "OPTIONAL MATCH (:Campus)-[l:CAMPUS_OF]->(:Institution) "
-            "RETURN ds, campuses, travel, count(l) AS linked")[0]
-    print(f"Loaded {counts['ds']} DS divisions, {counts['campuses']} campuses, {counts['travel']} "
+            "RETURN towns, campuses, travel, count(l) AS linked")[0]
+    print(f"Loaded {counts['towns']} towns, {counts['campuses']} campuses, {counts['travel']} "
           f"TRAVEL_TO relationships; {counts['linked']} campuses linked to KG institutions")
     return 0
 

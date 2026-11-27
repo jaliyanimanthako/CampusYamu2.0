@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import difflib
+import re
 import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
@@ -12,7 +13,7 @@ from .build_db import DEFAULT_DB
 
 
 class LookupError_(LookupError):
-    """A DS division / university that cannot be resolved, with suggestions."""
+    """A town / university that cannot be resolved, with suggestions."""
 
     def __init__(self, message: str, suggestions: list[str]) -> None:
         super().__init__(message)
@@ -21,16 +22,48 @@ class LookupError_(LookupError):
 
 @dataclass(frozen=True)
 class Origin:
+    """A home town: where travel times are measured from."""
+
     origin_id: str
-    ds_division: str
+    town: str
     district: str
     province: str
+
+    @property
+    def label(self) -> str:
+        return f"{self.town} ({self.district})"
+
+
+# which town stands in for a whole DS division (old saved forms sent a DS division)
+SOURCE_RANK = {"osm_city": 0, "osm_town": 1, "manual": 2}
+DISTRICT_SUFFIX_RE = re.compile(r"^(.*?)\s*\(([^()]+)\)\s*$")
+
+
+def _edits(a: str, b: str) -> int:
+    """Levenshtein distance."""
+
+    row = list(range(len(b) + 1))
+    for i, ca in enumerate(a, start=1):
+        prev, row[0] = row[0], i
+        for j, cb in enumerate(b, start=1):
+            prev, row[j] = row[j], min(row[j] + 1, row[j - 1] + 1, prev + (ca != cb))
+    return row[-1]
+
+
+def _same_start(key: str, options: list[str]) -> list[str]:
+    """Options a typo could plausibly have come from: same first letter, and one edit away
+    (two for names over 10 letters). Without this, 'Peradeniya' (not a listed town) would
+    'fix' to 'Hedeniya' or 'Padeniya', a different place."""
+
+    limit = 1 if len(key) <= 10 else 2
+    return [o for o in options if o[:1] == key[:1] and _edits(key, o) <= limit]
 
 
 def _best_match(key: str, options: list[str]) -> str | None:
     """A clear typo fix: the closest option when it is close and well ahead of the next one."""
 
-    scored = sorted(((difflib.SequenceMatcher(None, key, o).ratio(), o) for o in options), reverse=True)
+    scored = sorted(((difflib.SequenceMatcher(None, key, o).ratio(), o) for o in _same_start(key, options)),
+                    reverse=True)
     if not scored:
         return None
     top = scored[0]
@@ -58,18 +91,31 @@ class TravelRepository:
     # --- lookups ----------------------------------------------------------------
     def districts(self) -> list[dict[str, Any]]:
         return self._all(
-            "SELECT d.district, d.province, count(o.origin_id) AS ds_divisions, "
+            "SELECT d.district, d.province, count(o.origin_id) AS towns, "
             "(SELECT count(*) FROM campuses c WHERE c.district = d.district AND c.status = 'confirmed') "
-            "AS campuses FROM districts d LEFT JOIN ds_divisions o USING (district) "
+            "AS campuses FROM districts d LEFT JOIN towns o USING (district) "
             "GROUP BY d.district ORDER BY d.district")
 
-    def ds_divisions(self, district: str | None = None) -> list[Origin]:
-        rows = self._all("SELECT origin_id, ds_division, district, province FROM ds_divisions "
-                         "ORDER BY district, ds_division")
+    def towns(self, district: str | None = None) -> list[Origin]:
+        rows = self._all("SELECT origin_id, town, district, province FROM towns ORDER BY district, town")
         if district:
             wanted = self._district(district)
             rows = [r for r in rows if r["district"] == wanted]
         return [Origin(**r) for r in rows]
+
+    def town_for_ds_division(self, ds_division: str, district: str | None = None) -> Origin | None:
+        """The main town of a DS division: the town named after it, else its biggest place."""
+
+        rows = self._all("SELECT origin_id, town, district, province, ds_division, point_source FROM towns")
+        key = _norm(ds_division)
+        rows = [r for r in rows if _norm(r["ds_division"]) == key]
+        if district:
+            wanted = self._district(district)
+            rows = [r for r in rows if r["district"] == wanted]
+        if not rows:
+            return None
+        best = min(rows, key=lambda r: (_norm(r["town"]) != key, SOURCE_RANK.get(r["point_source"], 3), r["town"]))
+        return Origin(best["origin_id"], best["town"], best["district"], best["province"])
 
     def _district(self, name: str) -> str:
         names = [r["district"] for r in self._all("SELECT district FROM districts")]
@@ -83,26 +129,49 @@ class TravelRepository:
         raise LookupError_(f"Unknown district {name!r}", [exact[c] for c in close])
 
     def find_origin(self, name: str, district: str | None = None) -> Origin:
-        """Resolve a DS division (or the DS division named after a town)."""
+        """Resolve a home town: 'Kotugoda', 'Hettipola (Matale)', a typo, or an old DS division name.
 
-        candidates = self.ds_divisions(district)
-        by_name = {_norm(o.ds_division): o for o in candidates}
+        A few town names exist in two districts; without a district those are
+        ambiguous and the error lists both.
+        """
+
+        match = DISTRICT_SUFFIX_RE.match(name.strip())
+        if match and not district:
+            try:
+                district = self._district(match.group(2))
+                name = match.group(1)
+            except LookupError_:
+                pass                              # '(...)' is part of the name, not a district
+        candidates = self.towns(district)
+        by_name: dict[str, list[Origin]] = {}
+        for o in candidates:
+            by_name.setdefault(_norm(o.town), []).append(o)
         key = _norm(name)
+
+        def one(found: list[Origin]) -> Origin:
+            if len(found) == 1:
+                return found[0]
+            raise LookupError_(f"Town {name!r} is in more than one district; give the district",
+                               [o.label for o in found])
+
         if key in by_name:
-            return by_name[key]
-        partial = [o for k, o in by_name.items() if key in k.split() or k.startswith(key)]
+            return one(by_name[key])
+        legacy = self.town_for_ds_division(name, district)
+        if legacy:
+            return legacy
+        partial = [o for k, os in by_name.items() if key in k.split() or k.startswith(key) for o in os]
         if len(partial) == 1:
             return partial[0]
         best = None if partial else _best_match(key, list(by_name))
         if best:
-            return by_name[best]
+            return one(by_name[best])
         close = difflib.get_close_matches(key, list(by_name), n=5, cutoff=0.75)
-        if len(close) == 1 and not partial:
-            return by_name[close[0]]
-        suggestions = [f"{o.ds_division} ({o.district})" for o in partial] or [
-            f"{by_name[c].ds_division} ({by_name[c].district})" for c in close]
-        raise LookupError_(f"No DS division matching {name!r}"
-                           + (f" in {district}" if district else ""), suggestions)
+        same_start = _same_start(key, close)
+        if len(same_start) == 1 and not partial:
+            return one(by_name[same_start[0]])
+        suggestions = [o.label for o in partial] or [o.label for c in close for o in by_name[c]]
+        raise LookupError_(f"No town matching {name!r}" + (f" in {district}" if district else ""),
+                           suggestions)
 
     def university_names(self) -> list[str]:
         return [r["university"] for r in self._all("SELECT DISTINCT university FROM campuses ORDER BY 1")]

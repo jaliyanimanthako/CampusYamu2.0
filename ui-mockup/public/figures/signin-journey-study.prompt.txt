@@ -1,0 +1,20 @@
+Mode: built-in image_gen edit; transparent_background: true
+Edit target: signin-journey.png
+Color reference: stats-graduate.webp for the graduate's indigo-purple cloak and mustard-gold trim.
+Placement: centered in the existing login panel, contained at 78% of panel height.
+
+Use case: precise-object-edit / illustration-story
+Asset type: extended three-stage university journey illustration for CampusYamu's login panel.
+INPUT ROLES:
+Image 1 (signin-journey.png) is the EDIT TARGET: keep this human character identity, painted editorial style, ascending lavender ribbon path, lower-left school-leaver holding results, and upper-right graduate walking with diploma.
+Image 2 (stats-graduate.webp) is ONLY the GRADUATION CLOAK COLOR AND TRIM REFERENCE: copy its rich indigo-purple cloak with broad MUSTARD/GOLD edging and lining, plus the mustard jacket visible underneath and white tee. Do not copy its jumping pose, confetti, background or composition.
+MAKE TWO REQUESTED CHANGES:
+1. Recolor the upper-right graduate's gown from blue/navy with pale lavender facing to the rich indigo-purple gown with conspicuous warm mustard-gold facing, edge trim and lining seen in image 2. Keep the existing walking pose, smile, diploma and recognizable human face. Mortarboard indigo-purple, tassel mustard gold. Show a little mustard jacket and white tee at the opening, consistent with image 2.
+2. Extend the pathway composition to include a clear MIDDLE STAGE of THIS SAME student STUDYING AT UNIVERSITY, between receiving results and graduating. Re-space the path and stages to give this central scene proper room. Place the middle student seated casually on a small ledge formed by the lavender ribbon itself near the central bend, body angled three-quarter right, one foot resting on the path and the other dangling. An open lavender laptop rests on one knee; he writes in an open notebook beside him with a pencil in his other hand, attentive content expression. Mustard overshirt, white tee, royal-blue trousers, white/yellow headphones around his neck, white-and-mustard trainers. A small stack of two books and one restrained pale-lavender university/library arch immediately behind this study nook makes the university context clear. Keep this scene integrated with the path rather than a detached inset or floating icon. All three stages must depict the SAME human student at different stages, with large legible faces and full visible limbs.
+COMPOSITION:
+A balanced tall portrait, approximately 2:3, slightly wider or taller if needed to accommodate the new scene. Start at LOWER LEFT with the existing student holding results, wind through the CENTER university study nook, finish at UPPER RIGHT with the graduate. Use one continuous gently rising S-shaped ribbon, widening into a small study terrace in the middle, with visible connections into and out of that terrace. Preserve the existing elegant journey concept. Reposition/reduce the old hoops as necessary to create room: TWO slender blue/lavender hoops at the transitions are enough; omit the extra floating arrows. Keep all three figures separated with comfortable negative space. Avoid cramming laptop, library arch and hoops into each other.
+STYLE AND INVARIANTS:
+Preserve the polished clean modern editorial painted illustration, warm brown Sri Lankan human face, chunky swept navy hair, long-limbed natural proportions, crisp broad faceted shading, subtle fine grain, brand palette lavender #C9B8F5, royal blue #4F6FE8, navy #14185C and mustard #F2B84B. One coherent illustration, not a collage. Keep all heads, cap, hands, notebook, shoes and path endpoints within canvas with modest padding. No captions, letters, text, logos or watermark.
+BACKGROUND:
+Genuine transparent alpha outside all physical silhouettes; preserve transparency. Clean cutout edges. No scenery beyond the small university study arch, no background rectangle, haze, colored halo, glow, diffuse shadow or fog.
+Exactly three human stages, no extra people. No photorealism, no 3D rendering, no black contour outlines.

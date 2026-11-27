@@ -282,7 +282,7 @@ def build_pipeline(finder: CourseFinder | None = None, zscore: ZScoreAgent | Non
         profile, origin = report["profile"], report["origin"]
         context = {"stream": profile.get("stream"), "z_score": profile.get("z_score"),
                    "admission_district": profile.get("admission_district"),
-                   "home": f"{origin['ds_division']} ({origin['district']} district)",
+                   "home": f"{origin['town']} ({origin['district']} district)",
                    "interests": (report.get("preferences") or {}).get("text")}
         distance = report["rankings"]["distance"]
         feedback = feedback_writer.write(distance["analysis"], context)
